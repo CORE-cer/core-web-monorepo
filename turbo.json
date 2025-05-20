@@ -1,0 +1,49 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "dev": {
+      "dependsOn": ["build", "^build"],
+      "cache": false,
+      "persistent": true
+      "env": [
+        "POSTGRES_USER",
+        "POSTGRES_PASSWORD",
+        "POSTGRES_DB",
+        "POSTGRES_PORT",
+        "POSTGRES_HOST",
+        "DATABASE_URL_MIDDLEWARE_API",
+        "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+        "CLERK_SECRET_KEY"
+      ]
+    },
+    "start": {
+      "dependsOn": ["build", "^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "build": {
+      "dependsOn": ["^build", "prisma:generate"],
+      "cache": true,
+      "inputs": ["$TURBO_DEFAULT$", ".env"],
+      "env": [
+        "POSTGRES_USER",
+        "POSTGRES_PASSWORD",
+        "POSTGRES_DB",
+        "POSTGRES_PORT",
+        "POSTGRES_HOST",
+        "DATABASE_URL_MIDDLEWARE_API",
+        "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+        "CLERK_SECRET_KEY"
+      ]
+    },
+    "format": {
+      "dependsOn": [],
+      "cache": false
+    },
+    "format-fix": {
+      "dependsOn": [],
+      "cache": false
+    }
+  }
+}

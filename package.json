@@ -1,0 +1,32 @@
+{
+  "name": "core-web-monorepo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "build": "dotenv -e .env -- turbo build",
+    "start": "dotenv -e .env -- turbo start",
+    "dev": "dotenv -e .env -- turbo dev",
+    "format": "dotenv -e .env -- turbo format",
+    "format-fix": "dotenv -e .env -- turbo format-fix"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.10.0",
+  "engines": {
+    "node": ">=23.9.0",
+    "pnpm": ">=10.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.11.18",
+    "dotenv-cli": "^8.0.0",
+    "eslint": "^9.27.0",
+    "turbo": "^2.5.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.32.1"
+  },
+  "dependencies": {
+  }
+}
