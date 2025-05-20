@@ -5,7 +5,7 @@
     "dev": {
       "dependsOn": ["build", "^build"],
       "cache": false,
-      "persistent": true
+      "persistent": true,
       "env": [
         "POSTGRES_USER",
         "POSTGRES_PASSWORD",
@@ -22,9 +22,19 @@
       "cache": false,
       "persistent": true
     },
+    "kysely:codegen": {
+      "cache": false,
+      "inputs": ["$TURBO_DEFAULT$", ".env", "db/**/*"],
+      "outputs": [
+          "node_modules/kysely-codegen/dist/db.d.ts"
+      ],
+      "env": [
+        "DATABASE_URL"
+      ]
+    },
     "build": {
-      "dependsOn": ["^build", "prisma:generate"],
-      "cache": true,
+      "dependsOn": ["^build", "kysely:codegen"],
+      "cache": false,
       "inputs": ["$TURBO_DEFAULT$", ".env"],
       "env": [
         "POSTGRES_USER",

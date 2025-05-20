@@ -14,3 +14,4 @@ export const db = new Kysely<DB>({
   }),
 });
 
+export type DBType = DB;

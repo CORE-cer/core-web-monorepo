@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "kysely:codegen": "kysely-codegen",
     "watch:ts": "tsc -w",
     "build": "tsc && tsc-alias",
     "dev": "pnpm run watch:ts",
