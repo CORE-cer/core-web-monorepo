@@ -1,0 +1,36 @@
+{
+  "name": "middleware-api",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "dev": "nest start --watch",
+    "start": "nest start",
+    "build": "nest build",
+    "format": "pnpm run eslint && pnpm run prettier",
+    "format-fix": "pnpm run eslint-fix && pnpm run prettier-fix",
+    "debug": "nest start --debug --watch",
+    "prod": "node dist/main",
+    "eslint": "eslint \"{src}/**/*.ts\"",
+    "eslint-fix": "eslint \"{src}/**/*.ts\" --fix",
+    "prettier": "prettier --write \"src/**/*.ts\"",
+    "prettier-fix": "prettier --write \"src/**/*.ts\" --fix"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.0.1",
+    "@nestjs/core": "^11.0.1",
+    "@nestjs/platform-express": "^11.0.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.0",
+    "@nestjs/schematics": "^11.0.0",
+    "@nestjs/testing": "^11.0.1",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.7"
+  }
+}

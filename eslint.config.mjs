@@ -1,6 +1,8 @@
-// @ts-check
 import eslint from '@eslint/js';
+import prettierConfig from 'eslint-config-prettier';
 import tseslint from 'typescript-eslint';
+
+// import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 
 export default tseslint.config(
   {
@@ -8,7 +10,8 @@ export default tseslint.config(
   },
   // eslint-disable-next-line
   eslint.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
+  tseslint.configs.strictTypeChecked,
+  tseslint.configs.stylisticTypeChecked,
   {
     languageOptions: {
       parserOptions: {
@@ -16,5 +19,6 @@ export default tseslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
-  }
+  },
+  prettierConfig
 );

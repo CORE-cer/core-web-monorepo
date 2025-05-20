@@ -3,13 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "kysely:codegen": "kysely-codegen",
     "watch:ts": "tsc -w",
     "build": "tsc && tsc-alias",
     "dev": "pnpm run watch:ts",
     "format": "prettier --check .",
-    "format-fix": "prettier --write ."
+    "format-fix": "prettier --write .",
+    "eslint": "eslint \"{src}/**/*.ts\"",
+    "eslint-fix": "eslint \"{src}/**/*.ts\" --fix",
+    "prettier": "prettier --write \"src/**/*.ts\"",
+    "prettier-fix": "prettier --write \"src/**/*.ts\" --fix"
   },
   "keywords": [],
   "author": "",

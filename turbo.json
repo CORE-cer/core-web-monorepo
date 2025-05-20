@@ -25,12 +25,8 @@
     "kysely:codegen": {
       "cache": false,
       "inputs": ["$TURBO_DEFAULT$", ".env", "db/**/*"],
-      "outputs": [
-          "node_modules/kysely-codegen/dist/db.d.ts"
-      ],
-      "env": [
-        "DATABASE_URL"
-      ]
+      "outputs": ["node_modules/kysely-codegen/dist/db.d.ts"],
+      "env": ["DATABASE_URL"]
     },
     "build": {
       "dependsOn": ["^build", "kysely:codegen"],
