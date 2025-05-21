@@ -7,12 +7,12 @@
   "license": "UNLICENSED",
   "type": "module",
   "scripts": {
-    "dev": "nest start --watch",
-    "start": "nest start",
+    "dev": "nest start --watch --exec 'tsc-alias && node'",
+    "start": "nest start --exec 'tsc-alias && node'",
     "build": "nest build",
     "format": "pnpm run eslint && pnpm run prettier",
     "format-fix": "pnpm run eslint-fix && pnpm run prettier-fix",
-    "debug": "nest start --debug --watch",
+    "debug": "nest start --debug --watch --exec 'tsc-alias && node'",
     "prod": "node dist/main",
     "eslint": "eslint \"{src}/**/*.ts\"",
     "eslint-fix": "eslint \"{src}/**/*.ts\" --fix",
@@ -23,10 +23,10 @@
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
-    "nestjs-zod": "^4.3.1",
+    "@nestjs/swagger": "^11.2.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "zod": "^3.25.7"
+    "middleware-api-schemas": "workspace:*"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",

@@ -1,15 +1,10 @@
 import { Module } from '@nestjs/common';
 
-import { AppController } from './app.controller.js';
-import { AppService } from './app.service.js';
+import { StreamInfoModule } from '@src/endpoints/streamInfo/streamInfo.module.js';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [StreamInfoModule],
+  controllers: [],
+  providers: [],
 })
-export class AppModule {
-  constructor(protected readonly appService: AppService) {
-    console.log('AppModule initialized');
-  }
-}
+export class AppModule {}

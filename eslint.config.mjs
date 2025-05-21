@@ -5,20 +5,19 @@ import tseslint from 'typescript-eslint';
 // import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 
 export default tseslint.config(
-  {
-    ignores: ['**/build/**', '**/dist/**', '**/dist_build/**', '**/frontend/**'],
-  },
-  // eslint-disable-next-line
   eslint.configs.recommended,
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,
   {
     languageOptions: {
       parserOptions: {
-        project: true,
+        projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
     },
   },
-  prettierConfig
+  prettierConfig,
+  {
+    ignores: ['**/build/**', '**/dist/**', '**/dist_build/**', '**/frontend/**'],
+  }
 );

@@ -1,12 +1,11 @@
 {
-  "name": "middleware-api-db",
+  "name": "middleware-api-schemas",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "kysely:codegen": "kysely-codegen",
-    "watch:ts": "tsc -w",
+    "watch:ts": "concurrently \"tsc -w\" \"tsc-alias -w\"",
     "build": "tsc && tsc-alias",
     "dev": "pnpm run watch:ts",
     "format": "prettier --check .",
@@ -20,12 +19,9 @@
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.10.0",
-  "dependencies": {
-    "kysely": "^0.28.2",
-    "pg": "^8.16.0"
-  },
-  "devDependencies": {
-    "@types/pg": "^8.15.2",
-    "kysely-codegen": "^0.18.5"
+  "dependencies": {},
+  "devDependencies": {},
+  "exports": {
+    "./*": "./dist/src/*"
   }
 }
