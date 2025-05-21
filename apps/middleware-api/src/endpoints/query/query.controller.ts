@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { CreateQueryDto, GetQueriesInfoDto } from 'middleware-api-schemas/query/queryDto.js';
 import { ZodValidationPipe } from 'nestjs-zod';
@@ -8,6 +8,7 @@ import { QueryGetter } from './services/queryGetter.js';
 @ApiTags('QueryController')
 @ApiBearerAuth('jwt')
 @UsePipes(ZodValidationPipe)
+@UsePipes(new ValidationPipe({ transform: true }))
 @Controller('query')
 export class QueryController {
   constructor(private readonly queryGetter: QueryGetter) {}
@@ -39,5 +40,17 @@ export class QueryController {
     }
 
     return queryIdentifier;
+  }
+
+  @Delete(':id')
+  @ApiOkResponse({
+    description: 'Inactivate a query',
+  })
+  async inactivateQuery(@Param('id') id: number): Promise<void> {
+    const response = await this.queryGetter.inactivateQuery(id);
+
+    if (response instanceof Error) {
+      throw new Error(`Error calling inactivate-query: ${response.message}`);
+    }
   }
 }
