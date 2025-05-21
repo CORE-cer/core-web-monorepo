@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { GetStreamInfoDto } from 'middleware-api-schemas/streamInfo/streamInfoDto.js';
-import { GetStreamInfoSchema } from 'middleware-api-schemas/streamInfo/streamInfoSchema.js';
+import { GetQueryInfoDto } from 'middleware-api-schemas/queryInfo/queryInfoDto.js';
+import { GetQueryInfoSchema } from 'middleware-api-schemas/queryInfo/queryInfoSchema.js';
 import { z } from 'zod';
 
 @Injectable()
-export class StreamInfoGetter {
-  async getStreamsInfo(): Promise<GetStreamInfoDto[] | Error> {
-    const url = 'http://localhost:9001/all-streams-info';
+export class QueryInfoGetter {
+  async getQueriesInfo(): Promise<GetQueryInfoDto[] | Error> {
+    const url = 'http://localhost:9001/all-queries-info';
 
     try {
       const response = await fetch(url, {
@@ -22,7 +22,7 @@ export class StreamInfoGetter {
 
       const untypedData = (await response.json()) as unknown;
 
-      const data = z.array(GetStreamInfoSchema).safeParse(untypedData);
+      const data = z.array(GetQueryInfoSchema).safeParse(untypedData);
 
       if (!data.success) {
         return new Error(`Error validating stream info: ${data.error.toString()}`);

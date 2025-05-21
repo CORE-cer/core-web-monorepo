@@ -8,13 +8,13 @@ import { StreamInfoGetter } from './services/streamInfoGetter.js';
 @ApiTags('StreamInfoController')
 @ApiBearerAuth('jwt')
 @UsePipes(ZodValidationPipe)
-@Controller('convertibleNote')
+@Controller('streamInfo')
 export class StreamInfoController {
   constructor(private readonly streamInfoGetter: StreamInfoGetter) {}
   @Get()
   @ApiOkResponse({
     type: GetStreamInfoDto,
-    description: 'Create car listing and return detail data',
+    description: 'Get all stream info',
   })
   async getStreamsInfo(): Promise<GetStreamInfoDto[]> {
     const streamsInfo = await this.streamInfoGetter.getStreamsInfo();
