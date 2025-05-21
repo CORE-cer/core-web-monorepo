@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 @Injectable()
 export class StreamInfoGetter {
-  async getStreamsInfo(): Promise<GetStreamInfoDto[]> {
+  async getStreamsInfo(): Promise<GetStreamInfoDto[] | Error> {
     const url = 'http://localhost:9001/all-streams-info';
 
     try {
@@ -17,17 +17,21 @@ export class StreamInfoGetter {
       });
 
       if (!response.ok) {
-        throw new Error(`Error fetching stream info: ${response.statusText}`);
+        return new Error(`Error fetching stream info: ${response.statusText}`);
       }
 
       const untypedData = (await response.json()) as unknown;
       console.log(untypedData);
 
-      const data = z.array(GetStreamInfoSchema).parse(untypedData);
+      const data = z.array(GetStreamInfoSchema).safeParse(untypedData);
 
-      return data;
+      if (!data.success) {
+        return new Error(`Error validating stream info: ${data.error.toString()}`);
+      }
+
+      return data.data;
     } catch (error) {
-      throw new Error(`Error fetching stream info: ${(error as Error).message}`);
+      return new Error(`Unknown error: ${error as Error}`);
     }
   }
 }

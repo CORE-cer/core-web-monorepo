@@ -16,7 +16,13 @@ export class StreamInfoController {
     type: GetStreamInfoDto,
     description: 'Create car listing and return detail data',
   })
-  getStreamsInfo(): Promise<GetStreamInfoDto[]> {
-    return this.streamInfoGetter.getStreamsInfo();
+  async getStreamsInfo(): Promise<GetStreamInfoDto[]> {
+    const streamsInfo = await this.streamInfoGetter.getStreamsInfo();
+
+    if (streamsInfo instanceof Error) {
+      throw new Error(`Error calling getStreamsInfo: ${streamsInfo.message}`);
+    }
+
+    return streamsInfo;
   }
 }
