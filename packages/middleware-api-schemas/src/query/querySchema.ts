@@ -6,3 +6,8 @@ export const GetQueryInfoSchema = z.object({
   query_string: z.string(),
   active: z.boolean(),
 });
+
+export const CreateQuerySchema = z.object({
+  query: z.string(),
+  query_name: z.string(),
+});

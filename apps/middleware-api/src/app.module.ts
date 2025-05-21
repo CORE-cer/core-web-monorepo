@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 
-import { QueryInfoModule } from '@src/endpoints/queryInfo/queryInfo.module.js';
+import { QueryModule } from '@src/endpoints/query/query.module.js';
 import { StreamInfoModule } from '@src/endpoints/streamInfo/streamInfo.module.js';
 
 @Module({
-  imports: [StreamInfoModule, QueryInfoModule],
+  imports: [StreamInfoModule, QueryModule],
   controllers: [],
   providers: [],
 })
