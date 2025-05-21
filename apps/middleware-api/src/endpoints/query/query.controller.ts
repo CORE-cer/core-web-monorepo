@@ -1,8 +1,13 @@
+// import { TransactionHost } from '@nestjs-cls/transactional';
+// import { TransactionalAdapterKysely } from '@nestjs-cls/transactional-adapter-kysely';
 import { Body, Controller, Delete, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+// import { DBType } from 'middleware-api-db/kysely.js';
 import { CreateQueryDto, GetQueriesInfoDto } from 'middleware-api-schemas/query/queryDto.js';
 import { ZodValidationPipe } from 'nestjs-zod';
 
+import { QueryCreator } from './services/queryCreator.js';
+import { QueryDeleter } from './services/queryDeleter.js';
 import { QueryGetter } from './services/queryGetter.js';
 
 @ApiTags('QueryController')
@@ -11,7 +16,12 @@ import { QueryGetter } from './services/queryGetter.js';
 @UsePipes(new ValidationPipe({ transform: true }))
 @Controller('query')
 export class QueryController {
-  constructor(private readonly queryGetter: QueryGetter) {}
+  constructor(
+    private readonly queryGetter: QueryGetter,
+    private readonly queryCreator: QueryCreator,
+    private readonly queryDeleter: QueryDeleter
+    // private readonly txHost: TransactionHost<TransactionalAdapterKysely<DBType>>
+  ) {}
   @Get()
   @ApiOkResponse({
     type: GetQueriesInfoDto,
@@ -33,7 +43,7 @@ export class QueryController {
     description: 'Add a query and return its identifier',
   })
   async addQuery(@Body() queryDto: CreateQueryDto): Promise<string> {
-    const queryIdentifier = await this.queryGetter.addQuery({ query: queryDto.query, queryName: queryDto.query_name });
+    const queryIdentifier = await this.queryCreator.addQuery({ query: queryDto.query, queryName: queryDto.query_name });
 
     if (queryIdentifier instanceof Error) {
       throw new Error(`Error calling addQuery: ${queryIdentifier.message}`);
@@ -47,7 +57,7 @@ export class QueryController {
     description: 'Inactivate a query',
   })
   async inactivateQuery(@Param('id') id: number): Promise<void> {
-    const response = await this.queryGetter.inactivateQuery(id);
+    const response = await this.queryDeleter.inactivateQuery(id);
 
     if (response instanceof Error) {
       throw new Error(`Error calling inactivate-query: ${response.message}`);

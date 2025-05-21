@@ -5,8 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "kysely:codegen": "kysely-codegen",
-    "watch:ts": "tsc -w",
+    "kysely:codegen": "kysely-codegen --default-schema=$MIDDLEWARE_API_SCHEMA",
+    "watch:ts": "concurrently \"tsc -w\" \"tsc-alias -w\"",
     "build": "tsc && tsc-alias",
     "dev": "pnpm run watch:ts",
     "format": "prettier --check .",
@@ -27,5 +27,8 @@
   "devDependencies": {
     "@types/pg": "^8.15.2",
     "kysely-codegen": "^0.18.5"
+  },
+  "exports": {
+    "./*": "./dist/src/*"
   }
 }
