@@ -18,6 +18,6 @@ export default tseslint.config(
   },
   prettierConfig,
   {
-    ignores: ['**/build/**', '**/dist/**', '**/dist_build/**', '**/frontend/**'],
+    ignores: ['**/build/**', '**/dist/**', '**/dist_build/**'],
   }
 );
