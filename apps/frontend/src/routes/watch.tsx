@@ -1,14 +1,10 @@
+import { Box, Divider, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
-import {
-  Box,
-  Divider,
-  ToggleButton,
-  ToggleButtonGroup,
-} from '@mui/material';
 import { Helmet } from 'react-helmet';
+
+import Charts from '../components/Charts';
 import HitList from '../components/HitList';
 import Stats from '../components/Stats';
-import Charts from '../components/Charts';
 import QuerySelection from '../components/watch/QuerySelection';
 import { useWatchPage } from '../hooks/useWatchPage';
 
@@ -68,12 +64,7 @@ function RouteComponent() {
               justifyContent: 'center',
             }}
           >
-            <ToggleButtonGroup
-              color="primary"
-              exclusive
-              value={viewMode}
-              onChange={handleViewModeChange}
-            >
+            <ToggleButtonGroup color="primary" exclusive value={viewMode} onChange={handleViewModeChange}>
               <ToggleButton value="list">List</ToggleButton>
               <ToggleButton value="stats">Stats</ToggleButton>
               <ToggleButton value="charts">Charts</ToggleButton>
@@ -82,16 +73,12 @@ function RouteComponent() {
           <Divider />
           <Box sx={{ flex: 1, overflow: 'auto' }}>
             {viewMode === 'list' ? (
-              <HitList
-                data={data}
-                eventInterval={eventInterval}
-                setEventInterval={setEventInterval}
-              />
+              <HitList data={data} eventInterval={eventInterval} setEventInterval={setEventInterval} />
             ) : viewMode === 'stats' ? (
               <Stats qid2Stats={qid2Stats} queries={queries} />
-            ) : viewMode === 'charts' ? (
+            ) : (
               <Charts qid2Stats={qid2Stats} queries={queries} />
-            ) : null}
+            )}
           </Box>
         </Box>
       </Box>

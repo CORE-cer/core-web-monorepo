@@ -18,6 +18,9 @@ export default tseslint.config(
   },
   prettierConfig,
   {
+    rules: {
+      '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+    },
     ignores: ['**/build/**', '**/dist/**', '**/dist_build/**'],
   }
 );

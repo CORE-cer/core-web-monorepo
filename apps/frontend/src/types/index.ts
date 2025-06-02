@@ -1,37 +1,39 @@
 // Editor Types
-export interface EditorRef {
+export type EditorRef = {
   getEditor: () => import('monaco-editor-core').editor.IStandaloneCodeEditor | null;
-}
+};
 
 // Query Related Types
-export interface QueryInfo {
+export type QueryInfo = {
   result_handler_identifier: string;
   query_name: string;
   active: boolean;
-}
+};
 
 export type QueriesMap = Map<string, QueryInfo>;
+export type QueryStatsMap = Map<string, QueryStats>;
+export type WebSocketMap = Map<string, WebSocket>;
 
-export interface ExampleData {
+export type ExampleData = {
   title: string;
   query: string;
-}
+};
 
 // Stream and Event Types
-export interface EventInfo {
+export type EventInfo = {
   id: string;
   name: string;
   attributes_info: {
     name: string;
   }[];
-}
+};
 
-export interface StreamInfo {
+export type StreamInfo = {
   events_info: EventInfo[];
-}
+};
 
 // Complex Event Types
-export interface ComplexEvent {
+export type ComplexEvent = {
   start: number;
   end: number;
   eventss: {
@@ -40,9 +42,9 @@ export interface ComplexEvent {
       attributes: unknown[];
     };
   }[];
-}
+};
 
-export interface FormattedHit {
+export type FormattedHit = {
   time: Date;
   data: {
     start: number;
@@ -52,36 +54,36 @@ export interface FormattedHit {
       [key: string]: unknown;
     }[];
   };
-}
+};
 
-export interface DataItem {
+export type DataItem = {
   qid: string;
   data: FormattedHit[];
-}
+};
 
 // Statistics Types
-export interface HitCount {
+export type HitCount = {
   numHits: number;
   numComplexEvents: number;
-}
+};
 
-export interface HitStats {
+export type HitStats = {
   max: number;
   total: number;
-}
+};
 
-export interface PerSecStat extends HitCount {
+export type PerSecStat = {
   time: Date;
-}
+} & HitCount;
 
-export interface QueryStats {
+export type QueryStats = {
   perSec: PerSecStat[];
   hitStats: HitStats;
   complexEventStats: HitStats;
-}
+};
 
 // Schema Types
-export interface TickerData {
+export type TickerData = {
   product_id: string;
   open_24h: number;
   low_24h: number;
@@ -94,14 +96,14 @@ export interface TickerData {
   best_bid: number;
   best_ask: number;
   time: Date;
-}
+};
 
-export interface SchemaData {
+export type SchemaData = {
   TICKER: {
     Buy: TickerData;
     Sell: TickerData;
   };
-}
+};
 
 // View Mode Types
 export type ViewMode = 'list' | 'stats' | 'charts';

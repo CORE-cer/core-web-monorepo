@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { ComplexEvent, DataItem, EventInfo, FormattedHit, HitCount, QueryStats, StreamInfo } from '../types';
+import type { ComplexEvent, DataItem, EventInfo, FormattedHit, HitCount, QueryStatsMap, StreamInfo, WebSocketMap } from '../types';
 
 export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: StreamInfo[]) => {
-  const [qid2Websockets, setQid2Websockets] = useState<Map<string, WebSocket>>(new Map());
+  const [qid2Websockets, setQid2Websockets] = useState<WebSocketMap>(new Map());
   const [data, setData] = useState<DataItem[]>([]);
   const [eventInterval, setEventInterval] = useState<number>(0);
-  const [qid2Stats, setQid2Stats] = useState<Map<string, QueryStats>>(new Map());
+  const [qid2Stats, setQid2Stats] = useState<QueryStatsMap>(new Map());
 
   const currentQid2HitRef = useRef<Map<string, HitCount>>(new Map());
   const dataBuffer = useRef<DataItem[]>([]);
