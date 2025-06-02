@@ -9,7 +9,7 @@ import LineChart from './LineChart';
 type ChartsProps = {
   qid2Stats: QueryStatsMap;
   queries: QueriesMap;
-}
+};
 
 const Charts: React.FC<ChartsProps> = ({ qid2Stats, queries }) => {
   const common = useMemo(() => {

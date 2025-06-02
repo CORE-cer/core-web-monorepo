@@ -6,36 +6,36 @@ import { MAX_COLORS } from '../colors';
 type HitStats = {
   max: number;
   total: number;
-}
+};
 
 type PerSecStat = {
   numHits: number;
   numComplexEvents: number;
   time: Date;
-}
+};
 
 type QueryStats = {
   perSec: PerSecStat[];
   hitStats: HitStats;
   complexEventStats: HitStats;
-}
+};
 
 type QueryInfo = {
   result_handler_identifier: string;
   query_name: string;
   active: boolean;
-}
+};
 
 type QueryStatProps = {
   query?: QueryInfo;
   qid: string;
   stats: QueryStats;
-}
+};
 
 type StatsProps = {
   qid2Stats: QueryStatsMap;
   queries: QueriesMap;
-}
+};
 
 function QueryStat({ query, qid, stats }: QueryStatProps) {
   const { perSec, hitStats, complexEventStats } = stats;

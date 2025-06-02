@@ -1,15 +1,15 @@
-import { createTheme } from "@mui/material/styles";
-import React from "react";
-import { Link as RouterLink } from "@tanstack/react-router";
+import { createTheme } from '@mui/material/styles';
+import { Link as RouterLink } from '@tanstack/react-router';
+import React from 'react';
 
 type LinkBehaviorProps = {
   href?: string;
-  [key: string]: any;
-}
+  [key: string]: unknown;
+};
 
-const LinkBehavior = React.forwardRef<any, LinkBehaviorProps>(function LinkBehavior(props, ref) {
+const LinkBehavior = React.forwardRef<HTMLAnchorElement, LinkBehaviorProps>(function LinkBehavior(props, ref) {
   const { href, ...other } = props;
-  return <RouterLink ref={ref} to={href || "/"} {...other} />;
+  return <RouterLink ref={ref} to={href ?? '/'} {...other} />;
 });
 
 const common = {
@@ -32,12 +32,12 @@ export const DRAWER_WIDTH = 160;
 export const MUIThemeDark = createTheme({
   ...common,
   palette: {
-    mode: "dark",
+    mode: 'dark',
     primary: {
-      main: "#fbbf24",
+      main: '#fbbf24',
     },
     secondary: {
-      main: "#22d3ee",
+      main: '#22d3ee',
     },
   },
 });
@@ -45,12 +45,12 @@ export const MUIThemeDark = createTheme({
 export const MUIThemeLight = createTheme({
   ...common,
   palette: {
-    mode: "light",
+    mode: 'light',
     primary: {
-      main: "#d97706",
+      main: '#d97706',
     },
     secondary: {
-      main: "#0891b2",
+      main: '#0891b2',
     },
   },
 });

@@ -10,14 +10,14 @@ type QuerySelectionItemProps = {
   checked: boolean;
   handleChange: () => void;
   handleInactivateQuery: (qid: string) => void;
-}
+};
 
 type QuerySelectionProps = {
   queries: QueriesMap;
   selectedQueryIds: Set<string>;
   setSelectedQueryIds: React.Dispatch<React.SetStateAction<Set<string>>>;
   onInactivateQuery: (qid: string) => void;
-}
+};
 
 const QuerySelectionItem: React.FC<QuerySelectionItemProps> = ({ query, checked, handleChange, handleInactivateQuery }) => {
   return (

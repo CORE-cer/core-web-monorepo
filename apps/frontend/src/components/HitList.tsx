@@ -1,44 +1,36 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import {
-  Box,
-  Divider,
-  Fab,
-  Fade,
-  Paper,
-  Slider,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Box, Divider, Fab, Fade, Paper, Slider, Tooltip, Typography } from '@mui/material';
 import { useRef, useState } from 'react';
-import { Virtuoso } from 'react-virtuoso';
+import { Virtuoso, type VirtuosoHandle } from 'react-virtuoso';
+
 import { MAX_COLORS } from '../colors';
 
 type DataItem = {
   qid: string;
-  data: any;
-}
+  data: unknown;
+};
 
 type ScrollToLatestProps = {
   trigger: boolean;
   scrollToBottom: () => void;
-}
+};
 
 type EventIntervalSelectorProps = {
   value: number;
   setValue: (value: number) => void;
-}
+};
 
 type HitListProps = {
   data: DataItem[];
   eventInterval: number;
   setEventInterval: (value: number) => void;
-}
+};
 
 const renderItem = (_index: number, data: DataItem) => {
   return (
     <Box sx={{ px: 1, py: 0.5 }}>
       <Paper
-        className={`color-${Number(data.qid) % MAX_COLORS}`}
+        className={`color-${(Number(data.qid) % MAX_COLORS).toString()}`}
         sx={{
           p: 0.5,
           fontFamily: 'Consolas, "Courier New", monospace',
@@ -82,8 +74,8 @@ const ScrollToLatest: React.FC<ScrollToLatestProps> = ({ trigger, scrollToBottom
 const EventIntervalSelector: React.FC<EventIntervalSelectorProps> = ({ value, setValue }) => {
   const valueLabelFormat = (value: number) => {
     if (value === 0) return '0ms (Real-time)';
-    if (value > 1000) return `${value / 1000}s`;
-    return `${value}ms`;
+    if (value > 1000) return `${(value / 1000).toString()}s`;
+    return `${value.toString()}ms`;
   };
 
   const [visualValue, setVisualValue] = useState<number>(value);
@@ -132,7 +124,7 @@ const EventIntervalSelector: React.FC<EventIntervalSelectorProps> = ({ value, se
 const HitList: React.FC<HitListProps> = ({ data, eventInterval, setEventInterval }) => {
   const [atBottom, setAtBottom] = useState<boolean>(false);
 
-  const virtuoso = useRef<any>(null);
+  const virtuoso = useRef<VirtuosoHandle>(null);
 
   const handleScrollToBottom = () => {
     if (!virtuoso.current) return;
@@ -144,21 +136,17 @@ const HitList: React.FC<HitListProps> = ({ data, eventInterval, setEventInterval
   };
 
   return (
-    <Box sx={{ overflow: 'hidden', flex: 1, display: 'flex', flexDirection:'column' }}>
-      <ScrollToLatest
-        trigger={!atBottom}
-        scrollToBottom={handleScrollToBottom}
-      />
-      <EventIntervalSelector
-        value={eventInterval}
-        setValue={setEventInterval}
-      />
+    <Box sx={{ overflow: 'hidden', flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <ScrollToLatest trigger={!atBottom} scrollToBottom={handleScrollToBottom} />
+      <EventIntervalSelector value={eventInterval} setValue={setEventInterval} />
       <Divider />
       <Virtuoso
         overscan={50}
         ref={virtuoso}
         alignToBottom
-        atBottomStateChange={(isAtBottom: boolean) => { setAtBottom(isAtBottom); }}
+        atBottomStateChange={(isAtBottom: boolean) => {
+          setAtBottom(isAtBottom);
+        }}
         followOutput="auto" // Auto-scroll if the window is at the bottom
         atBottomThreshold={300}
         data={data}

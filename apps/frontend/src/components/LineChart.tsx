@@ -1,23 +1,23 @@
-import ReactApexChart from "react-apexcharts";
-import type { ApexOptions } from "apexcharts";
-import { useEffect, useState } from "react";
-import { useTheme } from "@emotion/react";
-import type { Theme } from "@mui/material/styles";
+import { useTheme } from '@emotion/react';
+import type { Theme } from '@mui/material/styles';
+import type { ApexOptions } from 'apexcharts';
+import { useEffect, useState } from 'react';
+import ReactApexChart from 'react-apexcharts';
 
 type SeriesData = {
   name: string;
   data: { x: Date; y: number }[];
-}
+};
 
 type LineChartProps = {
   series: SeriesData[];
   colors: string[];
-}
+};
 
 type ChartConfig = {
   series: SeriesData[];
   options: ApexOptions;
-}
+};
 
 const LineChart: React.FC<LineChartProps> = ({ series, colors }) => {
   const theme = useTheme() as Theme;
@@ -26,7 +26,7 @@ const LineChart: React.FC<LineChartProps> = ({ series, colors }) => {
     series,
     options: {
       stroke: {
-        curve: "smooth",
+        curve: 'smooth',
       },
       colors,
       chart: {
@@ -44,7 +44,7 @@ const LineChart: React.FC<LineChartProps> = ({ series, colors }) => {
         mode: theme.palette.mode,
       },
       xaxis: {
-        type: "datetime",
+        type: 'datetime',
         range: 10 * 1000, // 10 seconds,
         labels: {
           datetimeUTC: false,
@@ -71,14 +71,7 @@ const LineChart: React.FC<LineChartProps> = ({ series, colors }) => {
     }));
   }, [theme, series, colors]);
 
-  return (
-    <ReactApexChart
-      height={400}
-      options={config.options}
-      series={config.series}
-      type="line"
-    />
-  );
+  return <ReactApexChart height={400} options={config.options} series={config.series} type="line" />;
 };
 
 export default LineChart;

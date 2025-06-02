@@ -1,13 +1,5 @@
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
 import React from 'react';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  TextField,
-} from '@mui/material';
 
 type AddQueryDialogProps = {
   loading: boolean;
@@ -16,37 +8,23 @@ type AddQueryDialogProps = {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   queryName: string;
   setQueryName: (name: string) => void;
-}
+};
 
-const AddQueryDialog: React.FC<AddQueryDialogProps> = ({
-  loading,
-  open,
-  onClose,
-  onSubmit,
-  queryName,
-  setQueryName,
-}) => {
+const AddQueryDialog: React.FC<AddQueryDialogProps> = ({ loading, open, onClose, onSubmit, queryName, setQueryName }) => {
   return (
-    <Dialog
-      fullWidth
-      maxWidth="sm"
-      open={open}
-      onClose={onClose}
-      PaperProps={{
-        component: 'form',
-        onSubmit,
-      }}
-    >
+    <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose} slotProps={{ paper: { component: 'form', onSubmit: () => void onSubmit } }}>
       <DialogTitle>{'Add query'}</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          {'Enter a name to identify the query'}
-        </DialogContentText>
+        <DialogContentText>{'Enter a name to identify the query'}</DialogContentText>
         <TextField
           disabled={loading}
-          inputProps={{ autoComplete: 'off' }}
+          slotProps={{
+            htmlInput: { autoComplete: 'off' },
+          }}
           value={queryName}
-          onChange={(e) => { setQueryName(e.target.value); }}
+          onChange={(e) => {
+            setQueryName(e.target.value);
+          }}
           margin="dense"
           id="name"
           name="name"

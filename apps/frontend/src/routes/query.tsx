@@ -1,7 +1,8 @@
-import { createFileRoute } from '@tanstack/react-router';
 import AddIcon from '@mui/icons-material/Add';
 import { Box, Divider, Fab } from '@mui/material';
+import { createFileRoute } from '@tanstack/react-router';
 import { Helmet } from 'react-helmet';
+
 import Editor from '../components/Editor';
 import AddQueryDialog from '../components/query/AddQueryDialog';
 import Examples from '../components/query/Examples';
@@ -9,29 +10,12 @@ import Schema from '../components/query/Schema';
 import { useQueryPage } from '../hooks/useQueryPage';
 
 const QueryPage: React.FC = () => {
-  const {
-    editorRef,
-    modalOpen,
-    queryName,
-    loading,
-    setQueryName,
-    handleSetExample,
-    handleModalClose,
-    handleAddQuery,
-    submitQuery,
-  } = useQueryPage();
+  const { editorRef, modalOpen, queryName, loading, setQueryName, handleSetExample, handleModalClose, handleAddQuery, submitQuery } = useQueryPage();
 
   return (
     <>
       <Helmet title={`Query | CORE Beta`} />
-      <AddQueryDialog
-        loading={loading}
-        open={modalOpen}
-        onClose={handleModalClose}
-        onSubmit={submitQuery}
-        queryName={queryName}
-        setQueryName={setQueryName}
-      />
+      <AddQueryDialog loading={loading} open={modalOpen} onClose={handleModalClose} onSubmit={submitQuery} queryName={queryName} setQueryName={setQueryName} />
       <Fab
         onClick={handleAddQuery}
         variant="extended"
