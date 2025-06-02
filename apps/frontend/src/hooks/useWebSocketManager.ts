@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { ComplexEvent, DataItem, EventInfo, FormattedHit, HitCount, Qid2Websockets, QueryStats, StreamInfo } from '../types';
+import type { ComplexEvent, DataItem, EventInfo, FormattedHit, HitCount, QueryStats, StreamInfo } from '../types';
 
 export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: StreamInfo[]) => {
   const [qid2Websockets, setQid2Websockets] = useState<Map<string, WebSocket>>(new Map());
@@ -29,7 +29,7 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
         const outputComplexEvent = {
           start: complexEvent.start,
           end: complexEvent.end,
-          events: [] as Array<{ event_type: string; [key: string]: any }>,
+          events: [] as { event_type: string; [key: string]: unknown }[],
         };
 
         for (const event of complexEvent.eventss) {
@@ -37,7 +37,7 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
           const eventInfo = getEventInfoFromEventId(eventData.event_type_id);
 
           if (eventInfo) {
-            const eventOutput: { event_type: string; [key: string]: any } = {
+            const eventOutput: { event_type: string; [key: string]: unknown } = {
               event_type: eventInfo.name,
             };
 
@@ -135,7 +135,8 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
       // Buffered updates
       for (const [qid, ws] of qid2Websockets.entries()) {
         ws.onmessage = (event) => {
-          const eventJson: ComplexEvent[] = JSON.parse(event.data);
+          const receivedData = event.data as string;
+          const eventJson: ComplexEvent[] = JSON.parse(receivedData) as ComplexEvent[];
           const transformedHits = formatComplexEvents(eventJson);
 
           let currentComplexEvents = 0;
@@ -165,7 +166,11 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
       for (const [qid, ws] of qid2Websockets.entries()) {
         ws.onmessage = (event) => {
           setData((prevData) => {
-            const eventJson: ComplexEvent[] = JSON.parse(event.data);
+            const receivedData: unknown = event.data;
+            if (typeof receivedData !== 'string') {
+              return prevData;
+            }
+            const eventJson: ComplexEvent[] = JSON.parse(receivedData) as ComplexEvent[];
             const transformedHits = formatComplexEvents(eventJson);
 
             let currentComplexEvents = 0;

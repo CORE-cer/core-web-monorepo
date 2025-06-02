@@ -68,13 +68,11 @@ const QuerySelection: React.FC<QuerySelectionProps> = ({ queries, selectedQueryI
 
   const handleSelectAll = () => {
     if (selectedQueryIds.size === 0) {
-      setSelectedQueryIds(new Set(Object.keys(queries)));
+      setSelectedQueryIds(new Set(queries.keys()));
     } else {
       setSelectedQueryIds(new Set());
     }
   };
-
-  const queriesArray = Object.values(queries);
 
   return (
     <Box
@@ -86,13 +84,13 @@ const QuerySelection: React.FC<QuerySelectionProps> = ({ queries, selectedQueryI
     >
       <List dense>
         <ListItem disablePadding>
-          <ListItemButton onClick={handleSelectAll} disabled={queriesArray.length === 0}>
+          <ListItemButton onClick={handleSelectAll} disabled={queries.size === 0}>
             <ListItemIcon>
               <Checkbox
-                disabled={queriesArray.length === 0}
+                disabled={queries.size === 0}
                 color="default"
-                checked={queriesArray.length > 0 && selectedQueryIds.size === queriesArray.length}
-                indeterminate={selectedQueryIds.size > 0 && selectedQueryIds.size !== queriesArray.length}
+                checked={queries.size > 0 && selectedQueryIds.size === queries.size}
+                indeterminate={selectedQueryIds.size > 0 && selectedQueryIds.size !== queries.size}
                 disableFocusRipple
                 disableTouchRipple
               />
@@ -101,13 +99,17 @@ const QuerySelection: React.FC<QuerySelectionProps> = ({ queries, selectedQueryI
           </ListItemButton>
         </ListItem>
         <Divider />
-        {queriesArray.map((query, idx) => (
+        {Array.from(queries, ([identifier, query]) => (
           <QuerySelectionItem
-            key={idx}
+            key={identifier}
             query={query}
             checked={selectedQueryIds.has(query.result_handler_identifier)}
-            handleChange={() => handleSelectSingleQuery(query.result_handler_identifier)}
-            handleInactivateQuery={() => onInactivateQuery(query.result_handler_identifier)}
+            handleChange={() => {
+              handleSelectSingleQuery(query.result_handler_identifier);
+            }}
+            handleInactivateQuery={() => {
+              onInactivateQuery(query.result_handler_identifier);
+            }}
           />
         ))}
       </List>
