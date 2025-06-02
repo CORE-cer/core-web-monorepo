@@ -1,0 +1,14 @@
+@use 'sass:list';
+
+$colors: #03dac6, #fce938, #ec4e20, #0aff2f, #c71585, #ffa500, #ffa1ff, #764e1e,
+  #275d4a, #1088ff, #00fa9a, #aa2091, #8c8c8c, #6b97b9, #a96452, #424c55;
+
+@for $i from 0 to list.length($colors) {
+  .color-#{$i} {
+    color: list.nth($colors, $i + 1) !important;
+  }
+
+  .bg-#{$i} {
+    background: list.nth($colors, $i + 1) !important;
+  }
+}

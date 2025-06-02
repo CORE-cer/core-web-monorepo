@@ -8,12 +8,12 @@
     "watch:ts": "concurrently \"tsc -w\" \"tsc-alias -w\"",
     "build": "tsc && tsc-alias",
     "dev": "pnpm run watch:ts",
-    "format": "prettier --check .",
-    "format-fix": "prettier --write .",
-    "eslint": "eslint \"{src}/**/*.ts\"",
-    "eslint-fix": "eslint \"{src}/**/*.ts\" --fix",
-    "prettier": "prettier --write \"src/**/*.ts\"",
-    "prettier-fix": "prettier --write \"src/**/*.ts\" --fix"
+    "format": "pnpm run eslint && pnpm run prettier",
+    "format-fix": "pnpm run eslint-fix && pnpm run prettier-fix",
+    "eslint": "eslint \"src/**/*.ts\"",
+    "eslint-fix": "eslint \"src/**/*.ts\" --fix",
+    "prettier": "prettier \"src/**/*.ts\" --check",
+    "prettier-fix": "prettier \"src/**/*.ts\" --write"
   },
   "keywords": [],
   "author": "",

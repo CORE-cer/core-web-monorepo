@@ -10,14 +10,14 @@
     "dev": "nest start --watch --exec 'tsc-alias && node'",
     "start": "nest start --exec 'tsc-alias && node'",
     "build": "nest build",
-    "format": "pnpm run eslint && pnpm run prettier",
-    "format-fix": "pnpm run eslint-fix && pnpm run prettier-fix",
     "debug": "nest start --debug --watch --exec 'tsc-alias && node'",
     "prod": "node dist/main",
-    "eslint": "eslint \"{src}/**/*.ts\"",
-    "eslint-fix": "eslint \"{src}/**/*.ts\" --fix",
-    "prettier": "prettier --write \"src/**/*.ts\"",
-    "prettier-fix": "prettier --write \"src/**/*.ts\" --fix"
+    "format": "pnpm run eslint && pnpm run prettier",
+    "format-fix": "pnpm run eslint-fix && pnpm run prettier-fix",
+    "eslint": "eslint \"src/**/*.ts\"",
+    "eslint-fix": "eslint \"src/**/*.ts\" --fix",
+    "prettier": "prettier \"src/**/*.ts\" --check",
+    "prettier-fix": "prettier \"src/**/*.ts\" --write"
   },
   "dependencies": {
     "@nestjs-cls/transactional": "^2.7.0",
