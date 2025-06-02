@@ -1,8 +1,9 @@
-import { useTheme } from "@mui/material/styles";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import MenuIcon from "@mui/icons-material/Menu";
-import DataObjectIcon from "@mui/icons-material/DataObject";
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import DataObjectIcon from '@mui/icons-material/DataObject';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import MenuIcon from '@mui/icons-material/Menu';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   AppBar,
   Box,
@@ -17,16 +18,16 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-} from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { useMemo, useState } from "react";
-import type { ReactNode } from "react";
-import { useLocation, Link as RouterLink } from "@tanstack/react-router";
-import { useDarkModeContext } from "../context/DarkModeContext.tsx";
-import { DRAWER_WIDTH } from "../MUIThemes";
-import Main from "./Main";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+} from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { Link as RouterLink, useLocation } from '@tanstack/react-router';
+import { useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
+
+import { DRAWER_WIDTH } from '../MUIThemes';
+import { useDarkModeContext } from '../context/DarkModeContext.tsx';
+import Main from './Main';
 
 const Logo = () => {
   return (
@@ -35,10 +36,10 @@ const Logo = () => {
         to="/"
         style={{
           marginRight: 32,
-          display: "flex",
+          display: 'flex',
           fontWeight: 700,
-          color: "inherit",
-          textDecoration: "none",
+          color: 'inherit',
+          textDecoration: 'none',
         }}
       >
         CORE Beta
@@ -47,11 +48,11 @@ const Logo = () => {
   );
 };
 
-interface DrawerListItemProps {
+type DrawerListItemProps = {
   text: string;
   href: string;
   icon: ReactNode;
-}
+};
 
 const DrawerListItem = ({ text, href, icon }: DrawerListItemProps) => {
   const location = useLocation();
@@ -72,14 +73,14 @@ const DrawerListItem = ({ text, href, icon }: DrawerListItemProps) => {
   );
 };
 
-interface NavbarProps {
+type NavbarProps = {
   children?: ReactNode;
   renderMain?: boolean;
-}
+};
 
 export default function Navbar({ children, renderMain = true }: NavbarProps) {
   const theme = useTheme();
-  const isBelowMd = useMediaQuery(theme.breakpoints.down("md"));
+  const isBelowMd = useMediaQuery(theme.breakpoints.down('md'));
   const darkModeContext = useDarkModeContext();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -92,18 +93,16 @@ export default function Navbar({ children, renderMain = true }: NavbarProps) {
         elevation={0}
         color="transparent"
         sx={{
-          backgroundColor:
-            theme.palette.mode === "dark"
-              ? theme.palette.background.paper
-              : theme.palette.background.paper,
-          zIndex: (theme) =>
-            isBelowMd ? theme.zIndex.appBar : theme.zIndex.drawer + 1,
+          backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.paper : theme.palette.background.paper,
+          zIndex: (theme) => (isBelowMd ? theme.zIndex.appBar : theme.zIndex.drawer + 1),
         }}
       >
         <Toolbar variant="dense">
           <IconButton
             color="inherit"
-            onClick={() => setDrawerOpen(true)}
+            onClick={() => {
+              setDrawerOpen(true);
+            }}
             edge="start"
             sx={{
               mr: 1,
@@ -112,14 +111,10 @@ export default function Navbar({ children, renderMain = true }: NavbarProps) {
             <MenuIcon />
           </IconButton>
           <Logo />
-          <Box sx={{ flexGrow: 1, display: "flex" }} />
+          <Box sx={{ flexGrow: 1, display: 'flex' }} />
           <Tooltip title="Toggle Dark Mode" sx={{ flexGrow: 0 }}>
             <IconButton edge="end" onClick={darkModeContext.toggleDarkMode}>
-              {theme.palette.mode === "dark" ? (
-                <LightModeIcon />
-              ) : (
-                <DarkModeIcon />
-              )}
+              {theme.palette.mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
             </IconButton>
           </Tooltip>
         </Toolbar>
@@ -127,15 +122,17 @@ export default function Navbar({ children, renderMain = true }: NavbarProps) {
       <Toolbar variant="dense" />
       <Drawer
         open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        onClose={() => {
+          setDrawerOpen(false);
+        }}
         variant="temporary"
         anchor="left"
         sx={{
           width: DRAWER_WIDTH,
           flexShrink: 0,
-          "& .MuiDrawer-paper": {
+          '& .MuiDrawer-paper': {
             width: DRAWER_WIDTH,
-            boxSizing: "border-box",
+            boxSizing: 'border-box',
           },
         }}
       >
@@ -145,16 +142,8 @@ export default function Navbar({ children, renderMain = true }: NavbarProps) {
         <Divider />
         <List dense>
           <DrawerListItem text="Query" href="/" icon={<DataObjectIcon />} />
-          <DrawerListItem
-            text="Watch"
-            href="/watch"
-            icon={<VisibilityIcon />}
-          />
-          <DrawerListItem
-            text="About us"
-            href="/about"
-            icon={<PeopleAltIcon />}
-          />
+          <DrawerListItem text="Watch" href="/watch" icon={<VisibilityIcon />} />
+          <DrawerListItem text="About us" href="/about" icon={<PeopleAltIcon />} />
         </List>
       </Drawer>
       {renderMain && <Main permanentDrawer={false}>{children}</Main>}

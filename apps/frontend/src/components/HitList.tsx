@@ -13,22 +13,22 @@ import { useRef, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { MAX_COLORS } from '../colors';
 
-interface DataItem {
+type DataItem = {
   qid: string;
   data: any;
 }
 
-interface ScrollToLatestProps {
+type ScrollToLatestProps = {
   trigger: boolean;
   scrollToBottom: () => void;
 }
 
-interface EventIntervalSelectorProps {
+type EventIntervalSelectorProps = {
   value: number;
   setValue: (value: number) => void;
 }
 
-interface HitListProps {
+type HitListProps = {
   data: DataItem[];
   eventInterval: number;
   setEventInterval: (value: number) => void;
@@ -158,7 +158,7 @@ const HitList: React.FC<HitListProps> = ({ data, eventInterval, setEventInterval
         overscan={50}
         ref={virtuoso}
         alignToBottom
-        atBottomStateChange={(isAtBottom: boolean) => setAtBottom(isAtBottom)}
+        atBottomStateChange={(isAtBottom: boolean) => { setAtBottom(isAtBottom); }}
         followOutput="auto" // Auto-scroll if the window is at the bottom
         atBottomThreshold={300}
         data={data}

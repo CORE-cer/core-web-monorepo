@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { MUIThemeDark, MUIThemeLight } from '../MUIThemes';
 
-interface DarkModeContextType {
+type DarkModeContextType = {
   toggleDarkMode: () => void;
 }
 
@@ -12,7 +12,7 @@ export const DarkModeContext = createContext<DarkModeContextType>({
   toggleDarkMode: () => {},
 });
 
-interface DarkModeProviderProps {
+type DarkModeProviderProps = {
   children: ReactNode;
 }
 
@@ -23,7 +23,7 @@ export default function DarkModeProvider({ children }: DarkModeProviderProps) {
 
   const providerValue = useMemo(
     () => ({
-      toggleDarkMode: () => setDarkMode((prevMode) => !prevMode),
+      toggleDarkMode: () => { setDarkMode((prevMode) => !prevMode); },
     }),
     []
   );

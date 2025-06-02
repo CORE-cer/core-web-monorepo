@@ -6,7 +6,7 @@ import { COLORS, MAX_COLORS } from '../colors';
 import DonutChart from './DonutChart';
 import LineChart from './LineChart';
 
-interface ChartsProps {
+type ChartsProps = {
   qid2Stats: QueryStatsMap;
   queries: QueriesMap;
 }

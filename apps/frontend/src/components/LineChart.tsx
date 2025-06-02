@@ -4,17 +4,17 @@ import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
 import type { Theme } from "@mui/material/styles";
 
-interface SeriesData {
+type SeriesData = {
   name: string;
-  data: Array<{ x: Date; y: number }>;
+  data: { x: Date; y: number }[];
 }
 
-interface LineChartProps {
+type LineChartProps = {
   series: SeriesData[];
   colors: string[];
 }
 
-interface ChartConfig {
+type ChartConfig = {
   series: SeriesData[];
   options: ApexOptions;
 }

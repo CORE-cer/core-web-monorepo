@@ -8,7 +8,7 @@ import type { Theme } from '@mui/material/styles';
 import type { SchemaData } from '../../types';
 import { SCHEMA } from '../../data/schema';
 
-interface CustomJsonViewProps {
+type CustomJsonViewProps = {
   schema: SchemaData;
 }
 

@@ -10,7 +10,7 @@ import {
 import examples from '../../data/examples';
 import type { ExampleData } from '../../types';
 
-interface ExamplesProps {
+type ExamplesProps = {
   setExample: (example: ExampleData) => void;
 }
 
@@ -28,7 +28,7 @@ const Examples: React.FC<ExamplesProps> = ({ setExample }) => {
       {examples.map((example, idx) => (
         <Fragment key={idx}>
           <ListItem disableGutters>
-            <ListItemButton onClick={() => setExample(example)}>
+            <ListItemButton onClick={() => { setExample(example); }}>
               <ListItemText primary={`${idx + 1}. ${example.title}`} />
             </ListItemButton>
           </ListItem>

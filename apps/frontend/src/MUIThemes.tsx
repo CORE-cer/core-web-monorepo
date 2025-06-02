@@ -2,7 +2,7 @@ import { createTheme } from "@mui/material/styles";
 import React from "react";
 import { Link as RouterLink } from "@tanstack/react-router";
 
-interface LinkBehaviorProps {
+type LinkBehaviorProps = {
   href?: string;
   [key: string]: any;
 }

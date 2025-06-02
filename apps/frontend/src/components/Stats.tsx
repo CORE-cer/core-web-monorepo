@@ -3,36 +3,36 @@ import { Box, Divider, Grid2 as Grid, Paper, Typography } from '@mui/material';
 
 import { MAX_COLORS } from '../colors';
 
-interface HitStats {
+type HitStats = {
   max: number;
   total: number;
 }
 
-interface PerSecStat {
+type PerSecStat = {
   numHits: number;
   numComplexEvents: number;
   time: Date;
 }
 
-interface QueryStats {
+type QueryStats = {
   perSec: PerSecStat[];
   hitStats: HitStats;
   complexEventStats: HitStats;
 }
 
-interface QueryInfo {
+type QueryInfo = {
   result_handler_identifier: string;
   query_name: string;
   active: boolean;
 }
 
-interface QueryStatProps {
+type QueryStatProps = {
   query?: QueryInfo;
   qid: string;
   stats: QueryStats;
 }
 
-interface StatsProps {
+type StatsProps = {
   qid2Stats: QueryStatsMap;
   queries: QueriesMap;
 }

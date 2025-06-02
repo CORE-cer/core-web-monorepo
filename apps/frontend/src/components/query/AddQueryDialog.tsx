@@ -9,7 +9,7 @@ import {
   TextField,
 } from '@mui/material';
 
-interface AddQueryDialogProps {
+type AddQueryDialogProps = {
   loading: boolean;
   open: boolean;
   onClose: () => void;
@@ -46,7 +46,7 @@ const AddQueryDialog: React.FC<AddQueryDialogProps> = ({
           disabled={loading}
           inputProps={{ autoComplete: 'off' }}
           value={queryName}
-          onChange={(e) => setQueryName(e.target.value)}
+          onChange={(e) => { setQueryName(e.target.value); }}
           margin="dense"
           id="name"
           name="name"

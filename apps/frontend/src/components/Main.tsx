@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import type { SxProps, Theme } from '@mui/material/styles';
 import { DRAWER_WIDTH } from '../MUIThemes';
 
-interface MainProps {
+type MainProps = {
   permanentDrawer?: boolean;
   children: ReactNode;
   sx?: SxProps<Theme>;

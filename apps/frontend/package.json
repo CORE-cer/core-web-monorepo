@@ -11,10 +11,10 @@
     "grammar": "java -jar src/grammar/antlr-4.13.1-complete.jar -Dlanguage=JavaScript src/grammar/ceql/CEQLQueryParser.g4 src/grammar/ceql/CEQLQueryLexer.g4",
     "format": "pnpm run eslint && pnpm run prettier",
     "format-fix": "pnpm run eslint-fix && pnpm run prettier-fix",
-    "eslint": "eslint \"src/**/*.ts\"",
-    "eslint-fix": "eslint \"src/**/*.ts\" --fix",
-    "prettier": "prettier \"src/**/*.ts\" --check",
-    "prettier-fix": "prettier \"src/**/*.ts\" --write"
+    "eslint": "eslint \"src/**/*.{ts,tsx}\"",
+    "eslint-fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
+    "prettier": "prettier \"src/**/*.{ts,tsx}\" --check",
+    "prettier-fix": "prettier \"src/**/*.{ts,tsx}\" --write"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

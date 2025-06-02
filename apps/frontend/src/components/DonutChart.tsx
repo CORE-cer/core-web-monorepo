@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react';
 import { useTheme } from '@emotion/react';
 import type { Theme } from '@mui/material/styles';
 
-interface DonutChartProps {
+type DonutChartProps = {
   series: number[];
   labels: string[];
   colors: string[];
 }
 
-interface ChartConfig {
+type ChartConfig = {
   series: number[];
   options: any; // ApexCharts types are complex, using any for now
 }

@@ -4,18 +4,18 @@ import { KyselyConfig } from 'middleware-api-db/kysely.js';
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unnecessary-type-arguments */
 type InjectType = (string | symbol | Type<any> | Abstract<any> | (() => void))[];
 
-export interface KyselyModuleOptionsFactory {
+export type KyselyModuleOptionsFactory = {
   createKyselyModuleOptions(): Promise<KyselyConfig> | KyselyConfig;
-}
+};
 
-export interface KyselyModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
+export type KyselyModuleAsyncOptions = {
   namespace?: string;
   inject?: InjectType;
   useClass?: Type<KyselyConfig>;
   useExisting?: Type<KyselyModuleOptionsFactory>;
   useFactory?: (...args: any[]) => Promise<KyselyConfig> | KyselyConfig;
-}
+} & Pick<ModuleMetadata, 'imports'>;
 
-export interface KyselyConfigWithNamespace extends KyselyConfig {
+export type KyselyConfigWithNamespace = {
   namespace: string;
-}
+} & KyselyConfig;

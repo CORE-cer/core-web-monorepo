@@ -5,14 +5,14 @@ import React from 'react';
 import { MAX_COLORS } from '../../colors';
 import type { QueriesMap, QueryInfo } from '../../types';
 
-interface QuerySelectionItemProps {
+type QuerySelectionItemProps = {
   query: QueryInfo;
   checked: boolean;
   handleChange: () => void;
   handleInactivateQuery: (qid: string) => void;
 }
 
-interface QuerySelectionProps {
+type QuerySelectionProps = {
   queries: QueriesMap;
   selectedQueryIds: Set<string>;
   setSelectedQueryIds: React.Dispatch<React.SetStateAction<Set<string>>>;
