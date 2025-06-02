@@ -10,6 +10,7 @@ export class KyselyModule {
     return {
       module: KyselyModule,
       imports: [KyselyCoreModule.forRoot(config)],
+      exports: [KyselyCoreModule],
     };
   }
 
@@ -17,6 +18,7 @@ export class KyselyModule {
     return {
       module: KyselyModule,
       imports: [KyselyCoreModule.forRootAsync(options)],
+      exports: [KyselyCoreModule],
     };
   }
 }

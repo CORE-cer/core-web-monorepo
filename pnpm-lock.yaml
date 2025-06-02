@@ -187,6 +187,9 @@ importers:
       class-transformer:
         specifier: ^0.5.1
         version: 0.5.1
+      kysely:
+        specifier: ^0.28.2
+        version: 0.28.2
       middleware-api-db:
         specifier: workspace:*
         version: link:../../packages/middleware-api-db
@@ -196,6 +199,9 @@ importers:
       nestjs-cls:
         specifier: ^5.4.3
         version: 5.4.3(@nestjs/common@11.1.1(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      pg:
+        specifier: ^8.16.0
+        version: 8.16.0
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
