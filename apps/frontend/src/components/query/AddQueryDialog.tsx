@@ -12,7 +12,13 @@ type AddQueryDialogProps = {
 
 const AddQueryDialog: React.FC<AddQueryDialogProps> = ({ loading, open, onClose, onSubmit, queryName, setQueryName }) => {
   return (
-    <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose} slotProps={{ paper: { component: 'form', onSubmit: () => void onSubmit } }}>
+    <Dialog
+      fullWidth
+      maxWidth="sm"
+      open={open}
+      onClose={onClose}
+      slotProps={{ paper: { component: 'form', onSubmit: (e: React.FormEvent<HTMLFormElement>) => void onSubmit(e) } }}
+    >
       <DialogTitle>{'Add query'}</DialogTitle>
       <DialogContent>
         <DialogContentText>{'Enter a name to identify the query'}</DialogContentText>

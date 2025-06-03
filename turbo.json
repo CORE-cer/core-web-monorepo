@@ -16,7 +16,8 @@
         "MIDDLEWARE_API_SCHEMA",
         "CORECPP_URL",
         "VITE_COREPP_URL",
-        "MIDDLEWARE_API_PORT"
+        "MIDDLEWARE_API_PORT",
+        "VITE_MIDDLEWARE_API_URL"
       ]
     },
     "start": {
@@ -44,7 +45,8 @@
         "MIDDLEWARE_API_SCHEMA",
         "CORECPP_URL",
         "VITE_COREPP_URL",
-        "MIDDLEWARE_API_PORT"
+        "MIDDLEWARE_API_PORT",
+        "VITE_MIDDLEWARE_API_URL"
       ]
     },
     "format": {

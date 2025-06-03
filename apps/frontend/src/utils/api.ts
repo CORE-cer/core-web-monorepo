@@ -1,6 +1,14 @@
 import type { QueriesMap, QueryInfo, StreamInfo } from '../types';
 
-export function getBaseUrl(): string {
+export function getMiddlewareBaseUrl(): string {
+  const baseUrl: unknown = import.meta.env.VITE_MIDDLEWARE_API_URL;
+  if (baseUrl) {
+    return baseUrl as string;
+  }
+  throw new Error('VITE_MIDDLEWARE_API_URL is not defined in environment variables');
+}
+
+export function getCoreCPPBaseUrl(): string {
   const baseUrl: unknown = import.meta.env.VITE_CORECPP_URL;
   if (baseUrl) {
     return baseUrl as string;
@@ -9,7 +17,7 @@ export function getBaseUrl(): string {
 }
 
 export const getQueries = async (): Promise<QueriesMap> => {
-  const baseUrl = getBaseUrl();
+  const baseUrl = getCoreCPPBaseUrl();
   const fetchRes = await fetch(baseUrl + '/all-queries-info', {
     method: 'GET',
   });
@@ -24,7 +32,7 @@ export const getQueries = async (): Promise<QueriesMap> => {
 };
 
 export const getStreamsInfo = async (): Promise<StreamInfo[]> => {
-  const baseUrl = getBaseUrl();
+  const baseUrl = getCoreCPPBaseUrl();
   const fetchRes = await fetch(baseUrl + '/all-streams-info', {
     method: 'GET',
   });
@@ -33,7 +41,7 @@ export const getStreamsInfo = async (): Promise<StreamInfo[]> => {
 };
 
 export const inactivateQuery = async (qid: string): Promise<void> => {
-  const baseUrl = getBaseUrl();
+  const baseUrl = getCoreCPPBaseUrl();
   const fetchRes = await fetch(baseUrl + '/inactivate-query/' + qid, {
     method: 'DELETE',
   });
@@ -44,7 +52,7 @@ export const inactivateQuery = async (qid: string): Promise<void> => {
 };
 
 export const addQuery = async (query: string, queryName: string): Promise<void> => {
-  const baseUrl = getBaseUrl();
+  const baseUrl = getCoreCPPBaseUrl();
   const res = await fetch(baseUrl + '/add-query', {
     method: 'POST',
     headers: {
