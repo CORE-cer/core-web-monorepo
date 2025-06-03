@@ -3,10 +3,17 @@ import { GetStreamInfoDto } from 'middleware-api-schemas/streamInfo/streamInfoDt
 import { GetStreamInfoSchema } from 'middleware-api-schemas/streamInfo/streamInfoSchema.js';
 import { z } from 'zod';
 
+import { EnvVariableImporter } from '@src/helpers/envVariableImporter.js';
+
 @Injectable()
 export class StreamInfoGetter {
+  private readonly coreCPPUrl: string;
+  constructor(private readonly envVariableImporter: EnvVariableImporter) {
+    this.coreCPPUrl = this.envVariableImporter.getCoreCPPUrl();
+  }
+
   async getStreamsInfo(): Promise<GetStreamInfoDto[] | Error> {
-    const url = 'http://localhost:9001/all-streams-info';
+    const url = `${this.coreCPPUrl}/all-streams-info`;
 
     try {
       const response = await fetch(url, {

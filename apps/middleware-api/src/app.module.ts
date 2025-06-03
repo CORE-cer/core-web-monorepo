@@ -6,6 +6,7 @@ import { ClsModule } from 'nestjs-cls';
 
 import { QueryModule } from '@src/endpoints/query/query.module.js';
 import { StreamInfoModule } from '@src/endpoints/streamInfo/streamInfo.module.js';
+import { EnvVariableImporterModule } from '@src/helpers/envVariableImporter.module.js';
 import { KYSELY_MODULE_CONNECTION_TOKEN } from '@src/kyselyAdapter/constants/kysely.constants.js';
 import { KyselyModule } from '@src/kyselyAdapter/kysely.module.js';
 
@@ -13,6 +14,7 @@ console.log(process.env.DATABASE_URL_MIDDLEWARE_API);
 
 @Module({
   imports: [
+    EnvVariableImporterModule,
     KyselyModule.forRoot({
       dialect,
     }),

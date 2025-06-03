@@ -1,3 +1,4 @@
+import { getBaseUrl } from '@/utils/api';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { ComplexEvent, DataItem, EventInfo, FormattedHit, HitCount, QueryStatsMap, StreamInfo, WebSocketMap } from '../types';
@@ -65,11 +66,7 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
   useEffect(() => {
     setQid2Websockets((prev) => {
       const next = structuredClone(prev);
-      const baseUrl = import.meta.env.VITE_CORE_BACKEND_URL as string | undefined;
-      if (!baseUrl) {
-        console.error('Base URL is not defined');
-        return next;
-      }
+      const baseUrl = getBaseUrl();
 
       // Close connections only for removed qids
       for (const qid of Object.keys(next)) {

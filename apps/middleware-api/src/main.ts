@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { patchNestJsSwagger } from 'nestjs-zod';
+import { exit } from 'process';
 
 import { AppModule } from './app.module.js';
 
@@ -13,6 +14,13 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
 
-  await app.listen(process.env.PORT ?? 3001);
+  const port = process.env.MIDDLEWARE_API_PORT;
+
+  if (!port) {
+    console.error('MIDDLEWARE_API_PORT environment variable is not set.');
+    exit(1);
+  }
+
+  await app.listen(port);
 }
 await bootstrap();

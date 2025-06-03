@@ -1,11 +1,11 @@
 import type { QueriesMap, QueryInfo, StreamInfo } from '../types';
 
-function getBaseUrl(): string {
-  const baseUrl: unknown = import.meta.env.VITE_CORE_BACKEND_URL;
+export function getBaseUrl(): string {
+  const baseUrl: unknown = import.meta.env.VITE_CORECPP_URL;
   if (baseUrl) {
     return baseUrl as string;
   }
-  throw new Error('VITE_CORE_BACKEND_URL is not defined in environment variables');
+  throw new Error('VITE_CORECPP_URL is not defined in environment variables');
 }
 
 export const getQueries = async (): Promise<QueriesMap> => {

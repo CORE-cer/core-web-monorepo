@@ -14,9 +14,9 @@
         "POSTGRES_HOST",
         "DATABASE_URL",
         "MIDDLEWARE_API_SCHEMA",
-        "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
-        "CLERK_SECRET_KEY",
-        "VITE_CORE_BACKEND_URL"
+        "CORECPP_URL",
+        "VITE_COREPP_URL",
+        "MIDDLEWARE_API_PORT"
       ]
     },
     "start": {
@@ -42,10 +42,9 @@
         "POSTGRES_HOST",
         "DATABASE_URL",
         "MIDDLEWARE_API_SCHEMA",
-        "DATABASE_URL_MIDDLEWARE_API",
-        "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
-        "CLERK_SECRET_KEY",
-        "VITE_CORE_BACKEND_URL"
+        "CORECPP_URL",
+        "VITE_COREPP_URL",
+        "MIDDLEWARE_API_PORT"
       ]
     },
     "format": {

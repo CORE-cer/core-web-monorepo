@@ -3,10 +3,17 @@ import { GetQueryInfoDto } from 'middleware-api-schemas/query/queryDto.js';
 import { GetQueryInfoSchema } from 'middleware-api-schemas/query/querySchema.js';
 import { z } from 'zod';
 
+import { EnvVariableImporter } from '@src/helpers/envVariableImporter.js';
+
 @Injectable()
 export class QueryGetter {
+  private readonly coreCPPUrl: string;
+  constructor(private readonly envVariableImporter: EnvVariableImporter) {
+    this.coreCPPUrl = this.envVariableImporter.getCoreCPPUrl();
+  }
+
   async getQueries(): Promise<GetQueryInfoDto[] | Error> {
-    const url = 'http://localhost:9001/all-queries-info';
+    const url = `${this.coreCPPUrl}/all-queries-info`;
 
     try {
       const response = await fetch(url, {

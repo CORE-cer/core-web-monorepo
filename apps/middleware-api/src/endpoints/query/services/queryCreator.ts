@@ -2,11 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { GetQueryInfoSchema } from 'middleware-api-schemas/query/querySchema.js';
 import { z } from 'zod';
 
+import { EnvVariableImporter } from '@src/helpers/envVariableImporter.js';
+
 @Injectable()
 export class QueryCreator {
-  async addQuery({ query, queryName }: { query: string; queryName: string }): Promise<string | Error> {
-    const url = 'http://localhost:9001/add-query';
+  private readonly coreCPPUrl: string;
+  constructor(private readonly envVariableImporter: EnvVariableImporter) {
+    this.coreCPPUrl = this.envVariableImporter.getCoreCPPUrl();
+  }
 
+  async addQuery({ query, queryName }: { query: string; queryName: string }): Promise<string | Error> {
+    const url = `${this.coreCPPUrl}/add-query`;
     try {
       const response = await fetch(url, {
         method: 'POST',
