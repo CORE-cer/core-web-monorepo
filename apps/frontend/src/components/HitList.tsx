@@ -1,14 +1,10 @@
+import type { DataItem } from '@/types';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Box, Divider, Fab, Fade, Paper, Slider, Tooltip, Typography } from '@mui/material';
 import { useRef, useState } from 'react';
 import { Virtuoso, type VirtuosoHandle } from 'react-virtuoso';
 
 import { MAX_COLORS } from '../colors';
-
-type DataItem = {
-  qid: string;
-  data: unknown;
-};
 
 type ScrollToLatestProps = {
   trigger: boolean;
@@ -136,11 +132,12 @@ const HitList: React.FC<HitListProps> = ({ data, eventInterval, setEventInterval
   };
 
   return (
-    <Box sx={{ overflow: 'hidden', flex: 1, display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ overflow: 'hidden', flex: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
       <ScrollToLatest trigger={!atBottom} scrollToBottom={handleScrollToBottom} />
       <EventIntervalSelector value={eventInterval} setValue={setEventInterval} />
       <Divider />
       <Virtuoso
+        style={{ height: '100%', minHeight: '400px' }} // Add minHeight
         overscan={50}
         ref={virtuoso}
         alignToBottom

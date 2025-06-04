@@ -3,7 +3,7 @@ import { Box, Checkbox, Divider, IconButton, List, ListItem, ListItemButton, Lis
 import React from 'react';
 
 import { MAX_COLORS } from '../../colors';
-import type { QueriesMap, QueryId, QueryInfo } from '../../types';
+import type { QueryId, QueryIdToQueryInfoMap, QueryInfo } from '../../types';
 
 type QuerySelectionItemProps = {
   query: QueryInfo;
@@ -13,7 +13,7 @@ type QuerySelectionItemProps = {
 };
 
 type QuerySelectionProps = {
-  queries: QueriesMap;
+  queries: QueryIdToQueryInfoMap;
   selectedQueryIds: Set<QueryId>;
   setSelectedQueryIds: React.Dispatch<React.SetStateAction<Set<QueryId>>>;
   onInactivateQuery: (QueryId: string) => void;

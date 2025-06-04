@@ -56,6 +56,7 @@ function RouteComponent() {
             overflow: 'hidden',
             display: 'flex',
             flexDirection: 'column',
+            height: '100%',
           }}
         >
           <Box
@@ -75,7 +76,7 @@ function RouteComponent() {
             </ToggleButtonGroup>
           </Box>
           <Divider />
-          <Box sx={{ flex: 1, overflow: 'auto' }}>
+          <Box sx={{ flex: 1, overflow: 'auto', height: '100%' }}>
             {viewMode === 'list' ? (
               <HitList data={data} eventInterval={eventInterval} setEventInterval={setEventInterval} />
             ) : viewMode === 'stats' ? (

@@ -1,17 +1,23 @@
-import { Box } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import { Outlet, createRootRoute } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 
 import Navbar from '../components/Navbar';
 
 export const Route = createRootRoute({
-  component: () => (
+  component: RootComponent,
+});
+
+function RootComponent() {
+  const theme = useTheme();
+
+  return (
     <>
       <Navbar renderMain={false} />
-      <Box component="main" sx={{ height: 'calc(100vh - 64px)', overflow: 'hidden' }}>
+      <Box component="main" sx={{ height: `calc(100vh - ${theme.mixins.toolbar.minHeight?.toString() ?? '0'}px)`, overflow: 'hidden' }}>
         <Outlet />
       </Box>
       <TanStackRouterDevtools />
     </>
-  ),
-});
+  );
+}
