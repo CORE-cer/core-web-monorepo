@@ -1,13 +1,13 @@
-import { getBaseUrl } from '@/utils/api';
+import type { ComplexEvent, DataItem, EventInfo, FormattedHit, HitCount, QueryIdToQueryStatMap, QueryIdToQueryWebSocketMap, StreamInfo } from '@/types';
+import { getCoreCPPBaseUrl } from '@/utils/api';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { ComplexEvent, DataItem, EventInfo, FormattedHit, HitCount, QueryStatsMap, StreamInfo, WebSocketMap } from '../types';
-
 export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: StreamInfo[]) => {
-  const [qid2Websockets, setQid2Websockets] = useState<WebSocketMap>(new Map());
+  const [queryIdToQueryWebSocket, setQueryIdToQueryWebSocket] = useState<QueryIdToQueryWebSocketMap>(new Map());
+  const queryIdToQueryWebSocketRef = useRef<QueryIdToQueryWebSocketMap>(queryIdToQueryWebSocket);
   const [data, setData] = useState<DataItem[]>([]);
   const [eventInterval, setEventInterval] = useState<number>(0);
-  const [qid2Stats, setQid2Stats] = useState<QueryStatsMap>(new Map());
+  const [queryIdToQueryStat, setQueryIdToQueryStat] = useState<QueryIdToQueryStatMap>(new Map());
 
   const currentQid2HitRef = useRef<Map<string, HitCount>>(new Map());
   const dataBuffer = useRef<DataItem[]>([]);
@@ -64,37 +64,40 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
 
   // Handle opening/closing ws connections
   useEffect(() => {
-    setQid2Websockets((prev) => {
-      const next = structuredClone(prev);
-      const baseUrl = getBaseUrl();
+    setQueryIdToQueryWebSocket((prev) => {
+      const next: QueryIdToQueryWebSocketMap = new Map();
+      const baseUrl = getCoreCPPBaseUrl();
 
       // Close connections only for removed qids
-      for (const qid of Object.keys(next)) {
+      for (const [queryId, ws] of prev) {
         // Keep the existing connection
-        if (selectedQueryIds.has(qid)) continue;
+        if (selectedQueryIds.has(queryId)) {
+          next.set(queryId, ws);
+          continue;
+        }
 
-        const ws = next.get(qid);
-        if (!ws) continue;
+        console.info('Closing connection for queryId', queryId);
         ws.close();
-        next.delete(qid);
       }
 
       // Add the new connections
-      for (const qid of selectedQueryIds) {
+      for (const queryId of selectedQueryIds) {
         // Do not add the existing connection
-        if (next.has(qid)) continue;
+        if (next.has(queryId)) {
+          continue;
+        }
 
-        const ws = new WebSocket(baseUrl + '/' + qid);
-        next.set(qid, ws);
+        const ws = new WebSocket(baseUrl + '/' + queryId);
+        next.set(queryId, ws);
         ws.onopen = () => {
-          console.info('Connected to qid', qid);
-          currentQid2HitRef.current.set(qid, {
+          console.info('Connected to queryId', queryId);
+          currentQid2HitRef.current.set(queryId, {
             numHits: 0,
             numComplexEvents: 0,
           });
-          setQid2Stats((prev) => {
-            const next = structuredClone(prev);
-            next.set(qid, {
+          setQueryIdToQueryStat((prev) => {
+            const next = new Map(prev);
+            next.set(queryId, {
               perSec: [],
               hitStats: {
                 max: 0,
@@ -109,16 +112,16 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
           });
         };
         ws.onclose = () => {
-          console.info('Disconnected from qid', qid);
-          currentQid2HitRef.current.delete(qid);
-          setQid2Stats((prev) => {
-            const next = structuredClone(prev);
-            next.delete(qid);
+          console.info('Disconnected from queryId', queryId);
+          currentQid2HitRef.current.delete(queryId);
+          setQueryIdToQueryStat((prev) => {
+            const next = new Map(prev);
+            next.delete(queryId);
             return next;
           });
         };
         ws.onerror = () => {
-          console.error('Error on qid', qid);
+          console.error('Error on queryId', queryId);
         };
       }
 
@@ -130,7 +133,7 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
   useEffect(() => {
     if (eventInterval > 0) {
       // Buffered updates
-      for (const [qid, ws] of qid2Websockets.entries()) {
+      for (const [qid, ws] of queryIdToQueryWebSocket.entries()) {
         ws.onmessage = (event) => {
           const receivedData = event.data as string;
           const eventJson: ComplexEvent[] = JSON.parse(receivedData) as ComplexEvent[];
@@ -157,10 +160,10 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
       // Real-time updates. Flush buffer
       let currentBuffer = dataBuffer.current;
       dataBuffer.current = [];
-      currentBuffer = currentBuffer.filter((item) => item.qid in qid2Websockets);
+      currentBuffer = currentBuffer.filter((item) => item.qid in queryIdToQueryWebSocket);
       setData((prevData) => [...prevData, ...currentBuffer]);
 
-      for (const [qid, ws] of qid2Websockets.entries()) {
+      for (const [qid, ws] of queryIdToQueryWebSocket.entries()) {
         ws.onmessage = (event) => {
           setData((prevData) => {
             const receivedData: unknown = event.data;
@@ -188,17 +191,24 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
         };
       }
     }
-  }, [eventInterval, qid2Websockets, formatComplexEvents, setData]);
+  }, [eventInterval, queryIdToQueryWebSocket, formatComplexEvents, setData]);
+
+  // Cleanup WebSockets on unmount
+  useEffect(() => {
+    return () => {
+      queryIdToQueryWebSocketRef.current = queryIdToQueryWebSocket;
+    };
+  }, [queryIdToQueryWebSocket]);
 
   // Cleanup WebSockets on unmount
   useEffect(() => {
     return () => {
       console.info('Disconnecting from all websockets...');
-      for (const ws of qid2Websockets.values()) {
+      for (const ws of queryIdToQueryWebSocketRef.current.values()) {
         ws.close();
       }
     };
-  }, [qid2Websockets]);
+  }, []);
 
   // Stats update interval
   useEffect(() => {
@@ -207,7 +217,7 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
         return;
       }
 
-      const currentCounts = structuredClone(currentQid2HitRef);
+      const currentCounts = new Map(currentQid2HitRef.current);
 
       for (const qid in currentQid2HitRef.current) {
         currentQid2HitRef.current.set(qid, {
@@ -216,12 +226,12 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
         });
       }
 
-      setQid2Stats((prev) => {
-        const next = structuredClone(prev);
+      setQueryIdToQueryStat((prev) => {
+        const next = new Map(prev);
         const time = new Date();
         for (const qid in next) {
           const curr = next.get(qid);
-          const counts = currentCounts.current.get(qid);
+          const counts = currentCounts.get(qid);
           if (!curr || !counts) continue;
 
           curr.perSec.push({
@@ -244,7 +254,7 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
       console.log('Clearing stats update interval');
       clearInterval(interval);
     };
-  }, [setQid2Stats]);
+  }, [setQueryIdToQueryStat]);
 
   // Buffered interval
   useEffect(() => {
@@ -270,10 +280,10 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
   }, [eventInterval, selectedQueryIds, setData]);
 
   return {
-    qid2Websockets,
+    qid2Websockets: queryIdToQueryWebSocket,
     currentQid2HitRef,
     data,
-    qid2Stats,
+    queryIdToQueryStat,
     eventInterval,
     setEventInterval,
   };

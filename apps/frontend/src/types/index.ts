@@ -4,15 +4,18 @@ export type EditorRef = {
 };
 
 // Query Related Types
+
+export type QueryId = string;
+
 export type QueryInfo = {
-  result_handler_identifier: string;
+  result_handler_identifier: QueryId;
   query_name: string;
   active: boolean;
 };
 
-export type QueriesMap = Map<string, QueryInfo>;
-export type QueryStatsMap = Map<string, QueryStats>;
-export type WebSocketMap = Map<string, WebSocket>;
+export type QueryIdToQueryInfoMap = Map<QueryId, QueryInfo>;
+export type QueryIdToQueryStatMap = Map<QueryId, QueryStats>;
+export type QueryIdToQueryWebSocketMap = Map<QueryId, WebSocket>;
 
 export type ExampleData = {
   title: string;

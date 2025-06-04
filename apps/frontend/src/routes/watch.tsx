@@ -1,3 +1,4 @@
+import { useWatchPage } from '@/hooks/useWatchPage';
 import { Box, Divider, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
 import { Helmet } from 'react-helmet';
@@ -6,9 +7,12 @@ import Charts from '../components/Charts';
 import HitList from '../components/HitList';
 import Stats from '../components/Stats';
 import QuerySelection from '../components/watch/QuerySelection';
-import { useWatchPage } from '../hooks/useWatchPage';
 
 const SIDE_PANEL_WIDTH = 200;
+
+export const Route = createFileRoute('/watch')({
+  component: RouteComponent,
+});
 
 function RouteComponent() {
   const {
@@ -16,7 +20,7 @@ function RouteComponent() {
     selectedQueryIds,
     setSelectedQueryIds,
     data,
-    qid2Stats,
+    queryIdToQueryStat,
     viewMode,
     eventInterval,
     setEventInterval,
@@ -75,9 +79,9 @@ function RouteComponent() {
             {viewMode === 'list' ? (
               <HitList data={data} eventInterval={eventInterval} setEventInterval={setEventInterval} />
             ) : viewMode === 'stats' ? (
-              <Stats qid2Stats={qid2Stats} queries={queries} />
+              <Stats qid2Stats={queryIdToQueryStat} queries={queries} />
             ) : (
-              <Charts qid2Stats={qid2Stats} queries={queries} />
+              <Charts qid2Stats={queryIdToQueryStat} queries={queries} />
             )}
           </Box>
         </Box>
@@ -85,7 +89,3 @@ function RouteComponent() {
     </>
   );
 }
-
-export const Route = createFileRoute('/watch')({
-  component: RouteComponent,
-});

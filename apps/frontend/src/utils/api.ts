@@ -1,4 +1,4 @@
-import type { QueriesMap, QueryInfo, StreamInfo } from '../types';
+import type { QueryIdToQueryInfoMap, QueryInfo, StreamInfo } from '../types';
 
 export function getMiddlewareBaseUrl(): string {
   const baseUrl: unknown = import.meta.env.VITE_MIDDLEWARE_API_URL;
@@ -16,17 +16,17 @@ export function getCoreCPPBaseUrl(): string {
   throw new Error('VITE_CORECPP_URL is not defined in environment variables');
 }
 
-export const getQueries = async (): Promise<QueriesMap> => {
+export const getQueryInfos = async (): Promise<QueryIdToQueryInfoMap> => {
   const baseUrl = getCoreCPPBaseUrl();
   const fetchRes = await fetch(baseUrl + '/all-queries-info', {
     method: 'GET',
   });
   const queries: QueryInfo[] = (await fetchRes.json()) as QueryInfo[];
 
-  const activeQueries = queries.filter((query) => query.active);
-  const res: QueriesMap = new Map();
-  for (const query of activeQueries) {
-    res.set(query.result_handler_identifier, query);
+  const activeQueryInfos = queries.filter((query) => query.active);
+  const res: QueryIdToQueryInfoMap = new Map();
+  for (const queryInfo of activeQueryInfos) {
+    res.set(queryInfo.result_handler_identifier, queryInfo);
   }
   return res;
 };

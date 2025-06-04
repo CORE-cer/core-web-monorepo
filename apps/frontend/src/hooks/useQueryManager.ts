@@ -1,8 +1,7 @@
+import type { QueryIdToQueryInfoMap, StreamInfo } from '@/types';
+import { getQueryInfos, getStreamsInfo, inactivateQuery } from '@/utils/api';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-
-import type { QueriesMap, StreamInfo } from '../types';
-import { getQueries, getStreamsInfo, inactivateQuery } from '../utils/api';
 
 function getErrorMessageFromUnknown(err: unknown): string {
   if (err instanceof Error) {
@@ -10,24 +9,46 @@ function getErrorMessageFromUnknown(err: unknown): string {
   }
   return 'Unknown error';
 }
+
+function areMapsEqual(map1: Map<string, unknown>, map2: Map<string, unknown>): boolean {
+  const map1Json = JSON.stringify(Array.from(map1.entries()));
+  const map2Json = JSON.stringify(Array.from(map2.entries()));
+  return map1Json === map2Json;
+}
+
 export const useQueryManager = () => {
-  const [queries, setQueries] = useState<QueriesMap>(new Map());
+  const [queriesInfo, setQueriesInfo] = useState<QueryIdToQueryInfoMap>(new Map());
   const [streamsInfo, setStreamsInfo] = useState<StreamInfo[]>([]);
 
   // Fetch queries and streams info
   useEffect(() => {
     const fetchQueries = async () => {
       try {
-        setQueries(await getQueries());
+        const newQueryInfos = await getQueryInfos();
+        setQueriesInfo((currentQueriesInfo) => {
+          if (!areMapsEqual(currentQueriesInfo, newQueryInfos)) {
+            console.log(queriesInfo);
+            console.info('Updating queries info', newQueryInfos);
+            return newQueryInfos;
+          }
+          return currentQueriesInfo;
+        });
       } catch (err) {
         const errorMessage = getErrorMessageFromUnknown(err);
-        enqueueSnackbar(`Error fetching queries: ${errorMessage}`, { variant: 'error' });
+        enqueueSnackbar(`Error fetching queries info: ${errorMessage}`, { variant: 'error' });
       }
     };
 
     const fetchStreamsInfo = async () => {
       try {
-        setStreamsInfo(await getStreamsInfo());
+        const newStreamsInfo = await getStreamsInfo();
+        setStreamsInfo((currentStreamsInfo) => {
+          if (JSON.stringify(currentStreamsInfo) !== JSON.stringify(newStreamsInfo)) {
+            console.info('Updating streams info', newStreamsInfo);
+            return newStreamsInfo;
+          }
+          return currentStreamsInfo;
+        });
       } catch (err) {
         const errorMessage = getErrorMessageFromUnknown(err);
         enqueueSnackbar(`Error fetching streams info: ${errorMessage}`, {
@@ -66,7 +87,7 @@ export const useQueryManager = () => {
   };
 
   return {
-    queries,
+    queries: queriesInfo,
     streamsInfo,
     handleInactivateQuery,
   };

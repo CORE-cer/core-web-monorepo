@@ -1,4 +1,4 @@
-import type { QueriesMap, QueryStatsMap } from '@/types';
+import type { QueryIdToQueryInfoMap, QueryIdToQueryStatMap } from '@/types';
 import { Grid2 as Grid, Paper, Typography } from '@mui/material';
 import { useMemo } from 'react';
 
@@ -7,8 +7,8 @@ import DonutChart from './DonutChart';
 import LineChart from './LineChart';
 
 type ChartsProps = {
-  qid2Stats: QueryStatsMap;
-  queries: QueriesMap;
+  qid2Stats: QueryIdToQueryStatMap;
+  queries: QueryIdToQueryInfoMap;
 };
 
 const Charts: React.FC<ChartsProps> = ({ qid2Stats, queries }) => {

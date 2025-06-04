@@ -1,4 +1,4 @@
-import type { QueriesMap, QueryStatsMap } from '@/types';
+import type { QueryIdToQueryInfoMap, QueryIdToQueryStatMap } from '@/types';
 import { Box, Divider, Grid2 as Grid, Paper, Typography } from '@mui/material';
 
 import { MAX_COLORS } from '../colors';
@@ -33,8 +33,8 @@ type QueryStatProps = {
 };
 
 type StatsProps = {
-  qid2Stats: QueryStatsMap;
-  queries: QueriesMap;
+  qid2Stats: QueryIdToQueryStatMap;
+  queries: QueryIdToQueryInfoMap;
 };
 
 function QueryStat({ query, qid, stats }: QueryStatProps) {

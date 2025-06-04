@@ -3,23 +3,23 @@ import { Box, Checkbox, Divider, IconButton, List, ListItem, ListItemButton, Lis
 import React from 'react';
 
 import { MAX_COLORS } from '../../colors';
-import type { QueriesMap, QueryInfo } from '../../types';
+import type { QueriesMap, QueryId, QueryInfo } from '../../types';
 
 type QuerySelectionItemProps = {
   query: QueryInfo;
   checked: boolean;
   handleChange: () => void;
-  handleInactivateQuery: (qid: string) => void;
+  handleInactivateQuery: (QueryId: string) => void;
 };
 
 type QuerySelectionProps = {
   queries: QueriesMap;
-  selectedQueryIds: Set<string>;
-  setSelectedQueryIds: React.Dispatch<React.SetStateAction<Set<string>>>;
-  onInactivateQuery: (qid: string) => void;
+  selectedQueryIds: Set<QueryId>;
+  setSelectedQueryIds: React.Dispatch<React.SetStateAction<Set<QueryId>>>;
+  onInactivateQuery: (QueryId: string) => void;
 };
 
-const QuerySelectionItem: React.FC<QuerySelectionItemProps> = ({ query, checked, handleChange, handleInactivateQuery }) => {
+export function QuerySelectionItem({ query, checked, handleChange, handleInactivateQuery }: QuerySelectionItemProps) {
   return (
     <ListItem
       disablePadding
@@ -51,16 +51,16 @@ const QuerySelectionItem: React.FC<QuerySelectionItemProps> = ({ query, checked,
       </ListItemButton>
     </ListItem>
   );
-};
+}
 
-const QuerySelection: React.FC<QuerySelectionProps> = ({ queries, selectedQueryIds, setSelectedQueryIds, onInactivateQuery }) => {
-  const handleSelectSingleQuery = (qid: string) => {
+export function QuerySelection({ queries, selectedQueryIds, setSelectedQueryIds, onInactivateQuery }: QuerySelectionProps) {
+  const handleSelectSingleQuery = (queryId: QueryId) => {
     setSelectedQueryIds((prev) => {
       const next = new Set(prev);
-      if (next.has(qid)) {
-        next.delete(qid);
+      if (next.has(queryId)) {
+        next.delete(queryId);
       } else {
-        next.add(qid);
+        next.add(queryId);
       }
       return next;
     });
@@ -115,6 +115,6 @@ const QuerySelection: React.FC<QuerySelectionProps> = ({ queries, selectedQueryI
       </List>
     </Box>
   );
-};
+}
 
 export default QuerySelection;
