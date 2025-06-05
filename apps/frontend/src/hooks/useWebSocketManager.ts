@@ -1,15 +1,25 @@
-import type { ComplexEvent, DataItem, FormattedHit, FormattedHitData, HitCount, QueryIdToQueryStatMap, QueryIdToQueryWebSocketMap, StreamInfo } from '@/types';
+import type {
+  ComplexEvent,
+  DataItem,
+  FormattedHit,
+  FormattedHitData,
+  HitCount,
+  QueryId,
+  QueryIdToQueryStatMap,
+  QueryIdToQueryWebSocketMap,
+  StreamInfo,
+} from '@/types';
 import { getCoreCPPBaseUrl } from '@/utils/api';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: StreamInfo[]) => {
+export const useWebSocketManager = (selectedQueryIds: Set<QueryId>, streamsInfo: StreamInfo[]) => {
   const [queryIdToQueryWebSocket, setQueryIdToQueryWebSocket] = useState<QueryIdToQueryWebSocketMap>(new Map());
   const queryIdToQueryWebSocketRef = useRef<QueryIdToQueryWebSocketMap>(queryIdToQueryWebSocket);
   const [data, setData] = useState<DataItem[]>([]);
   const [eventInterval, setEventInterval] = useState<number>(0);
   const [queryIdToQueryStat, setQueryIdToQueryStat] = useState<QueryIdToQueryStatMap>(new Map());
 
-  const currentQid2HitRef = useRef<Map<string, HitCount>>(new Map());
+  const currentQid2HitRef = useRef<Map<QueryId, HitCount>>(new Map());
   const dataBuffer = useRef<DataItem[]>([]);
 
   const formatComplexEvents = useCallback(
@@ -88,7 +98,7 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
           continue;
         }
 
-        const ws = new WebSocket(baseUrl + '/' + queryId);
+        const ws = new WebSocket(baseUrl + '/' + queryId.toString());
         next.set(queryId, ws);
         ws.onopen = () => {
           console.info('Connected to queryId', queryId);
@@ -147,7 +157,7 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
 
           const currentQid2Hit = currentQid2HitRef.current.get(qid);
           if (!currentQid2Hit) {
-            console.error(`No hit count found for qid ${qid}`);
+            console.error(`No hit count found for qid ${qid.toString()}`);
             return;
           }
 
@@ -180,7 +190,7 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
             }
             const currentQid2Hit = currentQid2HitRef.current.get(qid);
             if (!currentQid2Hit) {
-              console.error(`No hit count found for qid ${qid}`);
+              console.error(`No hit count found for qid ${qid.toString()}`);
               return prevData;
             }
 

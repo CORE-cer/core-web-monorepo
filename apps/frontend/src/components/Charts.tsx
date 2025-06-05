@@ -15,7 +15,7 @@ const Charts: React.FC<ChartsProps> = ({ qid2Stats, queries }) => {
   const common = useMemo(() => {
     const res = { colors: [] as string[], labels: [] as string[] };
 
-    for (const qid in qid2Stats) {
+    for (const qid of qid2Stats.keys()) {
       const queryInfo = queries.get(qid);
       if (!queryInfo) {
         continue;

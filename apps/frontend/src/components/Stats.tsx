@@ -1,4 +1,4 @@
-import type { QueryIdToQueryInfoMap, QueryIdToQueryStatMap } from '@/types';
+import type { QueryId, QueryIdToQueryInfoMap, QueryIdToQueryStatMap, QueryInfo } from '@/types';
 import { Box, Divider, Grid2 as Grid, Paper, Typography } from '@mui/material';
 
 import { MAX_COLORS } from '../colors';
@@ -20,15 +20,9 @@ type QueryStats = {
   complexEventStats: HitStats;
 };
 
-type QueryInfo = {
-  result_handler_identifier: string;
-  query_name: string;
-  active: boolean;
-};
-
 type QueryStatProps = {
   query?: QueryInfo;
-  qid: string;
+  qid: QueryId;
   stats: QueryStats;
 };
 
@@ -39,6 +33,14 @@ type StatsProps = {
 
 function QueryStat({ query, qid, stats }: QueryStatProps) {
   const { perSec, hitStats, complexEventStats } = stats;
+
+  if (!query) {
+    return (
+      <Paper sx={{ py: 2, px: 1, textAlign: 'center' }} elevation={2}>
+        <Typography variant="h6">Query {qid} not found</Typography>
+      </Paper>
+    );
+  }
 
   return (
     <Paper sx={{ py: 2, px: 1, textAlign: 'center' }} elevation={2}>
@@ -54,7 +56,7 @@ function QueryStat({ query, qid, stats }: QueryStatProps) {
         }}
       ></Box>
       <Typography sx={{ pb: 1 }} variant="h6">
-        {query?.query_name}
+        {query.query_name}
       </Typography>
       <Divider />
       {/* HITS */}

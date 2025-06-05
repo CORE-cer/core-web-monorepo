@@ -1,22 +1,22 @@
+import type { QueryId, QueryIdToQueryInfoMap, QueryInfo } from '@/types';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Checkbox, Divider, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
 import React from 'react';
 
 import { MAX_COLORS } from '../../colors';
-import type { QueryId, QueryIdToQueryInfoMap, QueryInfo } from '../../types';
 
 type QuerySelectionItemProps = {
   query: QueryInfo;
   checked: boolean;
   handleChange: () => void;
-  handleInactivateQuery: (QueryId: string) => void;
+  handleInactivateQuery: (queryId: QueryId) => void;
 };
 
 type QuerySelectionProps = {
   queries: QueryIdToQueryInfoMap;
   selectedQueryIds: Set<QueryId>;
   setSelectedQueryIds: React.Dispatch<React.SetStateAction<Set<QueryId>>>;
-  onInactivateQuery: (QueryId: string) => void;
+  onInactivateQuery: (queryId: QueryId) => void;
 };
 
 export function QuerySelectionItem({ query, checked, handleChange, handleInactivateQuery }: QuerySelectionItemProps) {
@@ -29,7 +29,7 @@ export function QuerySelectionItem({ query, checked, handleChange, handleInactiv
             size="small"
             edge="end"
             onClick={() => {
-              handleInactivateQuery(query.result_handler_identifier);
+              handleInactivateQuery(query.queryId);
             }}
           >
             <DeleteIcon fontSize="small" color="error" />
@@ -103,12 +103,12 @@ export function QuerySelection({ queries, selectedQueryIds, setSelectedQueryIds,
           <QuerySelectionItem
             key={identifier}
             query={query}
-            checked={selectedQueryIds.has(query.result_handler_identifier)}
+            checked={selectedQueryIds.has(query.queryId)}
             handleChange={() => {
-              handleSelectSingleQuery(query.result_handler_identifier);
+              handleSelectSingleQuery(query.queryId);
             }}
             handleInactivateQuery={() => {
-              onInactivateQuery(query.result_handler_identifier);
+              onInactivateQuery(query.queryId);
             }}
           />
         ))}

@@ -1,4 +1,5 @@
-import type { QueryIdToQueryInfoMap, QueryInfo, StreamInfo } from '../types';
+import type { QueryId, QueryIdToQueryInfoMap, QueryInfo, StreamInfo } from '@/types';
+import { GetQueryInfoSchema } from 'middleware-api-schemas/query/querySchema.js';
 
 export function getMiddlewareBaseUrl(): string {
   const baseUrl: unknown = import.meta.env.VITE_MIDDLEWARE_API_URL;
@@ -17,16 +18,29 @@ export function getCoreCPPBaseUrl(): string {
 }
 
 export const getQueryInfos = async (): Promise<QueryIdToQueryInfoMap> => {
-  const baseUrl = getCoreCPPBaseUrl();
-  const fetchRes = await fetch(baseUrl + '/all-queries-info', {
+  const baseUrl = getMiddlewareBaseUrl();
+  const fetchRes = await fetch(baseUrl + '/query', {
     method: 'GET',
   });
-  const queries: QueryInfo[] = (await fetchRes.json()) as QueryInfo[];
+  const queriesUntyped: unknown = await fetchRes.json();
+
+  const queriesParse = GetQueryInfoSchema.array().safeParse(queriesUntyped);
+
+  if (!queriesParse.success) {
+    throw new Error('Failed to parse query info: ' + queriesParse.error.message);
+  }
+
+  const queries = queriesParse.data;
 
   const activeQueryInfos = queries.filter((query) => query.active);
   const res: QueryIdToQueryInfoMap = new Map();
-  for (const queryInfo of activeQueryInfos) {
-    res.set(queryInfo.result_handler_identifier, queryInfo);
+  for (const getQueryInfo of activeQueryInfos) {
+    const queryId = getQueryInfo.result_handler_identifier as QueryId;
+    const queryInfo: QueryInfo = {
+      queryId,
+      ...getQueryInfo,
+    };
+    res.set(queryId, queryInfo);
   }
   return res;
 };
@@ -40,9 +54,9 @@ export const getStreamsInfo = async (): Promise<StreamInfo[]> => {
   return streamsInfo;
 };
 
-export const inactivateQuery = async (qid: string): Promise<void> => {
+export const inactivateQuery = async (qid: QueryId): Promise<void> => {
   const baseUrl = getCoreCPPBaseUrl();
-  const fetchRes = await fetch(baseUrl + '/inactivate-query/' + qid, {
+  const fetchRes = await fetch(baseUrl + '/inactivate-query/' + qid.toString(), {
     method: 'DELETE',
   });
   if (!fetchRes.ok) {

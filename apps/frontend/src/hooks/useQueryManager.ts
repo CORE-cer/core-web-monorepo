@@ -1,4 +1,4 @@
-import type { QueryIdToQueryInfoMap, StreamInfo } from '@/types';
+import type { QueryId, QueryIdToQueryInfoMap, StreamInfo } from '@/types';
 import { getQueryInfos, getStreamsInfo, inactivateQuery } from '@/utils/api';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
@@ -10,7 +10,7 @@ function getErrorMessageFromUnknown(err: unknown): string {
   return 'Unknown error';
 }
 
-function areMapsEqual(map1: Map<string, unknown>, map2: Map<string, unknown>): boolean {
+function areMapsEqual(map1: Map<number, unknown>, map2: Map<number, unknown>): boolean {
   const map1Json = JSON.stringify(Array.from(map1.entries()));
   const map2Json = JSON.stringify(Array.from(map2.entries()));
   return map1Json === map2Json;
@@ -77,7 +77,7 @@ export const useQueryManager = () => {
     };
   }, []);
 
-  const handleInactivateQuery = (qid: string) => {
+  const handleInactivateQuery = (qid: QueryId) => {
     inactivateQuery(qid)
       .then(() => enqueueSnackbar('Query inactivated successfully', { variant: 'success' }))
       .catch((err: unknown) => {

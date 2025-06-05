@@ -19,7 +19,7 @@ export function useWatchPage() {
     setSelectedQueryIds((prev) => {
       const next = new Set(prev);
       for (const qid of prev) {
-        if (!Object.keys(queries).find((qid_) => qid_ === qid)) {
+        if (!Array.from(queries.keys()).find((qid_) => qid_ === qid)) {
           next.delete(qid);
         }
       }

@@ -1,3 +1,10 @@
+import { GetQueryInfoSchema } from 'middleware-api-schemas/query/querySchema.js';
+import { z } from 'zod';
+
+declare const __brand: unique symbol;
+type Brand<B> = { [__brand]: B };
+export type Branded<T, B> = T & Brand<B>;
+
 // Editor Types
 export type EditorRef = {
   getEditor: () => import('monaco-editor-core').editor.IStandaloneCodeEditor | null;
@@ -5,13 +12,11 @@ export type EditorRef = {
 
 // Query Related Types
 
-export type QueryId = string;
+export type QueryId = Branded<number, 'QueryId'>;
 
-export type QueryInfo = {
-  result_handler_identifier: QueryId;
-  query_name: string;
-  active: boolean;
-};
+type GetQueryInfoSchemaType = z.infer<typeof GetQueryInfoSchema>;
+
+export type QueryInfo = GetQueryInfoSchemaType & { queryId: QueryId };
 
 export type QueryIdToQueryInfoMap = Map<QueryId, QueryInfo>;
 export type QueryIdToQueryStatMap = Map<QueryId, QueryStats>;
@@ -63,7 +68,7 @@ export type FormattedHit = {
 };
 
 export type DataItem = {
-  qid: string;
+  qid: QueryId;
   data: FormattedHit[];
 };
 

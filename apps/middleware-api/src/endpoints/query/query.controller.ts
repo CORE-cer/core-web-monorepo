@@ -3,7 +3,7 @@
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterKysely } from '@nestjs-cls/transactional-adapter-kysely';
 import { Body, Controller, Delete, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { DBType } from 'middleware-api-db/kysely.js';
 // import { DBType } from 'middleware-api-db/kysely.js';
 import { CreateQueryDto, GetQueriesInfoDto } from 'middleware-api-schemas/query/queryDto.js';
@@ -14,7 +14,6 @@ import { QueryDeleter } from './services/queryDeleter.js';
 import { QueryGetter } from './services/queryGetter.js';
 
 @ApiTags('QueryController')
-@ApiBearerAuth('jwt')
 @UsePipes(ZodValidationPipe)
 @UsePipes(new ValidationPipe({ transform: true }))
 @Controller('query')
@@ -23,7 +22,7 @@ export class QueryController {
     private readonly queryGetter: QueryGetter,
     private readonly queryCreator: QueryCreator,
     private readonly queryDeleter: QueryDeleter,
-    private readonly txHost: TransactionHost<TransactionalAdapterKysely<DBType>>
+    protected readonly txHost: TransactionHost<TransactionalAdapterKysely<DBType>>
   ) {}
   @Get()
   @ApiOkResponse({
@@ -31,7 +30,6 @@ export class QueryController {
     description: 'Get all queries',
   })
   async getQueries(): Promise<GetQueriesInfoDto> {
-    console.log(await this.txHost.tx.selectFrom('users').select('id').execute());
     const queries = await this.queryGetter.getQueries();
 
     if (queries instanceof Error) {
