@@ -56,14 +56,14 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(({ query, ...props }, re
       });
 
       setEditor(editorInstance);
-    }
 
-    return () => {
-      editor?.dispose();
-      monaco.editor.getModels().forEach((model) => {
-        model.dispose();
-      });
-    };
+      return () => {
+        editorInstance.dispose();
+        monaco.editor.getModels().forEach((model) => {
+          model.dispose();
+        });
+      };
+    }
   }, []);
 
   return <Box className="editor" ref={monacoEl} {...props}></Box>;
