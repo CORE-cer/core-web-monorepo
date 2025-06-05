@@ -220,8 +220,8 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
 
       const currentCounts = new Map(currentQid2HitRef.current);
 
-      for (const qid in currentQid2HitRef.current) {
-        currentQid2HitRef.current.set(qid, {
+      for (const queryId of currentCounts.keys()) {
+        currentQid2HitRef.current.set(queryId, {
           numHits: 0,
           numComplexEvents: 0,
         });
@@ -230,7 +230,7 @@ export const useWebSocketManager = (selectedQueryIds: Set<string>, streamsInfo: 
       setQueryIdToQueryStat((prev) => {
         const next = new Map(prev);
         const time = new Date();
-        for (const qid in next) {
+        for (const qid of next.keys()) {
           const curr = next.get(qid);
           const counts = currentCounts.get(qid);
           if (!curr || !counts) continue;
