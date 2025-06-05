@@ -32,13 +32,9 @@ const Charts: React.FC<ChartsProps> = ({ qid2Stats, queries }) => {
       totalHits: [] as number[],
       totalComplexEvents: [] as number[],
     };
-    for (const qid in qid2Stats) {
-      const stats = qid2Stats.get(qid);
-      if (!stats) {
-        continue;
-      }
-      res.totalHits.push(stats.hitStats.total);
-      res.totalComplexEvents.push(stats.complexEventStats.total);
+    for (const queryStats of qid2Stats.values()) {
+      res.totalHits.push(queryStats.hitStats.total);
+      res.totalComplexEvents.push(queryStats.complexEventStats.total);
     }
     return res;
   }, [qid2Stats]);
@@ -54,21 +50,19 @@ const Charts: React.FC<ChartsProps> = ({ qid2Stats, queries }) => {
         data: { x: Date; y: number }[];
       }[],
     };
-    for (const qid in qid2Stats) {
-      const queryInfo = queries.get(qid);
-      const stats = qid2Stats.get(qid);
-      if (!stats || !queryInfo) {
+    for (const [queryId, queryStats] of qid2Stats.entries()) {
+      const queryInfo = queries.get(queryId);
+      if (!queryInfo) {
         continue;
       }
       res.hitsPerSec.push({
         name: queryInfo.query_name,
-        data: stats.perSec.map((s) => ({ x: s.time, y: s.numHits })),
+        data: queryStats.perSec.map((s) => ({ x: s.time, y: s.numHits })),
       });
       res.complexEventsPerSec.push({
         name: queryInfo.query_name,
-        data: stats.perSec.map((s) => ({ x: s.time, y: s.numComplexEvents })),
+        data: queryStats.perSec.map((s) => ({ x: s.time, y: s.numComplexEvents })),
       });
-      console.log(stats);
     }
     return res;
   }, [qid2Stats, queries]);
