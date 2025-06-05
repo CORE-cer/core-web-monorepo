@@ -36,27 +36,30 @@ export type StreamInfo = {
 };
 
 // Complex Event Types
+export type MarkVariable = string;
+
+export type EventData = {
+  event_type_id: number;
+  attributes: (string | number)[];
+};
+
 export type ComplexEvent = {
   start: number;
   end: number;
-  eventss: {
-    event: {
-      event_type_id: string;
-      attributes: unknown[];
-    };
+  events: Record<MarkVariable, EventData>[];
+};
+
+export type FormattedHitData = {
+  start: number;
+  end: number;
+  events: {
+    dataString: string;
   }[];
 };
 
 export type FormattedHit = {
   time: Date;
-  data: {
-    start: number;
-    end: number;
-    events: {
-      event_type: string;
-      [key: string]: unknown;
-    }[];
-  };
+  data: FormattedHitData;
 };
 
 export type DataItem = {

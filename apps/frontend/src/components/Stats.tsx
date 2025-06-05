@@ -33,8 +33,8 @@ type QueryStatProps = {
 };
 
 type StatsProps = {
-  qid2Stats: QueryIdToQueryStatMap;
-  queries: QueryIdToQueryInfoMap;
+  queryIdToQueryStatMap: QueryIdToQueryStatMap;
+  queryIdToQueryInfoMap: QueryIdToQueryInfoMap;
 };
 
 function QueryStat({ query, qid, stats }: QueryStatProps) {
@@ -100,12 +100,12 @@ function QueryStat({ query, qid, stats }: QueryStatProps) {
   );
 }
 
-export default function Stats({ qid2Stats, queries }: StatsProps) {
+export default function Stats({ queryIdToQueryStatMap, queryIdToQueryInfoMap }: StatsProps) {
   return (
     <Grid container sx={{ p: 1 }} spacing={2}>
-      {Array.from(qid2Stats, ([qid, stats]) => (
-        <Grid key={qid} size={{ xs: 12, sm: 6, md: 4, lg: 4, xl: 3 }}>
-          <QueryStat query={queries.get(qid)} qid={qid} stats={stats} />
+      {Array.from(queryIdToQueryStatMap, ([queryId, queryStats]) => (
+        <Grid key={queryId} size={{ xs: 12, sm: 6, md: 4, lg: 4, xl: 3 }}>
+          <QueryStat query={queryIdToQueryInfoMap.get(queryId)} qid={queryId} stats={queryStats} />{' '}
         </Grid>
       ))}
     </Grid>

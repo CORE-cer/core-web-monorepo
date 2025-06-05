@@ -80,7 +80,7 @@ function RouteComponent() {
             {viewMode === 'list' ? (
               <HitList data={data} eventInterval={eventInterval} setEventInterval={setEventInterval} />
             ) : viewMode === 'stats' ? (
-              <Stats qid2Stats={queryIdToQueryStat} queries={queries} />
+              <Stats queryIdToQueryStatMap={queryIdToQueryStat} queryIdToQueryInfoMap={queries} />
             ) : (
               <Charts qid2Stats={queryIdToQueryStat} queries={queries} />
             )}
