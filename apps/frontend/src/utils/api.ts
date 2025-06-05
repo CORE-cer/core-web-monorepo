@@ -70,8 +70,8 @@ export const getStreamsInfo = async (): Promise<StreamInfo[]> => {
 };
 
 export const inactivateQuery = async (queryId: QueryId): Promise<void> => {
-  const baseUrl = getCoreCPPBaseUrl();
-  const fetchRes = await fetch(baseUrl + '/inactivate-query/' + queryId.toString(), {
+  const baseUrl = getMiddlewareBaseUrl();
+  const fetchRes = await fetch(baseUrl + '/query/' + queryId.toString(), {
     method: 'DELETE',
   });
   if (!fetchRes.ok) {
