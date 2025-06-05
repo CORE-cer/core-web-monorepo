@@ -1,5 +1,5 @@
 import type { QueryId, QueryIdToQueryInfoMap, QueryInfo, StreamId, StreamInfo } from '@/types';
-import { GetQueryInfoSchema } from 'middleware-api-schemas/query/querySchema.js';
+import { CreateQuerySchema, GetQueryInfoSchema } from 'middleware-api-schemas/query/querySchema.js';
 import { GetStreamInfoSchema } from 'middleware-api-schemas/streamInfo/streamInfoSchema.js';
 
 export function getMiddlewareBaseUrl(): string {
@@ -69,29 +69,36 @@ export const getStreamsInfo = async (): Promise<StreamInfo[]> => {
   return streamsInfo;
 };
 
-export const inactivateQuery = async (qid: QueryId): Promise<void> => {
+export const inactivateQuery = async (queryId: QueryId): Promise<void> => {
   const baseUrl = getCoreCPPBaseUrl();
-  const fetchRes = await fetch(baseUrl + '/inactivate-query/' + qid.toString(), {
+  const fetchRes = await fetch(baseUrl + '/inactivate-query/' + queryId.toString(), {
     method: 'DELETE',
   });
   if (!fetchRes.ok) {
     throw new Error('Failed to inactivate query');
   }
-  console.info('Successfully inactivated query', qid);
+  console.info('Successfully inactivated query', queryId);
 };
 
 export const addQuery = async (query: string, queryName: string): Promise<void> => {
-  const baseUrl = getCoreCPPBaseUrl();
-  const res = await fetch(baseUrl + '/add-query', {
+  const createQueryParse = CreateQuerySchema.safeParse({
+    query,
+    query_name: queryName,
+  });
+
+  if (!createQueryParse.success) {
+    throw new Error('Failed to create new query due to error: ' + createQueryParse.error.message);
+  }
+
+  const baseUrl = getMiddlewareBaseUrl();
+  const res = await fetch(baseUrl + '/query', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      query,
-      query_name: queryName,
-    }),
+    body: JSON.stringify(createQueryParse.data),
   });
+
   if (!res.ok) {
     throw new Error(await res.text());
   }
