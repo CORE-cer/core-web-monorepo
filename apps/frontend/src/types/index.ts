@@ -1,4 +1,5 @@
 import { GetQueryInfoSchema } from 'middleware-api-schemas/query/querySchema.js';
+import { GetStreamInfoSchema } from 'middleware-api-schemas/streamInfo/streamInfoSchema.js';
 import { z } from 'zod';
 
 declare const __brand: unique symbol;
@@ -13,10 +14,13 @@ export type EditorRef = {
 // Query Related Types
 
 export type QueryId = Branded<number, 'QueryId'>;
+export type StreamId = Branded<number, 'StreamId'>;
 
 type GetQueryInfoSchemaType = z.infer<typeof GetQueryInfoSchema>;
+type GetStreamInfoSchemaType = z.infer<typeof GetStreamInfoSchema>;
 
 export type QueryInfo = GetQueryInfoSchemaType & { queryId: QueryId };
+export type StreamInfo = GetStreamInfoSchemaType & { streamId: StreamId };
 
 export type QueryIdToQueryInfoMap = Map<QueryId, QueryInfo>;
 export type QueryIdToQueryStatMap = Map<QueryId, QueryStats>;
@@ -34,10 +38,6 @@ export type EventInfo = {
   attributes_info: {
     name: string;
   }[];
-};
-
-export type StreamInfo = {
-  events_info: EventInfo[];
 };
 
 // Complex Event Types

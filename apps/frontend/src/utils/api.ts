@@ -1,5 +1,6 @@
-import type { QueryId, QueryIdToQueryInfoMap, QueryInfo, StreamInfo } from '@/types';
+import type { QueryId, QueryIdToQueryInfoMap, QueryInfo, StreamId, StreamInfo } from '@/types';
 import { GetQueryInfoSchema } from 'middleware-api-schemas/query/querySchema.js';
+import { GetStreamInfoSchema } from 'middleware-api-schemas/streamInfo/streamInfoSchema.js';
 
 export function getMiddlewareBaseUrl(): string {
   const baseUrl: unknown = import.meta.env.VITE_MIDDLEWARE_API_URL;
@@ -37,8 +38,8 @@ export const getQueryInfos = async (): Promise<QueryIdToQueryInfoMap> => {
   for (const getQueryInfo of activeQueryInfos) {
     const queryId = getQueryInfo.result_handler_identifier as QueryId;
     const queryInfo: QueryInfo = {
-      queryId,
       ...getQueryInfo,
+      queryId,
     };
     res.set(queryId, queryInfo);
   }
@@ -46,11 +47,25 @@ export const getQueryInfos = async (): Promise<QueryIdToQueryInfoMap> => {
 };
 
 export const getStreamsInfo = async (): Promise<StreamInfo[]> => {
-  const baseUrl = getCoreCPPBaseUrl();
-  const fetchRes = await fetch(baseUrl + '/all-streams-info', {
+  const baseUrl = getMiddlewareBaseUrl();
+  const fetchRes = await fetch(baseUrl + '/stream', {
     method: 'GET',
   });
-  const streamsInfo: StreamInfo[] = (await fetchRes.json()) as StreamInfo[];
+  const streamsInfoUntyped: unknown = await fetchRes.json();
+
+  const streamsInfoParse = GetStreamInfoSchema.array().safeParse(streamsInfoUntyped);
+
+  if (!streamsInfoParse.success) {
+    throw new Error('Failed to parse streams info: ' + streamsInfoParse.error.message);
+  }
+
+  const getStreamsInfo = streamsInfoParse.data;
+
+  const streamsInfo: StreamInfo[] = getStreamsInfo.map((streamInfo) => ({
+    ...streamInfo,
+    streamId: streamInfo.id as StreamId,
+  }));
+
   return streamsInfo;
 };
 
