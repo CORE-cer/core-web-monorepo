@@ -8,6 +8,7 @@
     "build": "dotenv -e .env -- turbo build",
     "start": "dotenv -e .env -- turbo start",
     "dev": "dotenv -e .env -- turbo dev",
+    "dev:middleware": "dotenv -e .env -- turbo dev --filter=middleware-api",
     "format": "dotenv -e .env -- turbo format",
     "format-fix": "dotenv -e .env -- turbo format-fix"
   },
