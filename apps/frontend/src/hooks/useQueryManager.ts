@@ -3,6 +3,8 @@ import { getQueryInfos, getStreamsInfo, inactivateQuery } from '@/utils/api';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 
+import { useUser } from './useUser';
+
 function getErrorMessageFromUnknown(err: unknown): string {
   if (err instanceof Error) {
     return err.message;
@@ -19,15 +21,15 @@ function areMapsEqual(map1: Map<number, unknown>, map2: Map<number, unknown>): b
 export const useQueryManager = () => {
   const [queriesInfo, setQueriesInfo] = useState<QueryIdToQueryInfoMap>(new Map());
   const [streamsInfo, setStreamsInfo] = useState<StreamInfo[]>([]);
+  const user = useUser();
 
   // Fetch queries and streams info
   useEffect(() => {
     const fetchQueries = async () => {
       try {
-        const newQueryInfos = await getQueryInfos();
+        const newQueryInfos = await getQueryInfos({ userId: user.userId });
         setQueriesInfo((currentQueriesInfo) => {
           if (!areMapsEqual(currentQueriesInfo, newQueryInfos)) {
-            console.log(queriesInfo);
             console.info('Updating queries info', newQueryInfos);
             return newQueryInfos;
           }
@@ -41,7 +43,7 @@ export const useQueryManager = () => {
 
     const fetchStreamsInfo = async () => {
       try {
-        const newStreamsInfo = await getStreamsInfo();
+        const newStreamsInfo = await getStreamsInfo({ userId: user.userId });
         setStreamsInfo((currentStreamsInfo) => {
           if (JSON.stringify(currentStreamsInfo) !== JSON.stringify(newStreamsInfo)) {
             console.info('Updating streams info', newStreamsInfo);
@@ -75,10 +77,10 @@ export const useQueryManager = () => {
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [user.userId]);
 
   const handleInactivateQuery = (qid: QueryId) => {
-    inactivateQuery(qid)
+    inactivateQuery({ queryId: qid, userId: user.userId })
       .then(() => enqueueSnackbar('Query inactivated successfully', { variant: 'success' }))
       .catch((err: unknown) => {
         const errorMessage = getErrorMessageFromUnknown(err);

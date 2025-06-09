@@ -1,3 +1,5 @@
+import { useDarkModeContext } from '@/hooks/useDarkModeContext';
+import { DRAWER_WIDTH } from '@/utils/constants.js';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import DataObjectIcon from '@mui/icons-material/DataObject';
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -25,8 +27,6 @@ import { Link as RouterLink, useLocation } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 
-import { DRAWER_WIDTH } from '../MUIThemes';
-import { useDarkModeContext } from '../context/DarkModeContext.tsx';
 import Main from './Main';
 
 const Logo = () => {

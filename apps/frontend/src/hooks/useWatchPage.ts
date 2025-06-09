@@ -12,7 +12,7 @@ export function useWatchPage() {
   const { queries, streamsInfo, handleInactivateQuery } = useQueryManager();
 
   // Use the WebSocket manager hook for data and stats
-  const { data, queryIdToQueryStat, eventInterval, setEventInterval } = useWebSocketManager(selectedQueryIds, streamsInfo);
+  const { data, queryIdToQueryStat, eventInterval, setEventInterval } = useWebSocketManager(selectedQueryIds);
 
   // Remove queries that are no longer active
   useEffect(() => {
@@ -25,7 +25,7 @@ export function useWatchPage() {
       }
       return next;
     });
-  }, [JSON.stringify(queries)]);
+  }, [queries]);
 
   const handleViewModeChange = (_: React.MouseEvent<HTMLElement>, newValue: ViewMode) => {
     setViewMode(newValue);

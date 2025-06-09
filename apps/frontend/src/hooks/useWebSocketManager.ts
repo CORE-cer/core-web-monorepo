@@ -1,18 +1,8 @@
-import type {
-  ComplexEvent,
-  DataItem,
-  FormattedHit,
-  FormattedHitData,
-  HitCount,
-  QueryId,
-  QueryIdToQueryStatMap,
-  QueryIdToQueryWebSocketMap,
-  StreamInfo,
-} from '@/types';
+import type { ComplexEvent, DataItem, FormattedHit, FormattedHitData, HitCount, QueryId, QueryIdToQueryStatMap, QueryIdToQueryWebSocketMap } from '@/types';
 import { getCoreCPPBaseUrl } from '@/utils/api';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-export const useWebSocketManager = (selectedQueryIds: Set<QueryId>, streamsInfo: StreamInfo[]) => {
+export const useWebSocketManager = (selectedQueryIds: Set<QueryId>) => {
   const [queryIdToQueryWebSocket, setQueryIdToQueryWebSocket] = useState<QueryIdToQueryWebSocketMap>(new Map());
   const queryIdToQueryWebSocketRef = useRef<QueryIdToQueryWebSocketMap>(queryIdToQueryWebSocket);
   const [data, setData] = useState<DataItem[]>([]);
@@ -22,56 +12,53 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>, streamsInfo:
   const currentQid2HitRef = useRef<Map<QueryId, HitCount>>(new Map());
   const dataBuffer = useRef<DataItem[]>([]);
 
-  const formatComplexEvents = useCallback(
-    (complexEventsJson: ComplexEvent[]): FormattedHit[] => {
-      // function getEventInfoFromEventId(eventId: string): EventInfo | undefined {
-      //   for (const streamInfo of streamsInfo) {
-      //     for (const eventInfo of streamInfo.events_info) {
-      //       if (eventInfo.id === eventId) {
-      //         return eventInfo;
-      //       }
-      //     }
-      //   }
-      //   return undefined;
-      // }
+  const formatComplexEvents = useCallback((complexEventsJson: ComplexEvent[]): FormattedHit[] => {
+    // function getEventInfoFromEventId(eventId: string): EventInfo | undefined {
+    //   for (const streamInfo of streamsInfo) {
+    //     for (const eventInfo of streamInfo.events_info) {
+    //       if (eventInfo.id === eventId) {
+    //         return eventInfo;
+    //       }
+    //     }
+    //   }
+    //   return undefined;
+    // }
 
-      const outputHits: FormattedHit[] = [];
-      for (const complexEvent of complexEventsJson) {
-        const outputComplexEvent: FormattedHitData = {
-          start: complexEvent.start,
-          end: complexEvent.end,
-          events: [],
-        };
+    const outputHits: FormattedHit[] = [];
+    for (const complexEvent of complexEventsJson) {
+      const outputComplexEvent: FormattedHitData = {
+        start: complexEvent.start,
+        end: complexEvent.end,
+        events: [],
+      };
 
-        for (const event of complexEvent.events) {
-          // const eventData = event.event;
-          // const eventInfo = getEventInfoFromEventId(eventData.event_type_id);
-          //
-          // if (eventInfo) {
-          //   const eventOutput: { event_type: string; [key: string]: unknown } = {
-          //     event_type: eventInfo.name,
-          //   };
-          //
-          //   for (let i = 0; i < eventInfo.attributes_info.length; i++) {
-          //     const attributeInfo = eventInfo.attributes_info[i];
-          //     const attributeValue = eventData.attributes[i];
-          //     eventOutput[attributeInfo.name] = attributeValue;
-          //   }
-          //   outputComplexEvent.events.push(eventOutput);
-          // }
-          outputComplexEvent.events.push({ dataString: JSON.stringify(event) });
-        }
-
-        const time = new Date(outputComplexEvent.end / 1000000);
-        outputHits.push({
-          time,
-          data: outputComplexEvent,
-        });
+      for (const event of complexEvent.events) {
+        // const eventData = event.event;
+        // const eventInfo = getEventInfoFromEventId(eventData.event_type_id);
+        //
+        // if (eventInfo) {
+        //   const eventOutput: { event_type: string; [key: string]: unknown } = {
+        //     event_type: eventInfo.name,
+        //   };
+        //
+        //   for (let i = 0; i < eventInfo.attributes_info.length; i++) {
+        //     const attributeInfo = eventInfo.attributes_info[i];
+        //     const attributeValue = eventData.attributes[i];
+        //     eventOutput[attributeInfo.name] = attributeValue;
+        //   }
+        //   outputComplexEvent.events.push(eventOutput);
+        // }
+        outputComplexEvent.events.push({ dataString: JSON.stringify(event) });
       }
-      return outputHits;
-    },
-    [streamsInfo]
-  );
+
+      const time = new Date(outputComplexEvent.end / 1000000);
+      outputHits.push({
+        time,
+        data: outputComplexEvent,
+      });
+    }
+    return outputHits;
+  }, []);
 
   // Handle opening/closing ws connections
   useEffect(() => {

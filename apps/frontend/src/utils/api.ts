@@ -2,7 +2,7 @@ import type { QueryId, QueryIdToQueryInfoMap, QueryInfo, StreamId, StreamInfo } 
 import { CreateQuerySchema, GetQueryInfoSchema } from 'middleware-api-schemas/query/querySchema.js';
 import { GetStreamInfoSchema } from 'middleware-api-schemas/streamInfo/streamInfoSchema.js';
 
-export function getMiddlewareBaseUrl(): string {
+function getMiddlewareBaseUrl(): string {
   const baseUrl: unknown = import.meta.env.VITE_MIDDLEWARE_API_URL;
   if (baseUrl) {
     return baseUrl as string;
@@ -18,10 +18,22 @@ export function getCoreCPPBaseUrl(): string {
   throw new Error('VITE_CORECPP_URL is not defined in environment variables');
 }
 
-export const getQueryInfos = async (): Promise<QueryIdToQueryInfoMap> => {
+type SharedHeadersType = Record<string, string>;
+
+function getSharedHeaders({ userId }: { userId: string }): SharedHeadersType {
+  return {
+    'user-id': userId,
+  };
+}
+
+export async function getQueryInfos({ userId }: { userId: string }): Promise<QueryIdToQueryInfoMap> {
   const baseUrl = getMiddlewareBaseUrl();
+  const sharedHeaders = getSharedHeaders({ userId });
   const fetchRes = await fetch(baseUrl + '/query', {
     method: 'GET',
+    headers: {
+      ...sharedHeaders,
+    },
   });
   const queriesUntyped: unknown = await fetchRes.json();
 
@@ -44,12 +56,16 @@ export const getQueryInfos = async (): Promise<QueryIdToQueryInfoMap> => {
     res.set(queryId, queryInfo);
   }
   return res;
-};
+}
 
-export const getStreamsInfo = async (): Promise<StreamInfo[]> => {
+export async function getStreamsInfo({ userId }: { userId: string }): Promise<StreamInfo[]> {
   const baseUrl = getMiddlewareBaseUrl();
+  const sharedHeaders = getSharedHeaders({ userId });
   const fetchRes = await fetch(baseUrl + '/stream', {
     method: 'GET',
+    headers: {
+      ...sharedHeaders,
+    },
   });
   const streamsInfoUntyped: unknown = await fetchRes.json();
 
@@ -67,20 +83,24 @@ export const getStreamsInfo = async (): Promise<StreamInfo[]> => {
   }));
 
   return streamsInfo;
-};
+}
 
-export const inactivateQuery = async (queryId: QueryId): Promise<void> => {
+export async function inactivateQuery({ queryId, userId }: { queryId: QueryId; userId: string }): Promise<void> {
   const baseUrl = getMiddlewareBaseUrl();
+  const sharedHeaders = getSharedHeaders({ userId });
   const fetchRes = await fetch(baseUrl + '/query/' + queryId.toString(), {
     method: 'DELETE',
+    headers: {
+      ...sharedHeaders,
+    },
   });
   if (!fetchRes.ok) {
     throw new Error('Failed to inactivate query');
   }
   console.info('Successfully inactivated query', queryId);
-};
+}
 
-export const addQuery = async (query: string, queryName: string): Promise<void> => {
+export const addQuery = async ({ query, queryName, userId }: { query: string; queryName: string; userId: string }): Promise<void> => {
   const createQueryParse = CreateQuerySchema.safeParse({
     query,
     query_name: queryName,
@@ -91,9 +111,11 @@ export const addQuery = async (query: string, queryName: string): Promise<void> 
   }
 
   const baseUrl = getMiddlewareBaseUrl();
+  const sharedHeaders = getSharedHeaders({ userId });
   const res = await fetch(baseUrl + '/query', {
     method: 'POST',
     headers: {
+      ...sharedHeaders,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(createQueryParse.data),

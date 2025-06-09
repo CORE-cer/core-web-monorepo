@@ -10,9 +10,9 @@ import { CookiesProvider } from 'react-cookie';
 import ReactDOM from 'react-dom/client';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
-import DarkModeProvider from './context/DarkModeContext.tsx';
 import './monaco/setup';
-import { UserProvider } from './providers/userProvider.tsx';
+import DarkModeProvider from './providers/DarkModeProvider.tsx';
+import { UserProvider } from './providers/UserProvider.tsx';
 import reportWebVitals from './reportWebVitals.ts';
 // Import the generated route tree
 import { routeTree } from './routeTree.gen';

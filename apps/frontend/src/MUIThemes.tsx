@@ -28,8 +28,6 @@ import { createTheme } from '@mui/material/styles';
 //   },
 // };
 
-export const DRAWER_WIDTH = 160;
-
 export const MUIThemeDark = createTheme({
   // ...common,
   palette: {

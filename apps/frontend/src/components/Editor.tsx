@@ -64,7 +64,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(({ query, ...props }, re
         });
       };
     }
-  }, []);
+  }, [theme.palette.mode]);
 
   return <Box className="editor" ref={monacoEl} {...props}></Box>;
 });

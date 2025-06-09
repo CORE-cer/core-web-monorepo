@@ -1,7 +1,6 @@
+import { DRAWER_WIDTH } from '@/utils/constants';
 import { Box } from '@mui/material';
 import type { ReactNode } from 'react';
-
-import { DRAWER_WIDTH } from '../MUIThemes';
 
 type MainProps = {
   permanentDrawer?: boolean;
