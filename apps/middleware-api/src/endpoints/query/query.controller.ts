@@ -1,10 +1,5 @@
-// import { TransactionHost } from '@nestjs-cls/transactional';
-// import { TransactionalAdapterKysely } from '@nestjs-cls/transactional-adapter-kysely';
-import { TransactionHost } from '@nestjs-cls/transactional';
-import { TransactionalAdapterKysely } from '@nestjs-cls/transactional-adapter-kysely';
 import { Body, Controller, Delete, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { DBType } from 'middleware-api-db/kysely.js';
 // import { DBType } from 'middleware-api-db/kysely.js';
 import { CreateQueryDto, GetQueriesInfoDto } from 'middleware-api-schemas/query/queryDto.js';
 import { ZodValidationPipe } from 'nestjs-zod';
@@ -23,8 +18,7 @@ export class QueryController {
   constructor(
     private readonly queryGetter: QueryGetter,
     private readonly queryCreator: QueryCreator,
-    private readonly queryDeleter: QueryDeleter,
-    protected readonly txHost: TransactionHost<TransactionalAdapterKysely<DBType>>
+    private readonly queryDeleter: QueryDeleter
   ) {}
   @Get()
   @ApiOkResponse({
@@ -46,12 +40,8 @@ export class QueryController {
     type: String,
     description: 'Add a query and return its identifier',
   })
-  async addQuery(@Body() queryDto: CreateQueryDto, @UserId() userId: string): Promise<string> {
+  async addQuery(@Body() queryDto: CreateQueryDto, @UserId() userId: string): Promise<number> {
     const queryIdentifier = await this.queryCreator.addQuery({ query: queryDto.query, queryName: queryDto.query_name, userId });
-
-    if (queryIdentifier instanceof Error) {
-      throw new Error(`Error calling addQuery: ${queryIdentifier.message}`);
-    }
 
     return queryIdentifier;
   }

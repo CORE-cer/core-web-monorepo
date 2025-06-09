@@ -17,6 +17,9 @@ table "queries" {
   column "id" {
     type = int
   }
+  column "query_text" {
+    type = text
+  }
   primary_key {
     columns = [
       column.id
