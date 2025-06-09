@@ -6,11 +6,13 @@ import { CssBaseline } from '@mui/material';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { SnackbarProvider } from 'notistack';
 import { StrictMode } from 'react';
+import { CookiesProvider } from 'react-cookie';
 import ReactDOM from 'react-dom/client';
-import { Helmet } from 'react-helmet';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 import DarkModeProvider from './context/DarkModeContext.tsx';
 import './monaco/setup';
+import { UserProvider } from './providers/userProvider.tsx';
 import reportWebVitals from './reportWebVitals.ts';
 // Import the generated route tree
 import { routeTree } from './routeTree.gen';
@@ -42,25 +44,31 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <Helmet
-        title="CORE"
-        htmlAttributes={{ lang: 'en' }}
-        meta={[
-          {
-            name: 'description',
-            content: 'CORE',
-          },
-          {
-            charSet: 'utf-8',
-          },
-        ]}
-      />
-      <DarkModeProvider>
-        <CssBaseline />
-        <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'center' }} maxSnack={3} autoHideDuration={3000}>
-          <RouterProvider router={router} />
-        </SnackbarProvider>
-      </DarkModeProvider>
+      <HelmetProvider>
+        <Helmet
+          title="CORE"
+          htmlAttributes={{ lang: 'en' }}
+          meta={[
+            {
+              name: 'description',
+              content: 'CORE',
+            },
+            {
+              charSet: 'utf-8',
+            },
+          ]}
+        />
+        <CookiesProvider>
+          <UserProvider>
+            <DarkModeProvider>
+              <CssBaseline />
+              <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'center' }} maxSnack={3} autoHideDuration={3000}>
+                <RouterProvider router={router} />
+              </SnackbarProvider>
+            </DarkModeProvider>
+          </UserProvider>
+        </CookiesProvider>
+      </HelmetProvider>
     </StrictMode>
   );
 }

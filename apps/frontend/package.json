@@ -30,15 +30,17 @@
     "apexcharts": "^4.7.0",
     "date-fns": "^4.1.0",
     "lorem-ipsum": "^2.0.8",
+    "middleware-api-schemas": "workspace:*",
     "monaco-editor-core": "^0.52.2",
     "notistack": "^3.0.2",
     "react": "^18.3.1",
     "react-apexcharts": "^1.7.0",
+    "react-cookie": "^8.0.1",
     "react-dom": "^18.3.1",
-    "react-helmet": "^6.1.0",
+    "react-helmet-async": "^2.0.5",
     "react-virtualized-auto-sizer": "^1.0.25",
     "react-virtuoso": "^4.12.3",
-    "middleware-api-schemas": "workspace:*"
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",

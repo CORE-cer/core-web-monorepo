@@ -1,7 +1,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Box, Divider, Fab } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 import Editor from '../components/Editor';
 import AddQueryDialog from '../components/query/AddQueryDialog';

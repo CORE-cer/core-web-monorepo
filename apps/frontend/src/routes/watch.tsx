@@ -1,7 +1,7 @@
 import { useWatchPage } from '@/hooks/useWatchPage';
 import { Box, Divider, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 import Charts from '../components/Charts';
 import HitList from '../components/HitList';
