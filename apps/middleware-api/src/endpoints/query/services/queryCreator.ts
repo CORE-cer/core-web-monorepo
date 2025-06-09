@@ -11,7 +11,7 @@ export class QueryCreator {
     this.coreCPPUrl = this.envVariableImporter.getCoreCPPUrl();
   }
 
-  async addQuery({ query, queryName }: { query: string; queryName: string }): Promise<string | Error> {
+  async addQuery({ query, queryName }: { query: string; queryName: string; userId: string }): Promise<string | Error> {
     const url = `${this.coreCPPUrl}/add-query`;
     try {
       const response = await fetch(url, {

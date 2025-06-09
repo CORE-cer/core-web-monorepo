@@ -12,7 +12,8 @@ export class QueryGetter {
     this.coreCPPUrl = this.envVariableImporter.getCoreCPPUrl();
   }
 
-  async getQueries(): Promise<GetQueryInfoDto[] | Error> {
+  async getQueries({ userId }: { userId: string }): Promise<GetQueryInfoDto[] | Error> {
+    console.log(userId);
     const url = `${this.coreCPPUrl}/all-queries-info`;
 
     try {

@@ -9,6 +9,8 @@ import { DBType } from 'middleware-api-db/kysely.js';
 import { CreateQueryDto, GetQueriesInfoDto } from 'middleware-api-schemas/query/queryDto.js';
 import { ZodValidationPipe } from 'nestjs-zod';
 
+import { UserId } from '@src/decorators/userId.decorator.js';
+
 import { QueryCreator } from './services/queryCreator.js';
 import { QueryDeleter } from './services/queryDeleter.js';
 import { QueryGetter } from './services/queryGetter.js';
@@ -29,8 +31,8 @@ export class QueryController {
     type: GetQueriesInfoDto,
     description: 'Get all queries',
   })
-  async getQueries(): Promise<GetQueriesInfoDto> {
-    const queries = await this.queryGetter.getQueries();
+  async getQueries(@UserId() userId: string): Promise<GetQueriesInfoDto> {
+    const queries = await this.queryGetter.getQueries({ userId });
 
     if (queries instanceof Error) {
       throw new Error(`Error calling getQueries: ${queries.message}`);
@@ -44,8 +46,8 @@ export class QueryController {
     type: String,
     description: 'Add a query and return its identifier',
   })
-  async addQuery(@Body() queryDto: CreateQueryDto): Promise<string> {
-    const queryIdentifier = await this.queryCreator.addQuery({ query: queryDto.query, queryName: queryDto.query_name });
+  async addQuery(@Body() queryDto: CreateQueryDto, @UserId() userId: string): Promise<string> {
+    const queryIdentifier = await this.queryCreator.addQuery({ query: queryDto.query, queryName: queryDto.query_name, userId });
 
     if (queryIdentifier instanceof Error) {
       throw new Error(`Error calling addQuery: ${queryIdentifier.message}`);
