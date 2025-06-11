@@ -1,4 +1,7 @@
-export const CEQLDark = {
+// import type { IStandAloneThemeData } from 'monaco-editor-core';
+import monaco from 'monaco-editor-core';
+
+export const CEQLDark: monaco.editor.IStandaloneThemeData = {
   base: 'vs-dark',
   inherit: false,
   colors: {
@@ -57,7 +60,7 @@ export const CEQLDark = {
   ],
 };
 
-export const CEQLLight = {
+export const CEQLLight: monaco.editor.IStandaloneThemeData = {
   base: 'vs',
   inherit: false,
   colors: {

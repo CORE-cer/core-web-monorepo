@@ -1,7 +1,7 @@
 import CEQLQueryLexer from '@/grammar/ceql/CEQLQueryLexer';
-import antlr4 from 'antlr4';
+import { CharStream, Token } from 'antlr4';
 
-function antlr4TokenToMonacoToken(token) {
+function antlr4TokenToMonacoToken(token: Token) {
   switch (token.type) {
     case CEQLQueryLexer.SINGLE_LINE_COMMENT:
     case CEQLQueryLexer.MULTILINE_COMMENT:
@@ -78,15 +78,15 @@ class CEQLTokensProvider {
     return new CEQLTokensProviderState();
   }
 
-  tokenize(line) {
-    const inputStream = new antlr4.InputStream(line);
+  tokenize(line: string) {
+    const inputStream = new CharStream(line);
     const lexer = new CEQLQueryLexer(inputStream);
 
     return {
       endState: new CEQLTokensProviderState(),
       tokens: lexer
         .getAllTokens()
-        .filter((token) => token !== null && token.type !== -1)
+        .filter((token) => token.type !== -1)
         .map((token) => ({
           scopes: antlr4TokenToMonacoToken(token),
           startIndex: token.column,

@@ -1,10 +1,11 @@
 import * as monaco from 'monaco-editor-core';
-import COREWorkerManager from './core-worker-manager';
-import COREWorkerModule from './core.worker?worker';
-import { CEQLDark, CEQLLight } from './ceql/ceql-themes';
-import COREDiagnosticsAdapter from './core-diagnostics-adapter';
-import CEQLTokensProvider from './ceql/ceql-tokens-provider';
+
 import CEQLCompletionProvider from './ceql/ceql-completion-provider';
+import { CEQLDark, CEQLLight } from './ceql/ceql-themes';
+import CEQLTokensProvider from './ceql/ceql-tokens-provider';
+import COREDiagnosticsAdapter from './core-diagnostics-adapter';
+import COREWorkerManager from './core-worker-manager.js';
+import COREWorkerModule from './core.worker?worker';
 
 const LANG_ID = 'ceql';
 const LANG_CONFIGURATION = {
@@ -40,16 +41,12 @@ monaco.editor.defineTheme('ceql-dark', CEQLDark);
 monaco.editor.defineTheme('ceql-light', CEQLLight);
 
 const client = new COREWorkerManager();
-const workerAccessor = (languageId, ...uris) =>
-  client.getLanguageServiceWorker(languageId, ...uris);
+const workerAccessor = (languageId, ...uris) => client.getLanguageServiceWorker(languageId, ...uris);
 new COREDiagnosticsAdapter(workerAccessor);
 
 monaco.languages.register({ id: LANG_ID });
 monaco.languages.onLanguage(LANG_ID, () => {
   monaco.languages.setLanguageConfiguration(LANG_ID, LANG_CONFIGURATION);
   monaco.languages.setTokensProvider(LANG_ID, new CEQLTokensProvider());
-  monaco.languages.registerCompletionItemProvider(
-    LANG_ID,
-    CEQLCompletionProvider
-  );
+  monaco.languages.registerCompletionItemProvider(LANG_ID, CEQLCompletionProvider);
 });

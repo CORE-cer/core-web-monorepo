@@ -1,4 +1,4 @@
-import * as monaco from 'monaco-editor-core';
+import monaco from 'monaco-editor-core';
 
 export default class COREDiagnosticsAdapter {
   static VALIDATION_TIMEOUT_MS = 200;
@@ -12,10 +12,7 @@ export default class COREDiagnosticsAdapter {
       let handle;
       this._listener[model.uri.toString()] = model.onDidChangeContent(() => {
         clearTimeout(handle);
-        handle = setTimeout(
-          () => this._doValidate(model.uri),
-          COREDiagnosticsAdapter.VALIDATION_TIMEOUT_MS
-        );
+        handle = setTimeout(() => this._doValidate(model.uri), COREDiagnosticsAdapter.VALIDATION_TIMEOUT_MS);
       });
 
       this._doValidate(model.uri);

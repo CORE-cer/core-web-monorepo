@@ -1,16 +1,16 @@
-import antlr4 from 'antlr4';
+import antlr4, { CharStream } from 'antlr4';
 
 import CEQLQueryLexer from '../../grammar/ceql/CEQLQueryLexer';
 import CEQLQueryParser from '../../grammar/ceql/CEQLQueryParser';
-import QueryErrorListener from '../query-error-listener';
+import QueryErrorListener from '../query-error-listener.js';
 
 export default class CEQLLanguageService {
-  doValidation(document) {
+  doValidation(document: string) {
     // TODO: Try/catch to handle in-grammar errors
 
     const queryErrorListener = new QueryErrorListener();
 
-    const input = new antlr4.InputStream(document);
+    const input = new CharStream(document);
     const lexer = new CEQLQueryLexer(input);
     lexer.removeErrorListeners();
     lexer.addErrorListener(queryErrorListener);
