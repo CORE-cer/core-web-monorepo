@@ -2,7 +2,6 @@ import { setupMonaco } from '@/monaco/setup';
 import Editor from '@monaco-editor/react';
 import { Box, Paper, Popper, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useRef } from 'react';
 
 type QueryTextPreviewProps = {
   queryText: string;
@@ -14,7 +13,6 @@ type QueryTextPreviewProps = {
 
 export function QueryTextPreview({ queryText, queryName, anchorEl, open, placement = 'right' }: QueryTextPreviewProps) {
   const theme = useTheme();
-  const editorContainerRef = useRef<HTMLDivElement>(null);
 
   // Determine Monaco theme based on MUI theme
   const monacoTheme = theme.palette.mode === 'dark' ? 'ceql-dark' : 'ceql-light';
@@ -60,7 +58,6 @@ export function QueryTextPreview({ queryText, queryName, anchorEl, open, placeme
           </Typography>
         </Box>
         <Box
-          ref={editorContainerRef}
           sx={{
             flex: 1,
             overflow: 'hidden',
@@ -88,6 +85,7 @@ export function QueryTextPreview({ queryText, queryName, anchorEl, open, placeme
               },
               wordWrap: 'on',
               lineNumbers: 'off',
+              renderLineHighlight: 'none',
               folding: false,
               contextmenu: false,
               selectOnLineNumbers: false,
