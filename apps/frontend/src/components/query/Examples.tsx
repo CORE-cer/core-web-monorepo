@@ -1,8 +1,7 @@
+import examples from '@/data/examples';
+import type { ExampleData } from '@/types';
 import { Divider, List, ListItem, ListItemButton, ListItemText, ListSubheader } from '@mui/material';
 import React, { Fragment } from 'react';
-
-import examples from '../../data/examples';
-import type { ExampleData } from '../../types';
 
 type ExamplesProps = {
   setExample: (example: ExampleData) => void;

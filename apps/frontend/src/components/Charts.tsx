@@ -1,8 +1,8 @@
+import { COLORS, MAX_COLORS } from '@/colors';
 import type { QueryIdToQueryInfoMap, QueryIdToQueryStatMap } from '@/types';
 import { Grid2 as Grid, Paper, Typography } from '@mui/material';
 import { useMemo } from 'react';
 
-import { COLORS, MAX_COLORS } from '../colors';
 import DonutChart from './DonutChart';
 import LineChart from './LineChart';
 

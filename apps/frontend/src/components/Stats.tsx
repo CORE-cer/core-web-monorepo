@@ -1,7 +1,6 @@
+import { MAX_COLORS } from '@/colors';
 import type { QueryId, QueryIdToQueryInfoMap, QueryIdToQueryStatMap, QueryInfo } from '@/types';
 import { Box, Divider, Grid2 as Grid, Paper, Typography } from '@mui/material';
-
-import { MAX_COLORS } from '../colors';
 
 type HitStats = {
   max: number;

@@ -1,10 +1,9 @@
+import { MAX_COLORS } from '@/colors';
 import type { DataItem } from '@/types';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Box, Divider, Fab, Fade, Paper, Slider, Tooltip, Typography } from '@mui/material';
 import { useRef, useState } from 'react';
 import { Virtuoso, type VirtuosoHandle } from 'react-virtuoso';
-
-import { MAX_COLORS } from '../colors';
 
 type ScrollToLatestProps = {
   trigger: boolean;

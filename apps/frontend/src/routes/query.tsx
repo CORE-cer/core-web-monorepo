@@ -1,12 +1,11 @@
+import Editor from '@/components/Editor';
+import AddQueryDialog from '@/components/query/AddQueryDialog';
+import Examples from '@/components/query/Examples';
+import Schema from '@/components/query/Schema';
+import { useQueryPage } from '@/hooks/useQueryPage';
 import AddIcon from '@mui/icons-material/Add';
 import { Box, Divider, Fab } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
-
-import Editor from '../components/Editor';
-import AddQueryDialog from '../components/query/AddQueryDialog';
-import Examples from '../components/query/Examples';
-import Schema from '../components/query/Schema';
-import { useQueryPage } from '../hooks/useQueryPage';
 
 const QueryPage: React.FC = () => {
   const { editorRef, modalOpen, queryName, loading, setQueryName, handleSetExample, handleModalClose, handleAddQuery, submitQuery } = useQueryPage();

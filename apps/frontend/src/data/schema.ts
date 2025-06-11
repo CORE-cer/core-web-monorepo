@@ -1,4 +1,4 @@
-import type { SchemaData } from '../types';
+import type { SchemaData } from '@/types';
 
 export const SCHEMA: SchemaData = {
   TICKER: {

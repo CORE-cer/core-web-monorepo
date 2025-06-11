@@ -1,9 +1,8 @@
+import { MAX_COLORS } from '@/colors';
 import type { QueryId, QueryIdToQueryInfoMap, QueryInfo } from '@/types';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Checkbox, Divider, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
 import React from 'react';
-
-import { MAX_COLORS } from '../../colors';
 
 type QuerySelectionItemProps = {
   query: QueryInfo;

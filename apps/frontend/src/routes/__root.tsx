@@ -1,8 +1,7 @@
+import Navbar from '@/components/Navbar';
 import { Box, useTheme } from '@mui/material';
 import { Outlet, createRootRoute } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
-
-import Navbar from '../components/Navbar';
 
 export const Route = createRootRoute({
   component: RootComponent,

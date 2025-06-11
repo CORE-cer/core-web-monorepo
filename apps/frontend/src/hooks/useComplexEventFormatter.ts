@@ -1,6 +1,6 @@
 // import { useCallback } from 'react';
 //
-// import type { ComplexEvent, EventInfo, FormattedHit, StreamInfo } from '../types';
+// import type { ComplexEvent, EventInfo, FormattedHit, StreamInfo } from '@/types';
 //
 // export const useComplexEventFormatter = (streamsInfo: StreamInfo[]) => {
 //   const formatComplexEvents = useCallback(

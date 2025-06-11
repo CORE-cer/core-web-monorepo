@@ -1,8 +1,8 @@
+import type { EditorRef, ExampleData } from '@/types';
+import { addQuery } from '@/utils/api';
 import { enqueueSnackbar } from 'notistack';
 import { useCallback, useRef, useState } from 'react';
 
-import type { EditorRef, ExampleData } from '../types';
-import { addQuery } from '../utils/api';
 import { useUser } from './useUser';
 
 export const useQueryPage = () => {

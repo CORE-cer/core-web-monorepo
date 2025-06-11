@@ -1,11 +1,10 @@
+import Charts from '@/components/Charts';
+import HitList from '@/components/HitList';
+import Stats from '@/components/Stats';
+import QuerySelection from '@/components/watch/QuerySelection';
 import { useWatchPage } from '@/hooks/useWatchPage';
 import { Box, Divider, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
-
-import Charts from '../components/Charts';
-import HitList from '../components/HitList';
-import Stats from '../components/Stats';
-import QuerySelection from '../components/watch/QuerySelection';
 
 const SIDE_PANEL_WIDTH = 200;
 
