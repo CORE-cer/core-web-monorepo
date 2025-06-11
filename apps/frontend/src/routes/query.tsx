@@ -10,7 +10,7 @@ import { Box, Divider, Fab } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
 
 const QueryPage: React.FC = () => {
-  const { modalOpen, queryName, loading, setQueryName, handleSetExample, handleModalClose, handleAddQuery, submitQuery } = useQueryPage();
+  const { queryEditorRef, modalOpen, queryName, loading, setQueryName, handleSetExample, handleModalClose, handleAddQuery, submitQuery } = useQueryPage();
 
   return (
     <>
@@ -54,6 +54,9 @@ const QueryPage: React.FC = () => {
             }}
             beforeMount={(monaco) => {
               setupMonaco(monaco);
+            }}
+            onMount={(editor) => {
+              queryEditorRef.current = editor;
             }}
           />
         </Box>
