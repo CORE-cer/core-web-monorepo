@@ -2,6 +2,7 @@ import { setupMonaco } from '@/monaco/setup';
 import Editor from '@monaco-editor/react';
 import { Box, Paper, Popper, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useMemo } from 'react';
 
 type QueryTextPreviewProps = {
   queryText: string;
@@ -16,6 +17,32 @@ export function QueryTextPreview({ queryText, queryName, anchorEl, open, placeme
 
   // Determine Monaco theme based on MUI theme
   const monacoTheme = theme.palette.mode === 'dark' ? 'ceql-dark' : 'ceql-light';
+
+  // Calculate dynamic dimensions based on query content
+  const { editorWidth, editorHeight } = useMemo(() => {
+    const lines = queryText.split('\n');
+    const lineCount = lines.length;
+    const maxLineLength = Math.max(...lines.map((line) => line.length));
+
+    // Calculate width based on maximum line length
+    // Approximate character width: 10px per character for fontSize 22
+    const characterWidth = 10;
+    const minWidth = 300;
+    const maxWidth = 800;
+    const calculatedWidth = Math.max(minWidth, Math.min(maxWidth, maxLineLength * characterWidth + 40)); // +40 for padding
+
+    // Calculate height based on line count
+    const lineHeight = 30;
+    const headerHeight = 40; // Height of the query name header
+    const minHeight = 150;
+    const maxHeight = 600;
+    const calculatedHeight = Math.max(minHeight, Math.min(maxHeight, lineCount * lineHeight + headerHeight + 20)); // +20 for padding
+
+    return {
+      editorWidth: calculatedWidth,
+      editorHeight: calculatedHeight,
+    };
+  }, [queryText]);
 
   return (
     <Popper
@@ -35,8 +62,8 @@ export function QueryTextPreview({ queryText, queryName, anchorEl, open, placeme
       <Paper
         elevation={8}
         sx={{
-          width: 400,
-          height: 300,
+          width: editorWidth,
+          height: editorHeight,
           border: 1,
           borderColor: 'divider',
           overflow: 'hidden',
@@ -80,8 +107,8 @@ export function QueryTextPreview({ queryText, queryName, anchorEl, open, placeme
               readOnly: true,
               scrollbar: {
                 alwaysConsumeMouseWheel: false,
-                vertical: 'auto',
-                horizontal: 'auto',
+                vertical: 'hidden',
+                horizontal: 'hidden',
               },
               wordWrap: 'on',
               lineNumbers: 'off',
