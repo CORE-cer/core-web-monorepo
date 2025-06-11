@@ -8,7 +8,7 @@
     "build": "vite build && tsc && vite build",
     "serve": "vite preview",
     "test": "vitest run",
-    "grammar": "java -jar src/grammar/antlr-4.13.1-complete.jar -Dlanguage=JavaScript src/grammar/ceql/CEQLQueryParser.g4 src/grammar/ceql/CEQLQueryLexer.g4",
+    "grammar": "java -jar src/grammar/antlr-4.13.1-complete.jar -Dlanguage=TypeScript src/grammar/ceql/CEQLQueryParser.g4 src/grammar/ceql/CEQLQueryLexer.g4",
     "format": "pnpm run eslint && pnpm run prettier",
     "format-fix": "pnpm run eslint-fix && pnpm run prettier-fix",
     "eslint": "eslint \"src/**/*.{ts,tsx}\"",

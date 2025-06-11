@@ -1,5 +1,5 @@
+import CEQLQueryLexer from '@/grammar/ceql/CEQLQueryLexer';
 import antlr4 from 'antlr4';
-import CEQLQueryLexer from '../../grammar/ceql/CEQLQueryLexer';
 
 function antlr4TokenToMonacoToken(token) {
   switch (token.type) {

@@ -1,3 +1,5 @@
+import type monaco from 'monaco-editor-core';
+
 const keywords = [
   'ALL',
   'AND',
@@ -32,7 +34,7 @@ const keywords = [
   'WITHIN',
 ];
 
-function createSuggestions(range) {
+function createSuggestions(range: monaco.IRange) {
   return keywords.map((kw) => ({
     label: kw,
     // Cannot import monaco here right now, so we use 17 === monaco.languages.CompletionItemKind.Keyword
@@ -42,7 +44,7 @@ function createSuggestions(range) {
   }));
 }
 
-const CEQLCompletionProvider = {
+const CEQLCompletionProvider: monaco.languages.CompletionItemProvider = {
   provideCompletionItems: (model, position) => {
     const word = model.getWordUntilPosition(position);
     const range = {
