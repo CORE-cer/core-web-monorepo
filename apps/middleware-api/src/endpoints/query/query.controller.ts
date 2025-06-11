@@ -28,10 +28,6 @@ export class QueryController {
   async getQueries(@UserId() userId: string): Promise<GetQueriesInfoDto> {
     const queries = await this.queryGetter.getQueries({ userId });
 
-    if (queries instanceof Error) {
-      throw new Error(`Error calling getQueries: ${queries.message}`);
-    }
-
     return queries;
   }
 
