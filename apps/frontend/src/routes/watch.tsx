@@ -1,7 +1,6 @@
 import { useWatchPage } from '@/hooks/useWatchPage';
 import { Box, Divider, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
-import { Helmet } from 'react-helmet-async';
 
 import Charts from '../components/Charts';
 import HitList from '../components/HitList';
@@ -30,8 +29,7 @@ function RouteComponent() {
 
   return (
     <>
-      <Helmet title={`Watch | CORE Beta`} />
-
+      <title>Watch | CORE Beta</title>
       <Box sx={{ display: 'flex', width: '100%', height: '100%' }}>
         <Box
           sx={{

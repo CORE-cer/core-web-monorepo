@@ -1,7 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Box, Divider, Fab } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
-import { Helmet } from 'react-helmet-async';
 
 import Editor from '../components/Editor';
 import AddQueryDialog from '../components/query/AddQueryDialog';
@@ -14,7 +13,7 @@ const QueryPage: React.FC = () => {
 
   return (
     <>
-      <Helmet title={`Query | CORE Beta`} />
+      <title>Query | CORE Beta</title>
       <AddQueryDialog loading={loading} open={modalOpen} onClose={handleModalClose} onSubmit={submitQuery} queryName={queryName} setQueryName={setQueryName} />
       <Fab
         onClick={handleAddQuery}

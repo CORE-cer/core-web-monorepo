@@ -8,7 +8,6 @@ import { SnackbarProvider } from 'notistack';
 import { StrictMode } from 'react';
 import { CookiesProvider } from 'react-cookie';
 import ReactDOM from 'react-dom/client';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 import './monaco/setup';
 import DarkModeProvider from './providers/DarkModeProvider.tsx';
@@ -41,34 +40,23 @@ declare module '@tanstack/react-router' {
 // Render the app
 const rootElement = document.getElementById('app');
 if (rootElement && !rootElement.innerHTML) {
+  // Set base document title
+  document.title = 'CORE';
+  document.documentElement.lang = 'en';
+
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <HelmetProvider>
-        <Helmet
-          title="CORE"
-          htmlAttributes={{ lang: 'en' }}
-          meta={[
-            {
-              name: 'description',
-              content: 'CORE',
-            },
-            {
-              charSet: 'utf-8',
-            },
-          ]}
-        />
-        <CookiesProvider>
-          <UserProvider>
-            <DarkModeProvider>
-              <CssBaseline />
-              <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'center' }} maxSnack={3} autoHideDuration={3000}>
-                <RouterProvider router={router} />
-              </SnackbarProvider>
-            </DarkModeProvider>
-          </UserProvider>
-        </CookiesProvider>
-      </HelmetProvider>
+      <CookiesProvider>
+        <UserProvider>
+          <DarkModeProvider>
+            <CssBaseline />
+            <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'center' }} maxSnack={3} autoHideDuration={3000}>
+              <RouterProvider router={router} />
+            </SnackbarProvider>
+          </DarkModeProvider>
+        </UserProvider>
+      </CookiesProvider>
     </StrictMode>
   );
 }
