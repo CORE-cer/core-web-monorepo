@@ -6,11 +6,13 @@ import { useQueryPage } from '@/hooks/useQueryPage';
 import { setupMonaco } from '@/monaco/setup.js';
 import Editor from '@monaco-editor/react';
 import AddIcon from '@mui/icons-material/Add';
-import { Box, Divider, Fab } from '@mui/material';
+import { Box, Divider, Fab, useTheme } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
 
 const QueryPage: React.FC = () => {
   const { queryEditorRef, modalOpen, queryName, loading, setQueryName, handleSetExample, handleModalClose, handleAddQuery, submitQuery } = useQueryPage();
+  const theme = useTheme();
+  const monacoTheme = theme.palette.mode === 'dark' ? 'ceql-dark' : 'ceql-light';
 
   return (
     <>
@@ -39,7 +41,7 @@ const QueryPage: React.FC = () => {
       >
         <Box className="editor" sx={{ overflow: 'hidden', flex: 2 }}>
           <Editor
-            theme="ceql-dark"
+            theme={monacoTheme}
             language="ceql"
             options={{
               automaticLayout: true,

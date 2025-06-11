@@ -1,10 +1,13 @@
-import { ATN, ATNDeserializer, CharStream, DFA, Lexer, LexerATNSimulator, PredictionContextCache, RuleContext, Token } from 'antlr4';
-
-// Generated from src/grammar/ceql/CEQLQueryLexer.g4 by ANTLR 4.13.1
+// Generated from src/grammar/ceql/CEQLQueryParser.g4 by ANTLR 4.13.1
 // noinspection ES6UnusedImports,JSUnusedGlobalSymbols,JSUnusedLocalSymbols
 // @ts-nocheck
-//
-export declare class DecisionState extends ATNState {
+import { ATN, ATNDeserializer, CharStream, DFA, Lexer, LexerATNSimulator, PredictionContextCache, RuleContext, Token } from 'antlr4';
+
+declare class ATNState {
+  atn: ATN;
+  stateNumber: number;
+}
+declare class DecisionState extends ATNState {
   decision: number;
   nonGreedy: boolean;
 }
@@ -606,4 +609,3 @@ export default class CEQLQueryLexer extends Lexer {
 
   static DecisionsToDFA = CEQLQueryLexer._ATN.decisionToState.map((ds: DecisionState, index: number) => new DFA(ds, index));
 }
-

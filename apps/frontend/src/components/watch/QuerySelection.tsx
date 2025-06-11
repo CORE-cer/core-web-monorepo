@@ -1,8 +1,10 @@
 import { MAX_COLORS } from '@/colors';
 import type { QueryId, QueryIdToQueryInfoMap, QueryInfo } from '@/types';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CodeIcon from '@mui/icons-material/Code';
 import { Box, Checkbox, Divider, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
-import React from 'react';
+import { useState } from 'react';
+import QueryTextPreview from './QueryTextPreview';
 
 type QuerySelectionItemProps = {
   query: QueryInfo;
@@ -19,36 +21,69 @@ type QuerySelectionProps = {
 };
 
 export function QuerySelectionItem({ query, checked, handleChange, handleInactivateQuery }: QuerySelectionItemProps) {
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const handlePreviewMouseEnter = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+    setPreviewOpen(true);
+  };
+
+  const handlePreviewMouseLeave = () => {
+    setPreviewOpen(false);
+    setAnchorEl(null);
+  };
+
   return (
-    <ListItem
-      disablePadding
-      secondaryAction={
-        <Tooltip title={`Remove query`} arrow placement="right">
-          <IconButton
-            size="small"
-            edge="end"
-            onClick={() => {
-              handleInactivateQuery(query.queryId);
-            }}
-          >
-            <DeleteIcon fontSize="small" color="error" />
-          </IconButton>
-        </Tooltip>
-      }
-    >
-      <ListItemButton onClick={handleChange}>
-        <ListItemIcon>
-          <Checkbox
-            color="default"
-            checked={checked}
-            className={`color-${(Number(query.result_handler_identifier) % MAX_COLORS).toString()}`}
-            disableFocusRipple
-            disableTouchRipple
-          />
-        </ListItemIcon>
-        <ListItemText primary={query.query_name} sx={{ wordBreak: 'break-all' }} />
-      </ListItemButton>
-    </ListItem>
+    <>
+      <ListItem
+        disablePadding
+        secondaryAction={
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <Tooltip title="View query" arrow placement="top">
+              <IconButton
+                size="small"
+                onMouseEnter={handlePreviewMouseEnter}
+                onMouseLeave={handlePreviewMouseLeave}
+              >
+                <CodeIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Remove query" arrow placement="right">
+              <IconButton
+                size="small"
+                edge="end"
+                onClick={() => {
+                  handleInactivateQuery(query.queryId);
+                }}
+              >
+                <DeleteIcon fontSize="small" color="error" />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        }
+      >
+        <ListItemButton onClick={handleChange}>
+          <ListItemIcon>
+            <Checkbox
+              color="default"
+              checked={checked}
+              className={`color-${(Number(query.result_handler_identifier) % MAX_COLORS).toString()}`}
+              disableFocusRipple
+              disableTouchRipple
+            />
+          </ListItemIcon>
+          <ListItemText primary={query.query_name} sx={{ wordBreak: 'break-all' }} />
+        </ListItemButton>
+      </ListItem>
+      <QueryTextPreview
+        queryText={query.query_string}
+        queryName={query.query_name}
+        anchorEl={anchorEl}
+        open={previewOpen}
+        placement="right"
+      />
+    </>
   );
 }
 
