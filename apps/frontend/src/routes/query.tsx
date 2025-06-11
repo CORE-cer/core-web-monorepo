@@ -1,14 +1,14 @@
-import Editor from '@/components/Editor';
+// import Editor from '@/components/Editor';
 import AddQueryDialog from '@/components/query/AddQueryDialog';
-import Examples from '@/components/query/Examples';
 import Schema from '@/components/query/Schema';
 import { useQueryPage } from '@/hooks/useQueryPage';
+import Editor from '@monaco-editor/react';
 import AddIcon from '@mui/icons-material/Add';
 import { Box, Divider, Fab } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
 
 const QueryPage: React.FC = () => {
-  const { editorRef, modalOpen, queryName, loading, setQueryName, handleSetExample, handleModalClose, handleAddQuery, submitQuery } = useQueryPage();
+  const { modalOpen, queryName, loading, setQueryName, handleModalClose, handleAddQuery, submitQuery } = useQueryPage();
 
   return (
     <>
@@ -35,13 +35,7 @@ const QueryPage: React.FC = () => {
           display: 'flex',
         }}
       >
-        <Editor
-          ref={editorRef}
-          sx={{
-            overflow: 'hidden',
-            flex: 2,
-          }}
-        />
+        <Editor height="100%" />
         <Box
           sx={{
             borderLeft: 1,
@@ -52,7 +46,6 @@ const QueryPage: React.FC = () => {
             flexDirection: 'column',
           }}
         >
-          <Examples setExample={handleSetExample} />
           <Divider />
           <Schema />
         </Box>

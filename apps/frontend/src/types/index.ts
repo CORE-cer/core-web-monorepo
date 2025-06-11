@@ -7,9 +7,9 @@ type Brand<B> = { [__brand]: B };
 export type Branded<T, B> = T & Brand<B>;
 
 // Editor Types
-export type EditorRef = {
-  getEditor: () => import('monaco-editor-core').editor.IStandaloneCodeEditor | null;
-};
+// export type EditorRef = {
+//   getEditor: () => import('monaco-editor-core').editor.IStandaloneCodeEditor | null;
+// };
 
 // Query Related Types
 

@@ -8,7 +8,7 @@ type ErrorType = {
   message: string;
   severity: number;
 };
-export default class QueryErrorListener<TSymbol> extends ErrorListener<TSymbol> {
+export default class gueryErrorListener<TSymbol> extends ErrorListener<TSymbol> {
   errors: ErrorType[] = [];
 
   syntaxError(_recognizer: unknown, offendingSymbol: TSymbol, line: number, column: number, msg: string) {

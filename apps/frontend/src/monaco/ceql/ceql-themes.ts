@@ -1,5 +1,4 @@
-// import type { IStandAloneThemeData } from 'monaco-editor-core';
-import monaco from 'monaco-editor-core';
+import * as monaco from 'monaco-editor';
 
 export const CEQLDark: monaco.editor.IStandaloneThemeData = {
   base: 'vs-dark',

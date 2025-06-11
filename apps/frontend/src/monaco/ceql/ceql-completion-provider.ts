@@ -1,4 +1,4 @@
-import type monaco from 'monaco-editor-core';
+import * as monaco from 'monaco-editor';
 
 const keywords = [
   'ALL',
