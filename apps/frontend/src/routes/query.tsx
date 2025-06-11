@@ -1,14 +1,16 @@
 // import Editor from '@/components/Editor';
 import AddQueryDialog from '@/components/query/AddQueryDialog';
+import Examples from '@/components/query/Examples';
 import Schema from '@/components/query/Schema';
 import { useQueryPage } from '@/hooks/useQueryPage';
+import { setupMonaco } from '@/monaco/setup.js';
 import Editor from '@monaco-editor/react';
 import AddIcon from '@mui/icons-material/Add';
 import { Box, Divider, Fab } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
 
 const QueryPage: React.FC = () => {
-  const { modalOpen, queryName, loading, setQueryName, handleModalClose, handleAddQuery, submitQuery } = useQueryPage();
+  const { modalOpen, queryName, loading, setQueryName, handleSetExample, handleModalClose, handleAddQuery, submitQuery } = useQueryPage();
 
   return (
     <>
@@ -35,7 +37,26 @@ const QueryPage: React.FC = () => {
           display: 'flex',
         }}
       >
-        <Editor height="100%" />
+        <Box className="editor" sx={{ overflow: 'hidden', flex: 2 }}>
+          <Editor
+            theme="ceql-dark"
+            language="ceql"
+            options={{
+              automaticLayout: true,
+              scrollBeyondLastLine: false,
+              minimap: { enabled: false },
+              renderWhitespace: 'all',
+              tabSize: 2,
+              fontSize: 20,
+              scrollbar: {
+                alwaysConsumeMouseWheel: false,
+              },
+            }}
+            beforeMount={(monaco) => {
+              setupMonaco(monaco);
+            }}
+          />
+        </Box>
         <Box
           sx={{
             borderLeft: 1,
@@ -46,6 +67,7 @@ const QueryPage: React.FC = () => {
             flexDirection: 'column',
           }}
         >
+          <Examples setExample={handleSetExample} />
           <Divider />
           <Schema />
         </Box>

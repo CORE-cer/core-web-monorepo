@@ -8,46 +8,50 @@ import CEQLTokensProvider from './ceql/ceql-tokens-provider';
 // import COREWorkerManager from './core-worker-manager.js';
 // import COREWorkerModule from './core.worker?worker';
 
-const LANG_ID = 'ceql';
-const LANG_CONFIGURATION: monaco.languages.LanguageConfiguration = {
-  comments: {
-    lineComment: '--',
-    blockComment: ['/*', '*/'],
-  },
+export function setupMonaco(monaco: typeof import('monaco-editor')) {
+  const LANG_ID = 'ceql';
+  const LANG_CONFIGURATION: monaco.languages.LanguageConfiguration = {
+    comments: {
+      lineComment: '--',
+      blockComment: ['/*', '*/'],
+    },
 
-  brackets: [
-    ['{', '}'],
-    ['[', ']'],
-    ['(', ')'],
-  ],
+    brackets: [
+      ['{', '}'],
+      ['[', ']'],
+      ['(', ')'],
+    ],
 
-  autoClosingPairs: [
-    { open: '{', close: '}' },
-    { open: '[', close: ']' },
-    { open: '(', close: ')' },
-    { open: "'", close: "'", notIn: ['string'] },
-    { open: '`', close: '`' },
-  ],
-};
+    autoClosingPairs: [
+      { open: '{', close: '}' },
+      { open: '[', close: ']' },
+      { open: '(', close: ')' },
+      { open: "'", close: "'", notIn: ['string'] },
+      { open: '`', close: '`' },
+    ],
+  };
 
-// export function setupMonaco() {
-// self.MonacoEnvironment = {
-//   getWorker: function () {
-//     return new COREWorkerModule();
-//   },
-// };
-// }
+  // export function setupMonaco() {
+  // self.MonacoEnvironment = {
+  //   getWorker: function () {
+  //     return new COREWorkerModule();
+  //   },
+  // };
+  // }
 
-monaco.editor.defineTheme('ceql-dark', CEQLDark);
-monaco.editor.defineTheme('ceql-light', CEQLLight);
+  console.log('Setting up Monaco Editor for CEQL...');
 
-// const client = new COREWorkerManager();
-// const workerAccessor = (languageId, ...uris) => client.getLanguageServiceWorker(languageId, ...uris);
-// new COREDiagnosticsAdapter(workerAccessor);
+  monaco.editor.defineTheme('ceql-dark', CEQLDark);
+  monaco.editor.defineTheme('ceql-light', CEQLLight);
 
-monaco.languages.register({ id: LANG_ID });
-monaco.languages.onLanguage(LANG_ID, () => {
-  monaco.languages.setLanguageConfiguration(LANG_ID, LANG_CONFIGURATION);
-  monaco.languages.setTokensProvider(LANG_ID, new CEQLTokensProvider());
-  monaco.languages.registerCompletionItemProvider(LANG_ID, CEQLCompletionProvider);
-});
+  // const client = new COREWorkerManager();
+  // const workerAccessor = (languageId, ...uris) => client.getLanguageServiceWorker(languageId, ...uris);
+  // new COREDiagnosticsAdapter(workerAccessor);
+
+  monaco.languages.register({ id: LANG_ID });
+  monaco.languages.onLanguage(LANG_ID, () => {
+    monaco.languages.setLanguageConfiguration(LANG_ID, LANG_CONFIGURATION);
+    monaco.languages.setTokensProvider(LANG_ID, new CEQLTokensProvider());
+    monaco.languages.registerCompletionItemProvider(LANG_ID, CEQLCompletionProvider);
+  });
+}
