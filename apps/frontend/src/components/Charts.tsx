@@ -99,31 +99,36 @@ const Charts: React.FC<ChartsProps> = ({ qid2Stats, queries }) => {
 
   const [charts, setCharts] = useState<ChartItem[]>(initialCharts);
 
-  // Update charts when data changes
+  // Update chart components when data changes, but preserve user's ordering
   useMemo(() => {
-    const updatedCharts: ChartItem[] = [
-      {
-        id: 'hits-per-sec',
-        title: 'Hits per sec',
-        component: <LineChart series={lineSeries.hitsPerSec} colors={common.colors} />,
-      },
-      {
-        id: 'complex-events-per-sec',
-        title: 'Complex events per sec',
-        component: <LineChart series={lineSeries.complexEventsPerSec} colors={common.colors} />,
-      },
-      {
-        id: 'total-hits',
-        title: 'Total hits',
-        component: <DonutChart series={donutSeries.totalHits} labels={common.labels} colors={common.colors} />,
-      },
-      {
-        id: 'total-complex-events',
-        title: 'Total Complex Events',
-        component: <DonutChart series={donutSeries.totalComplexEvents} labels={common.labels} colors={common.colors} />,
-      },
-    ];
-    setCharts(updatedCharts);
+    setCharts((prevCharts) =>
+      prevCharts.map((chart) => {
+        switch (chart.id) {
+          case 'hits-per-sec':
+            return {
+              ...chart,
+              component: <LineChart series={lineSeries.hitsPerSec} colors={common.colors} />,
+            };
+          case 'complex-events-per-sec':
+            return {
+              ...chart,
+              component: <LineChart series={lineSeries.complexEventsPerSec} colors={common.colors} />,
+            };
+          case 'total-hits':
+            return {
+              ...chart,
+              component: <DonutChart series={donutSeries.totalHits} labels={common.labels} colors={common.colors} />,
+            };
+          case 'total-complex-events':
+            return {
+              ...chart,
+              component: <DonutChart series={donutSeries.totalComplexEvents} labels={common.labels} colors={common.colors} />,
+            };
+          default:
+            return chart;
+        }
+      })
+    );
   }, [lineSeries, donutSeries, common]);
 
   return (
@@ -150,8 +155,7 @@ const Charts: React.FC<ChartsProps> = ({ qid2Stats, queries }) => {
               zIndex: 1000,
               boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
             }}
-            dragConstraints={{ top: 0, bottom: 0 }}
-            dragElastic={0.1}
+            dragElastic={0.2}
           >
             <Paper 
               sx={{ 
