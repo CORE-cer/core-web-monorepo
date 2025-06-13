@@ -28,6 +28,10 @@ const DonutChart: React.FC<DonutChartProps> = ({ series, labels, colors }) => {
             speed: 300,
           },
         },
+        type: 'donut',
+        height: 'auto',
+        redrawOnParentResize: true,
+        redrawOnWindowResize: true,
       },
       theme: {
         mode: theme.palette.mode,
@@ -75,6 +79,19 @@ const DonutChart: React.FC<DonutChartProps> = ({ series, labels, colors }) => {
           },
         },
       },
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              height: 200,
+            },
+            legend: {
+              position: 'bottom',
+            },
+          },
+        },
+      ],
     },
   });
 
@@ -104,7 +121,7 @@ const DonutChart: React.FC<DonutChartProps> = ({ series, labels, colors }) => {
     }));
   }, [theme, series, labels, colors]);
 
-  return <ReactApexChart options={config.options} series={config.series} type="donut" />;
+  return <ReactApexChart height="100%" width="100%" options={config.options} series={config.series} type="donut" />;
 };
 
 export default DonutChart;

@@ -39,6 +39,10 @@ const LineChart: React.FC<LineChartProps> = ({ series, colors }) => {
             speed: 300,
           },
         },
+        type: 'line',
+        height: 'auto',
+        redrawOnParentResize: true,
+        redrawOnWindowResize: true,
       },
       theme: {
         mode: theme.palette.mode,
@@ -53,6 +57,16 @@ const LineChart: React.FC<LineChartProps> = ({ series, colors }) => {
       tooltip: {
         enabled: false,
       },
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              height: 200,
+            },
+          },
+        },
+      ],
     },
   });
 
@@ -71,7 +85,7 @@ const LineChart: React.FC<LineChartProps> = ({ series, colors }) => {
     }));
   }, [theme, series, colors]);
 
-  return <ReactApexChart height={400} options={config.options} series={config.series} type="line" />;
+  return <ReactApexChart height="100%" width="100%" options={config.options} series={config.series} type="line" />;
 };
 
 export default LineChart;

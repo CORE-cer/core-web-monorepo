@@ -1,7 +1,8 @@
 import { COLORS, MAX_COLORS } from '@/colors';
 import type { QueryIdToQueryInfoMap, QueryIdToQueryStatMap } from '@/types';
-import { Grid2 as Grid, Paper, Typography } from '@mui/material';
-import { useMemo } from 'react';
+import { Box, Paper, Typography } from '@mui/material';
+import { useMemo, useState } from 'react';
+import { Reorder } from 'framer-motion';
 
 import DonutChart from './DonutChart';
 import LineChart from './LineChart';
@@ -9,6 +10,12 @@ import LineChart from './LineChart';
 type ChartsProps = {
   qid2Stats: QueryIdToQueryStatMap;
   queries: QueryIdToQueryInfoMap;
+};
+
+type ChartItem = {
+  id: string;
+  title: string;
+  component: React.ReactNode;
 };
 
 const Charts: React.FC<ChartsProps> = ({ qid2Stats, queries }) => {
@@ -67,50 +74,105 @@ const Charts: React.FC<ChartsProps> = ({ qid2Stats, queries }) => {
     return res;
   }, [qid2Stats, queries]);
 
+  const initialCharts: ChartItem[] = useMemo(() => [
+    {
+      id: 'hits-per-sec',
+      title: 'Hits per sec',
+      component: <LineChart series={lineSeries.hitsPerSec} colors={common.colors} />,
+    },
+    {
+      id: 'complex-events-per-sec',
+      title: 'Complex events per sec',
+      component: <LineChart series={lineSeries.complexEventsPerSec} colors={common.colors} />,
+    },
+    {
+      id: 'total-hits',
+      title: 'Total hits',
+      component: <DonutChart series={donutSeries.totalHits} labels={common.labels} colors={common.colors} />,
+    },
+    {
+      id: 'total-complex-events',
+      title: 'Total Complex Events',
+      component: <DonutChart series={donutSeries.totalComplexEvents} labels={common.labels} colors={common.colors} />,
+    },
+  ], [lineSeries, donutSeries, common]);
+
+  const [charts, setCharts] = useState<ChartItem[]>(initialCharts);
+
+  // Update charts when data changes
+  useMemo(() => {
+    const updatedCharts: ChartItem[] = [
+      {
+        id: 'hits-per-sec',
+        title: 'Hits per sec',
+        component: <LineChart series={lineSeries.hitsPerSec} colors={common.colors} />,
+      },
+      {
+        id: 'complex-events-per-sec',
+        title: 'Complex events per sec',
+        component: <LineChart series={lineSeries.complexEventsPerSec} colors={common.colors} />,
+      },
+      {
+        id: 'total-hits',
+        title: 'Total hits',
+        component: <DonutChart series={donutSeries.totalHits} labels={common.labels} colors={common.colors} />,
+      },
+      {
+        id: 'total-complex-events',
+        title: 'Total Complex Events',
+        component: <DonutChart series={donutSeries.totalComplexEvents} labels={common.labels} colors={common.colors} />,
+      },
+    ];
+    setCharts(updatedCharts);
+  }, [lineSeries, donutSeries, common]);
+
   return (
-    <Grid
-      container
-      spacing={2}
-      sx={{
-        p: 1,
-      }}
-    >
-      <Grid size={{ xs: 12 }}>
-        <Paper sx={{ p: 1 }}>
-          <Typography variant="h6" textAlign="center">
-            {'Hits per sec'}
-          </Typography>
-          <LineChart series={lineSeries.hitsPerSec} colors={common.colors} />
-        </Paper>
-      </Grid>
-
-      <Grid size={{ xs: 12 }}>
-        <Paper sx={{ p: 1 }}>
-          <Typography variant="h6" textAlign="center">
-            {'Complex events per sec'}
-          </Typography>
-          <LineChart series={lineSeries.complexEventsPerSec} colors={common.colors} />
-        </Paper>
-      </Grid>
-
-      <Grid size={{ xs: 12, sm: 6 }}>
-        <Paper sx={{ p: 1 }}>
-          <Typography variant="h6" textAlign="center">
-            {'Total hits'}
-          </Typography>
-          <DonutChart series={donutSeries.totalHits} labels={common.labels} colors={common.colors} />
-        </Paper>
-      </Grid>
-
-      <Grid size={{ xs: 12, sm: 6 }}>
-        <Paper sx={{ p: 1 }}>
-          <Typography variant="h6" textAlign="center">
-            {'Total Complex Events'}
-          </Typography>
-          <DonutChart series={donutSeries.totalComplexEvents} labels={common.labels} colors={common.colors} />
-        </Paper>
-      </Grid>
-    </Grid>
+    <Box sx={{ p: 1 }}>
+      <Reorder.Group
+        axis="y"
+        values={charts}
+        onReorder={setCharts}
+        style={{
+          margin: 0,
+          padding: 0,
+          listStyle: 'none',
+        }}
+      >
+        {charts.map((chart) => (
+          <Reorder.Item
+            key={chart.id}
+            value={chart}
+            style={{
+              marginBottom: '16px',
+            }}
+            whileDrag={{
+              scale: 1.02,
+              zIndex: 1000,
+              boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+            }}
+            dragConstraints={{ top: 0, bottom: 0 }}
+            dragElastic={0.1}
+          >
+            <Paper 
+              sx={{ 
+                p: 1,
+                cursor: 'grab',
+                '&:active': {
+                  cursor: 'grabbing',
+                },
+                userSelect: 'none',
+                width: '100%',
+              }}
+            >
+              <Typography variant="h6" textAlign="center" sx={{ mb: 1 }}>
+                {chart.title}
+              </Typography>
+              {chart.component}
+            </Paper>
+          </Reorder.Item>
+        ))}
+      </Reorder.Group>
+    </Box>
   );
 };
 

@@ -1,10 +1,14 @@
 import Charts from '@/components/Charts';
+import ChartsFreeform from '@/components/ChartsFreeform';
 import HitList from '@/components/HitList';
 import Stats from '@/components/Stats';
 import QuerySelection from '@/components/watch/QuerySelection';
 import { useWatchPage } from '@/hooks/useWatchPage';
-import { Box, Divider, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import DragHandleIcon from '@mui/icons-material/DragHandle';
+import GridViewIcon from '@mui/icons-material/GridView';
+import { Box, Divider, IconButton, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
+import { useState } from 'react';
 
 const SIDE_PANEL_WIDTH = 200;
 
@@ -25,6 +29,12 @@ function RouteComponent() {
     handleViewModeChange,
     handleInactivateQuery,
   } = useWatchPage();
+
+  const [chartLayoutMode, setChartLayoutMode] = useState<'list' | 'freeform'>('list');
+
+  const handleChartLayoutChange = () => {
+    setChartLayoutMode(prev => prev === 'list' ? 'freeform' : 'list');
+  };
 
   return (
     <>
@@ -64,6 +74,7 @@ function RouteComponent() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              gap: 2,
             }}
           >
             <ToggleButtonGroup color="primary" exclusive value={viewMode} onChange={handleViewModeChange}>
@@ -71,6 +82,14 @@ function RouteComponent() {
               <ToggleButton value="stats">Stats</ToggleButton>
               <ToggleButton value="charts">Charts</ToggleButton>
             </ToggleButtonGroup>
+            
+            {viewMode === 'charts' && (
+              <Tooltip title={`Switch to ${chartLayoutMode === 'list' ? 'freeform' : 'list'} layout`}>
+                <IconButton onClick={handleChartLayoutChange} size="small">
+                  {chartLayoutMode === 'list' ? <GridViewIcon /> : <DragHandleIcon />}
+                </IconButton>
+              </Tooltip>
+            )}
           </Box>
           <Divider />
           <Box sx={{ flex: 1, overflow: 'auto', height: '100%' }}>
@@ -79,7 +98,11 @@ function RouteComponent() {
             ) : viewMode === 'stats' ? (
               <Stats queryIdToQueryStatMap={queryIdToQueryStat} queryIdToQueryInfoMap={queries} />
             ) : (
-              <Charts qid2Stats={queryIdToQueryStat} queries={queries} />
+              chartLayoutMode === 'list' ? (
+                <Charts qid2Stats={queryIdToQueryStat} queries={queries} />
+              ) : (
+                <ChartsFreeform qid2Stats={queryIdToQueryStat} queries={queries} />
+              )
             )}
           </Box>
         </Box>

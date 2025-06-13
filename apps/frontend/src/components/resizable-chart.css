@@ -1,0 +1,50 @@
+/* Resizable chart handle styles */
+.resize-handle-right,
+.resize-handle-bottom {
+  transition: background-color 0.2s ease;
+}
+
+.resize-handle-right:hover,
+.resize-handle-bottom:hover {
+  background-color: rgba(25, 118, 210, 0.1) !important;
+}
+
+.resize-handle-corner {
+  transition: all 0.2s ease;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.resize-handle-corner:hover {
+  opacity: 1 !important;
+  transform: scale(1.2) !important;
+  background-color: #1565c0 !important;
+}
+
+/* Visual indicators for resize areas */
+.resizable-chart {
+  position: relative;
+}
+
+.resizable-chart:hover .resize-handle-right {
+  background-color: rgba(25, 118, 210, 0.05);
+}
+
+.resizable-chart:hover .resize-handle-bottom {
+  background-color: rgba(25, 118, 210, 0.05);
+}
+
+.resizable-chart:hover .resize-handle-corner {
+  opacity: 0.9;
+}
+
+/* Add visual feedback during resize */
+.resizable-chart.resizing {
+  pointer-events: none;
+}
+
+.resizable-chart.resizing .resize-handle-corner {
+  background-color: #1565c0 !important;
+  opacity: 1 !important;
+  transform: scale(1.3) !important;
+}
