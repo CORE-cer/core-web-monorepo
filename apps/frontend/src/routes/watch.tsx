@@ -33,7 +33,7 @@ function RouteComponent() {
   const [chartLayoutMode, setChartLayoutMode] = useState<'list' | 'freeform'>('list');
 
   const handleChartLayoutChange = () => {
-    setChartLayoutMode(prev => prev === 'list' ? 'freeform' : 'list');
+    setChartLayoutMode((prev) => (prev === 'list' ? 'freeform' : 'list'));
   };
 
   return (
@@ -82,7 +82,7 @@ function RouteComponent() {
               <ToggleButton value="stats">Stats</ToggleButton>
               <ToggleButton value="charts">Charts</ToggleButton>
             </ToggleButtonGroup>
-            
+
             {viewMode === 'charts' && (
               <Tooltip title={`Switch to ${chartLayoutMode === 'list' ? 'freeform' : 'list'} layout`}>
                 <IconButton onClick={handleChartLayoutChange} size="small">
@@ -97,12 +97,10 @@ function RouteComponent() {
               <HitList data={data} eventInterval={eventInterval} setEventInterval={setEventInterval} />
             ) : viewMode === 'stats' ? (
               <Stats queryIdToQueryStatMap={queryIdToQueryStat} queryIdToQueryInfoMap={queries} />
+            ) : chartLayoutMode === 'list' ? (
+              <Charts qid2Stats={queryIdToQueryStat} queries={queries} />
             ) : (
-              chartLayoutMode === 'list' ? (
-                <Charts qid2Stats={queryIdToQueryStat} queries={queries} />
-              ) : (
-                <ChartsFreeform qid2Stats={queryIdToQueryStat} queries={queries} />
-              )
+              <ChartsFreeform qid2Stats={queryIdToQueryStat} queries={queries} />
             )}
           </Box>
         </Box>
