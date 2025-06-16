@@ -2,6 +2,7 @@ import type { QueryId, ViewMode } from '@/types';
 import { useEffect, useState } from 'react';
 
 import { useQueryManager } from './useQueryManager';
+import { useTimelineManager } from './useTimelineManager';
 import { useWebSocketManager } from './useWebSocketManager';
 
 export function useWatchPage() {
@@ -13,6 +14,9 @@ export function useWatchPage() {
 
   // Use the WebSocket manager hook for data and stats
   const { data, queryIdToQueryStat, eventInterval, setEventInterval } = useWebSocketManager(selectedQueryIds);
+
+  // Use the timeline manager hook for timeline-specific functionality
+  const { timelineConfig, updateTimeHorizon, getAllActiveQueryEvents } = useTimelineManager(data, selectedQueryIds);
 
   // Remove queries that are no longer active
   useEffect(() => {
@@ -43,5 +47,9 @@ export function useWatchPage() {
     setEventInterval,
     handleViewModeChange,
     handleInactivateQuery,
+    // Timeline-specific exports
+    timelineConfig,
+    updateTimeHorizon,
+    getAllActiveQueryEvents,
   };
 }

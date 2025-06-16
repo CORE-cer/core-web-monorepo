@@ -2,6 +2,7 @@ import Charts from '@/components/Charts';
 import ChartsFreeform from '@/components/ChartsFreeform';
 import HitList from '@/components/HitList';
 import Stats from '@/components/Stats';
+import Timeline from '@/components/Timeline';
 import QuerySelection from '@/components/watch/QuerySelection';
 import { useWatchPage } from '@/hooks/useWatchPage';
 import DragHandleIcon from '@mui/icons-material/DragHandle';
@@ -28,6 +29,10 @@ function RouteComponent() {
     setEventInterval,
     handleViewModeChange,
     handleInactivateQuery,
+    // Timeline-specific properties
+    timelineConfig,
+    updateTimeHorizon,
+    getAllActiveQueryEvents,
   } = useWatchPage();
 
   const [chartLayoutMode, setChartLayoutMode] = useState<'list' | 'freeform'>('list');
@@ -81,6 +86,7 @@ function RouteComponent() {
               <ToggleButton value="list">List</ToggleButton>
               <ToggleButton value="stats">Stats</ToggleButton>
               <ToggleButton value="charts">Charts</ToggleButton>
+              <ToggleButton value="timeline">Timeline</ToggleButton>
             </ToggleButtonGroup>
 
             {viewMode === 'charts' && (
@@ -97,6 +103,14 @@ function RouteComponent() {
               <HitList data={data} eventInterval={eventInterval} setEventInterval={setEventInterval} />
             ) : viewMode === 'stats' ? (
               <Stats queryIdToQueryStatMap={queryIdToQueryStat} queryIdToQueryInfoMap={queries} />
+            ) : viewMode === 'timeline' ? (
+              <Timeline
+                queryIdToQueryInfoMap={queries}
+                selectedQueryIds={selectedQueryIds}
+                getAllActiveQueryEvents={getAllActiveQueryEvents}
+                timeHorizonSeconds={timelineConfig.timeHorizonSeconds}
+                onTimeHorizonChange={updateTimeHorizon}
+              />
             ) : chartLayoutMode === 'list' ? (
               <Charts qid2Stats={queryIdToQueryStat} queries={queries} />
             ) : (

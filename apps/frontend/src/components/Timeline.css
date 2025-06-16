@@ -1,0 +1,133 @@
+.timeline-event {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: #1976d2;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  top: 50%;
+  right: 0;
+  z-index: 1;
+  cursor: pointer;
+  
+  /* GPU acceleration for smooth animations */
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateY(-50%) translateZ(0);
+  
+  /* Animate using transform for better performance */
+  animation: moveLeft var(--animation-duration, 10s) linear forwards;
+  animation-delay: calc(-1 * var(--start-delay, 0s));
+  
+  /* Smooth transitions for hover effects */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+@keyframes moveLeft {
+  from {
+    transform: translateY(-50%) translateX(0) translateZ(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-50%) translateX(-100vw) translateZ(0);
+    opacity: 1;
+  }
+}
+
+.timeline-event:hover {
+  transform: translateY(-50%) scale(1.2) translateZ(0);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+  cursor: pointer;
+  /* Add a subtle glow effect to indicate pause state */
+  filter: brightness(1.1);
+  /* Animation will be paused via JavaScript, no need to override here */
+}
+
+/* Different colors for different queries - using specific classes now */
+.timeline-event-query-1 { background-color: #1976d2 !important; } /* Blue */
+.timeline-event-query-2 { background-color: #388e3c !important; } /* Green */
+.timeline-event-query-3 { background-color: #f57c00 !important; } /* Orange */
+.timeline-event-query-4 { background-color: #7b1fa2 !important; } /* Purple */
+.timeline-event-query-5 { background-color: #c62828 !important; } /* Red */
+.timeline-event-query-6 { background-color: #00796b !important; } /* Teal */
+.timeline-event-query-7 { background-color: #5d4037 !important; } /* Brown */
+.timeline-event-query-8 { background-color: #455a64 !important; } /* Blue Grey */
+.timeline-event-query-9 { background-color: #e65100 !important; } /* Deep Orange */
+.timeline-event-query-10 { background-color: #4527a0 !important; } /* Deep Purple */
+
+/* Additional colors for more queries */
+.timeline-event-query-11 { background-color: #2e7d32 !important; } /* Dark Green */
+.timeline-event-query-12 { background-color: #d32f2f !important; } /* Dark Red */
+.timeline-event-query-13 { background-color: #ff6f00 !important; } /* Amber */
+.timeline-event-query-14 { background-color: #0277bd !important; } /* Light Blue */
+.timeline-event-query-15 { background-color: #6a1b9a !important; } /* Purple */
+
+/* Fallback for queries beyond 15 */
+.timeline-event:nth-of-type(16n+1) { background-color: #1976d2; }
+.timeline-event:nth-of-type(16n+2) { background-color: #388e3c; }
+.timeline-event:nth-of-type(16n+3) { background-color: #f57c00; }
+.timeline-event:nth-of-type(16n+4) { background-color: #7b1fa2; }
+.timeline-event:nth-of-type(16n+5) { background-color: #c62828; }
+.timeline-event:nth-of-type(16n+6) { background-color: #00796b; }
+.timeline-event:nth-of-type(16n+7) { background-color: #5d4037; }
+.timeline-event:nth-of-type(16n+8) { background-color: #455a64; }
+
+.timeline-row {
+  position: relative;
+}
+
+.timeline-line {
+  position: relative;
+}
+
+.timeline-events-container {
+  position: relative;
+  contain: layout style paint;
+  transform: translateZ(0);
+}
+
+.timeline-axis {
+  position: relative;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .timeline-event {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .timeline-event {
+    border-width: 3px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Reduced motion support - disable animation smoothly */
+@media (prefers-reduced-motion: reduce) {
+  .timeline-event {
+    animation-duration: 0.01s !important;
+    will-change: auto;
+  }
+  
+  .timeline-event:hover {
+    transition: none;
+  }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .timeline-event {
+    border-color: #333333;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+  }
+  
+  .timeline-event:hover {
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+  }
+}

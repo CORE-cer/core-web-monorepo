@@ -117,4 +117,17 @@ export type SchemaData = {
 };
 
 // View Mode Types
-export type ViewMode = 'list' | 'stats' | 'charts';
+export type ViewMode = 'list' | 'stats' | 'charts' | 'timeline';
+
+// Timeline Types
+export type TimelineEvent = {
+  id: string;
+  queryId: QueryId;
+  receivedAt: Date;
+  data: FormattedHit;
+};
+
+export type TimelineConfig = {
+  timeHorizonSeconds: number;
+  maxEventsPerQuery: number;
+};
