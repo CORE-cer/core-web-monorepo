@@ -10,7 +10,7 @@ type AddQueryDialogProps = {
   setQueryName: (name: string) => void;
 };
 
-const AddQueryDialog: React.FC<AddQueryDialogProps> = ({ loading, open, onClose, onSubmit, queryName, setQueryName }) => {
+export function AddQueryDialog({ loading, open, onClose, onSubmit, queryName, setQueryName }: AddQueryDialogProps) {
   return (
     <Dialog
       fullWidth
@@ -52,6 +52,6 @@ const AddQueryDialog: React.FC<AddQueryDialogProps> = ({ loading, open, onClose,
       </DialogActions>
     </Dialog>
   );
-};
+}
 
 export default AddQueryDialog;

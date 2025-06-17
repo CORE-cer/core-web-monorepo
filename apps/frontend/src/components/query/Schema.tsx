@@ -1,4 +1,3 @@
-import { SCHEMA } from '@/data/schema';
 import type { SchemaData } from '@/types';
 import { useTheme } from '@emotion/react';
 import { Box } from '@mui/material';
@@ -12,7 +11,7 @@ type CustomJsonViewProps = {
   schema: SchemaData;
 };
 
-const CustomJsonView: React.FC<CustomJsonViewProps> = ({ schema }) => {
+export function CustomJsonView({ schema }: CustomJsonViewProps) {
   const theme = useTheme() as Theme;
 
   return (
@@ -40,12 +39,16 @@ const CustomJsonView: React.FC<CustomJsonViewProps> = ({ schema }) => {
       />
     </JsonView>
   );
-};
+}
 
-const Schema: React.FC<React.ComponentProps<typeof Box>> = (props) => {
+type SchemaProps = {
+  schema: SchemaData;
+} & React.ComponentProps<typeof Box>;
+
+const Schema: React.FC<SchemaProps> = ({ schema, ...props }) => {
   return (
     <Box {...props}>
-      <CustomJsonView schema={SCHEMA} />
+      <CustomJsonView schema={schema} />
     </Box>
   );
 };

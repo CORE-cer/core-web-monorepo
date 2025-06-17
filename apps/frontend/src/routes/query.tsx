@@ -1,12 +1,11 @@
 // import Editor from '@/components/Editor';
 import AddQueryDialog from '@/components/query/AddQueryDialog';
-import Examples from '@/components/query/Examples';
-import Schema from '@/components/query/Schema';
+import QuerySidebar from '@/components/query/QuerySidebar';
 import { useQueryPage } from '@/hooks/useQueryPage';
 import { setupMonaco } from '@/monaco/setup.js';
 import Editor from '@monaco-editor/react';
 import AddIcon from '@mui/icons-material/Add';
-import { Box, Divider, Fab, useTheme } from '@mui/material';
+import { Box, Fab, useTheme } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
 
 const QueryPage: React.FC = () => {
@@ -62,20 +61,7 @@ const QueryPage: React.FC = () => {
             }}
           />
         </Box>
-        <Box
-          sx={{
-            borderLeft: 1,
-            borderColor: 'divider',
-            flex: 1,
-            overflow: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <Examples setExample={handleSetExample} />
-          <Divider />
-          <Schema />
-        </Box>
+        <QuerySidebar setExample={handleSetExample} />
       </Box>
     </>
   );

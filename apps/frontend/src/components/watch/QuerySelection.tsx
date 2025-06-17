@@ -1,9 +1,10 @@
 import { MAX_COLORS } from '@/colors';
 import type { QueryId, QueryIdToQueryInfoMap, QueryInfo } from '@/types';
-import DeleteIcon from '@mui/icons-material/Delete';
 import CodeIcon from '@mui/icons-material/Code';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Checkbox, Divider, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
 import { useState } from 'react';
+
 import QueryTextPreview from './QueryTextPreview';
 
 type QuerySelectionItemProps = {
@@ -41,11 +42,7 @@ export function QuerySelectionItem({ query, checked, handleChange, handleInactiv
         secondaryAction={
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
             <Tooltip title="View query" arrow placement="top">
-              <IconButton
-                size="small"
-                onMouseEnter={handlePreviewMouseEnter}
-                onMouseLeave={handlePreviewMouseLeave}
-              >
+              <IconButton size="small" onMouseEnter={handlePreviewMouseEnter} onMouseLeave={handlePreviewMouseLeave}>
                 <CodeIcon fontSize="small" />
               </IconButton>
             </Tooltip>
@@ -76,13 +73,7 @@ export function QuerySelectionItem({ query, checked, handleChange, handleInactiv
           <ListItemText primary={query.query_name} sx={{ wordBreak: 'break-all' }} />
         </ListItemButton>
       </ListItem>
-      <QueryTextPreview
-        queryText={query.query_string}
-        queryName={query.query_name}
-        anchorEl={anchorEl}
-        open={previewOpen}
-        placement="right"
-      />
+      <QueryTextPreview queryText={query.query_string} queryName={query.query_name} anchorEl={anchorEl} open={previewOpen} placement="right" />
     </>
   );
 }

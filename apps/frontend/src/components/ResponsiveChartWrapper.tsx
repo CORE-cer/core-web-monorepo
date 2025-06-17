@@ -5,10 +5,7 @@ type ResponsiveChartWrapperProps = {
   onSizeChange?: (size: { width: number; height: number }) => void;
 };
 
-const ResponsiveChartWrapper: React.FC<ResponsiveChartWrapperProps> = ({ 
-  children, 
-  onSizeChange 
-}) => {
+const ResponsiveChartWrapper: React.FC<ResponsiveChartWrapperProps> = ({ children, onSizeChange }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [key, setKey] = useState(0);
 
@@ -18,7 +15,7 @@ const ResponsiveChartWrapper: React.FC<ResponsiveChartWrapperProps> = ({
         const { width, height } = entry.contentRect;
         onSizeChange?.({ width, height });
         // Force chart re-render by changing key
-        setKey(prev => prev + 1);
+        setKey((prev) => prev + 1);
       }
     });
 
@@ -26,17 +23,19 @@ const ResponsiveChartWrapper: React.FC<ResponsiveChartWrapperProps> = ({
       observer.observe(containerRef.current);
     }
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+    };
   }, [onSizeChange]);
 
   return (
-    <div 
-      ref={containerRef} 
-      style={{ 
-        width: '100%', 
+    <div
+      ref={containerRef}
+      style={{
+        width: '100%',
         height: '100%',
         minHeight: '200px',
-        position: 'relative'
+        position: 'relative',
       }}
       key={key}
     >

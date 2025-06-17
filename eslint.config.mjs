@@ -21,6 +21,6 @@ export default tseslint.config(
     rules: {
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
     },
-    ignores: ['**/build/**', '**/dist/**', '**/dist_build/**'],
-  }
+  },
+  { ignores: ['**/build/**', '**/dist/**', '**/dist_build/**'] }
 );

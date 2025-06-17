@@ -16,5 +16,6 @@ export default tseslint.config(
     rules: {
       'react/prop-types': 'off',
     },
-  }
+  },
+  { ignores: ['src/grammar/ceql/**'] }
 );

@@ -1,8 +1,8 @@
 import { COLORS, MAX_COLORS } from '@/colors';
 import type { QueryIdToQueryInfoMap, QueryIdToQueryStatMap } from '@/types';
 import { Box, Paper, Typography } from '@mui/material';
-import { useMemo, useState } from 'react';
 import { Reorder } from 'framer-motion';
+import { useMemo, useState } from 'react';
 
 import DonutChart from './DonutChart';
 import LineChart from './LineChart';
@@ -74,28 +74,31 @@ const Charts: React.FC<ChartsProps> = ({ qid2Stats, queries }) => {
     return res;
   }, [qid2Stats, queries]);
 
-  const initialCharts: ChartItem[] = useMemo(() => [
-    {
-      id: 'hits-per-sec',
-      title: 'Hits per sec',
-      component: <LineChart series={lineSeries.hitsPerSec} colors={common.colors} />,
-    },
-    {
-      id: 'complex-events-per-sec',
-      title: 'Complex events per sec',
-      component: <LineChart series={lineSeries.complexEventsPerSec} colors={common.colors} />,
-    },
-    {
-      id: 'total-hits',
-      title: 'Total hits',
-      component: <DonutChart series={donutSeries.totalHits} labels={common.labels} colors={common.colors} />,
-    },
-    {
-      id: 'total-complex-events',
-      title: 'Total Complex Events',
-      component: <DonutChart series={donutSeries.totalComplexEvents} labels={common.labels} colors={common.colors} />,
-    },
-  ], [lineSeries, donutSeries, common]);
+  const initialCharts: ChartItem[] = useMemo(
+    () => [
+      {
+        id: 'hits-per-sec',
+        title: 'Hits per sec',
+        component: <LineChart series={lineSeries.hitsPerSec} colors={common.colors} />,
+      },
+      {
+        id: 'complex-events-per-sec',
+        title: 'Complex events per sec',
+        component: <LineChart series={lineSeries.complexEventsPerSec} colors={common.colors} />,
+      },
+      {
+        id: 'total-hits',
+        title: 'Total hits',
+        component: <DonutChart series={donutSeries.totalHits} labels={common.labels} colors={common.colors} />,
+      },
+      {
+        id: 'total-complex-events',
+        title: 'Total Complex Events',
+        component: <DonutChart series={donutSeries.totalComplexEvents} labels={common.labels} colors={common.colors} />,
+      },
+    ],
+    [lineSeries, donutSeries, common]
+  );
 
   const [charts, setCharts] = useState<ChartItem[]>(initialCharts);
 
@@ -157,8 +160,8 @@ const Charts: React.FC<ChartsProps> = ({ qid2Stats, queries }) => {
             }}
             dragElastic={0.2}
           >
-            <Paper 
-              sx={{ 
+            <Paper
+              sx={{
                 p: 1,
                 cursor: 'grab',
                 '&:active': {

@@ -1,4 +1,4 @@
-import type { DataItem, QueryId, TimelineEvent, TimelineConfig } from '@/types';
+import type { DataItem, QueryId, TimelineConfig, TimelineEvent } from '@/types';
 import { useEffect, useRef, useState } from 'react';
 
 const DEFAULT_TIME_HORIZON_SECONDS = 10;
@@ -32,8 +32,8 @@ export function useTimelineManager(data: DataItem[], selectedQueryIds: Set<Query
     }
 
     // Create timeline events for each hit in the latest data
-    const newEvents: TimelineEvent[] = latestDataItem.data.map(hit => ({
-      id: `event-${eventIdCounterRef.current++}`,
+    const newEvents: TimelineEvent[] = latestDataItem.data.map((hit) => ({
+      id: `event-${(eventIdCounterRef.current++).toString()}`,
       queryId,
       receivedAt,
       data: hit,
@@ -61,12 +61,12 @@ export function useTimelineManager(data: DataItem[], selectedQueryIds: Set<Query
   }, [selectedQueryIds]);
 
   const updateTimeHorizon = (seconds: number) => {
-    setTimelineConfig(prev => ({ ...prev, timeHorizonSeconds: seconds }));
+    setTimelineConfig((prev) => ({ ...prev, timeHorizonSeconds: seconds }));
   };
 
   const updateMaxEventsPerQuery = (maxEvents: number) => {
-    setTimelineConfig(prev => ({ ...prev, maxEventsPerQuery: maxEvents }));
-    
+    setTimelineConfig((prev) => ({ ...prev, maxEventsPerQuery: maxEvents }));
+
     // Trim existing events if new limit is smaller
     for (const [queryId, events] of timelineEventsRef.current) {
       if (events.length > maxEvents) {
@@ -77,11 +77,11 @@ export function useTimelineManager(data: DataItem[], selectedQueryIds: Set<Query
   };
 
   const getEventsInTimeRange = (queryId: QueryId): TimelineEvent[] => {
-    const queryEvents = timelineEventsRef.current.get(queryId) || [];
+    const queryEvents = timelineEventsRef.current.get(queryId) ?? [];
     const now = new Date();
     const cutoffTime = new Date(now.getTime() - timelineConfig.timeHorizonSeconds * 1000);
 
-    return queryEvents.filter(event => event.receivedAt >= cutoffTime);
+    return queryEvents.filter((event) => event.receivedAt >= cutoffTime);
   };
 
   const getAllActiveQueryEvents = (): Map<QueryId, TimelineEvent[]> => {
@@ -97,7 +97,7 @@ export function useTimelineManager(data: DataItem[], selectedQueryIds: Set<Query
 
   const getStoredEventCount = (queryId?: QueryId): number => {
     if (queryId) {
-      return timelineEventsRef.current.get(queryId)?.length || 0;
+      return timelineEventsRef.current.get(queryId)?.length ?? 0;
     }
     // Return total count across all queries
     let total = 0;
