@@ -9,7 +9,10 @@ type DarkModeProviderProps = {
 };
 
 export default function DarkModeProvider({ children }: DarkModeProviderProps) {
-  const [darkMode, setDarkMode] = useState(window.localStorage.getItem('darkMode') === 'true');
+  const [darkMode, setDarkMode] = useState(() => {
+    const stored = window.localStorage.getItem('darkMode');
+    return stored === null || stored === 'true';
+  });
 
   const providerValue = useMemo(
     () => ({
