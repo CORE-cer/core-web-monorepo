@@ -28,23 +28,51 @@ import { useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 
 import Main from './Main';
+import CORELogo from '/core.png';
 
 const Logo = () => {
   return (
-    <Typography variant="h6" noWrap>
-      <RouterLink
-        to="/"
-        style={{
-          marginRight: 32,
-          display: 'flex',
-          fontWeight: 700,
-          color: 'inherit',
-          textDecoration: 'none',
+    <Box
+      component={RouterLink}
+      to="/"
+      sx={{
+        display: 'flex',
+        alignItems: 'ceter',
+        justifyContent: 'center',
+        textDecoration: 'none',
+        '&:hover img': {
+          filter: 'drop-shadow(#f783fb 0 0 4px)',
+        },
+        '&:hover p': {
+          textShadow: '#f783fb 0 0 8px',
+        },
+      }}
+    >
+      <Box
+        component="img"
+        src={CORELogo}
+        alt="CORE"
+        sx={{
+          height: { sm: 32, xs: 24 },
+          cursor: 'pointer',
+          '&:hover': {
+            // filter: 'drop-shadow(#f783fb 0 0 4px)',
+          },
+        }}
+      />
+      <Typography
+        component="p"
+        sx={{
+          ml: 0.5,
+          mt: 'auto',
+          fontSize: 16,
+          fontFamily: '"Roboto mono", monospace',
+          color: 'text.primary',
         }}
       >
-        CORE Beta
-      </RouterLink>
-    </Typography>
+        Beta
+      </Typography>
+    </Box>
   );
 };
 
@@ -101,7 +129,7 @@ export default function Navbar({ children, renderMain = true }: NavbarProps) {
           <IconButton
             color="inherit"
             onClick={() => {
-              setDrawerOpen(true);
+              setDrawerOpen((prev) => !prev);
             }}
             edge="start"
             sx={{

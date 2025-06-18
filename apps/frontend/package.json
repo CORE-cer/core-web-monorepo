@@ -40,8 +40,10 @@
     "react-apexcharts": "^1.7.0",
     "react-cookie": "^8.0.1",
     "react-dom": "^19.1.0",
+    "react-markdown": "^10.1.0",
     "react-virtualized-auto-sizer": "^1.0.26",
     "react-virtuoso": "^4.12.8",
+    "remark-gfm": "^4.0.1",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
