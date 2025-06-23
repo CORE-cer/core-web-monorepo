@@ -48,6 +48,12 @@ export class QueryCreator {
       throw new Error(`Error validating query identifier : ${queryIdentifier.error.toString()}`);
     }
 
+    const existingQuery = await this.txHost.tx.selectFrom('queries').select('id').where('id', '=', queryIdentifier.data).executeTakeFirst();
+
+    if (existingQuery) {
+      await this.txHost.tx.deleteFrom('queries').where('id', '=', queryIdentifier.data).execute();
+    }
+
     await this.txHost.tx.insertInto('queries').values({ id: queryIdentifier.data, query_text: query }).execute();
     await this.txHost.tx.insertInto('user_queries').values({ user_id: userId, query_id: queryIdentifier.data }).execute();
 
