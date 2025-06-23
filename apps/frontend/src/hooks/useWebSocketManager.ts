@@ -1,6 +1,7 @@
-import type { ComplexEvent, DataItem, FormattedHit, FormattedHitData, HitCount, QueryId, QueryIdToQueryStatMap, QueryIdToQueryWebSocketMap } from '@/types';
+import { ComplexEventSchema, type DataItem, type HitCount, type QueryId, type QueryIdToQueryStatMap, type QueryIdToQueryWebSocketMap } from '@/types';
 import { getCoreCPPBaseUrl } from '@/utils/api';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { formatHit } from '@/utils/formatHit';
+import { useEffect, useRef, useState } from 'react';
 
 export const useWebSocketManager = (selectedQueryIds: Set<QueryId>) => {
   const [queryIdToQueryWebSocket, setQueryIdToQueryWebSocket] = useState<QueryIdToQueryWebSocketMap>(new Map());
@@ -11,54 +12,6 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>) => {
 
   const currentQid2HitRef = useRef<Map<QueryId, HitCount>>(new Map());
   const dataBuffer = useRef<DataItem[]>([]);
-
-  const formatComplexEvents = useCallback((complexEventsJson: ComplexEvent[]): FormattedHit[] => {
-    // function getEventInfoFromEventId(eventId: string): EventInfo | undefined {
-    //   for (const streamInfo of streamsInfo) {
-    //     for (const eventInfo of streamInfo.events_info) {
-    //       if (eventInfo.id === eventId) {
-    //         return eventInfo;
-    //       }
-    //     }
-    //   }
-    //   return undefined;
-    // }
-
-    const outputHits: FormattedHit[] = [];
-    for (const complexEvent of complexEventsJson) {
-      const outputComplexEvent: FormattedHitData = {
-        start: complexEvent.start,
-        end: complexEvent.end,
-        events: [],
-      };
-
-      for (const event of complexEvent.events) {
-        // const eventData = event.event;
-        // const eventInfo = getEventInfoFromEventId(eventData.event_type_id);
-        //
-        // if (eventInfo) {
-        //   const eventOutput: { event_type: string; [key: string]: unknown } = {
-        //     event_type: eventInfo.name,
-        //   };
-        //
-        //   for (let i = 0; i < eventInfo.attributes_info.length; i++) {
-        //     const attributeInfo = eventInfo.attributes_info[i];
-        //     const attributeValue = eventData.attributes[i];
-        //     eventOutput[attributeInfo.name] = attributeValue;
-        //   }
-        //   outputComplexEvent.events.push(eventOutput);
-        // }
-        outputComplexEvent.events.push({ dataString: JSON.stringify(event) });
-      }
-
-      const time = new Date(outputComplexEvent.end / 1000000);
-      outputHits.push({
-        time,
-        data: outputComplexEvent,
-      });
-    }
-    return outputHits;
-  }, []);
 
   // Handle opening/closing ws connections
   useEffect(() => {
@@ -133,14 +86,13 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>) => {
       // Buffered updates
       for (const [qid, ws] of queryIdToQueryWebSocket.entries()) {
         ws.onmessage = (event) => {
-          const receivedData = event.data as string;
-          const eventJson: ComplexEvent[] = JSON.parse(receivedData) as ComplexEvent[];
-          const transformedHits = formatComplexEvents(eventJson);
-
-          let currentComplexEvents = 0;
-          for (const elem of transformedHits) {
-            currentComplexEvents += elem.data.events.length;
+          const eventJsonParse = ComplexEventSchema.array().safeParse(JSON.parse(event.data));
+          if (!eventJsonParse.success) {
+            console.error('Failed to parse complex event:', eventJsonParse.error);
+            return;
           }
+          const eventJson = eventJsonParse.data;
+          const transformedHits = formatHit(eventJson);
 
           const currentQid2Hit = currentQid2HitRef.current.get(qid);
           if (!currentQid2Hit) {
@@ -148,8 +100,8 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>) => {
             return;
           }
 
-          currentQid2Hit.numHits += transformedHits.length;
-          currentQid2Hit.numComplexEvents += currentComplexEvents;
+          currentQid2Hit.numHits += 1;
+          currentQid2Hit.numComplexEvents += transformedHits.complexEvents.length;
 
           dataBuffer.current.push({ qid, data: transformedHits });
         };
@@ -164,32 +116,29 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>) => {
       for (const [qid, ws] of queryIdToQueryWebSocket.entries()) {
         ws.onmessage = (event) => {
           setData((prevData) => {
-            const receivedData: unknown = event.data;
-            if (typeof receivedData !== 'string') {
+            const eventJsonParse = ComplexEventSchema.array().safeParse(JSON.parse(event.data));
+            if (!eventJsonParse.success) {
+              console.error('Failed to parse complex event:', eventJsonParse.error);
               return prevData;
             }
-            const eventJson: ComplexEvent[] = JSON.parse(receivedData) as ComplexEvent[];
-            const transformedHits = formatComplexEvents(eventJson);
+            const eventJson = eventJsonParse.data;
+            const transformedHits = formatHit(eventJson);
 
-            let currentComplexEvents = 0;
-            for (const elem of transformedHits) {
-              currentComplexEvents += elem.data.events.length;
-            }
             const currentQid2Hit = currentQid2HitRef.current.get(qid);
             if (!currentQid2Hit) {
               console.error(`No hit count found for qid ${qid.toString()}`);
               return prevData;
             }
 
-            currentQid2Hit.numHits += transformedHits.length;
-            currentQid2Hit.numComplexEvents += currentComplexEvents;
+            currentQid2Hit.numHits += 1;
+            currentQid2Hit.numComplexEvents += transformedHits.complexEvents.length;
 
             return [...prevData, { qid, data: transformedHits }];
           });
         };
       }
     }
-  }, [eventInterval, queryIdToQueryWebSocket, formatComplexEvents, setData]);
+  }, [eventInterval, queryIdToQueryWebSocket, setData]);
 
   // Cleanup WebSockets on unmount
   useEffect(() => {

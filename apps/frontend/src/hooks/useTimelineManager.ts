@@ -19,6 +19,9 @@ export function useTimelineManager(data: DataItem[], selectedQueryIds: Set<Query
     if (data.length === 0) return;
 
     const latestDataItem = data[data.length - 1];
+    if (!latestDataItem) {
+      return;
+    }
     if (!selectedQueryIds.has(latestDataItem.qid)) return;
 
     const queryId = latestDataItem.qid;
@@ -32,11 +35,11 @@ export function useTimelineManager(data: DataItem[], selectedQueryIds: Set<Query
     }
 
     // Create timeline events for each hit in the latest data
-    const newEvents: TimelineEvent[] = latestDataItem.data.map((hit) => ({
+    const newEvents: TimelineEvent[] = latestDataItem.data.complexEvents.map((complexEvent) => ({
       id: `event-${(eventIdCounterRef.current++).toString()}`,
       queryId,
       receivedAt,
-      data: hit,
+      data: complexEvent,
     }));
 
     // Add new events to the beginning (most recent first)

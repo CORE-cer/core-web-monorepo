@@ -48,36 +48,38 @@ export type EventInfo = {
   }[];
 };
 
-// Complex Event Types
-export type MarkVariable = string;
+export const EventDataSchema = z.object({
+  event_type_id: z.number(),
+  attributes: z.array(z.union([z.string(), z.number()])),
+});
 
-export type EventData = {
-  event_type_id: number;
-  attributes: (string | number)[];
+export const ComplexEventSchema = z.object({
+  start: z.number(),
+  end: z.number(),
+  events: z.array(z.record(z.string(), EventDataSchema)),
+});
+
+export const HitSchema = ComplexEventSchema.array();
+
+export type FormattedComplexEvent = {
+  eventName: string;
+  attributes: Record<string, string | number>;
 };
 
-export type ComplexEvent = {
+export type FormattedMarkedComplexEvent = {
   start: number;
   end: number;
-  events: Record<MarkVariable, EventData>[];
-};
-
-export type FormattedHitData = {
-  start: number;
-  end: number;
-  events: {
-    dataString: string;
-  }[];
+  complexEvents: Record<string, FormattedComplexEvent[]>;
 };
 
 export type FormattedHit = {
-  time: Date;
-  data: FormattedHitData;
+  end: number;
+  complexEvents: FormattedMarkedComplexEvent[];
 };
 
 export type DataItem = {
   qid: QueryId;
-  data: FormattedHit[];
+  data: FormattedHit;
 };
 
 // Statistics Types
@@ -150,7 +152,7 @@ export type TimelineEvent = {
   id: string;
   queryId: QueryId;
   receivedAt: Date;
-  data: FormattedHit;
+  data: FormattedMarkedComplexEvent;
 };
 
 export type TimelineConfig = {
