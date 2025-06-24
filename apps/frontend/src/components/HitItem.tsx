@@ -54,7 +54,7 @@ const HitItem = memo(
     return (
       <Card
         sx={{
-          my: 1,
+          my: 0,
           cursor: 'pointer',
           border: selected ? 2 : 0,
           borderColor: 'primary.main',

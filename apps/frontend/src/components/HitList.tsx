@@ -184,12 +184,11 @@ const HitList: React.FC<HitListProps> = ({ data, eventInterval, setEventInterval
             style={{ height: '100%' }}
             overscan={50}
             ref={virtuoso}
-            alignToBottom
             atBottomStateChange={(isAtBottom: boolean) => {
               setAtBottom(isAtBottom);
             }}
             followOutput="auto"
-            atBottomThreshold={300}
+            atBottomThreshold={50}
             data={data}
             itemContent={renderHitItem}
           />
