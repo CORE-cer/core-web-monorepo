@@ -27,7 +27,8 @@ const Charts: React.FC<ChartsProps> = ({ qid2Stats, queries }) => {
       if (!queryInfo) {
         continue;
       }
-      res.colors.push(COLORS[Number(qid) % MAX_COLORS]);
+      let color = COLORS[Number(qid) % MAX_COLORS] as string;
+      res.colors.push(color);
       res.labels.push(queryInfo.query_name);
     }
 

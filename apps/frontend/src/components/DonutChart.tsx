@@ -46,10 +46,14 @@ const DonutChart: React.FC<DonutChartProps> = ({ series, labels, colors }) => {
       },
       dataLabels: {
         formatter(val: number, opts: unknown) {
-          if (!opts || typeof opts !== 'object' || !('seriesIndex' in opts) || typeof opts.seriesIndex !== 'number') {
+          if (!opts || typeof opts !== 'object' || !('seriesIndex' in opts) || typeof opts.seriesIndex !== 'number' || series[opts.seriesIndex] === undefined) {
             return '';
           }
-          const str = `${series[opts.seriesIndex].toString()} (${val.toFixed(1)}%)`;
+          const seriesName = labels[opts.seriesIndex];
+          if (!seriesName) {
+            return '';
+          }
+          const str = `${seriesName.toString()} (${val.toFixed(1)}%)`;
           return str;
         },
         style: {
@@ -113,7 +117,11 @@ const DonutChart: React.FC<DonutChartProps> = ({ series, labels, colors }) => {
             if (!opts || typeof opts !== 'object' || !('seriesIndex' in opts) || typeof opts.seriesIndex !== 'number') {
               return '';
             }
-            const str = `${series[opts.seriesIndex].toString()} (${val.toFixed(1)}%)`;
+            const seriesName = labels[opts.seriesIndex];
+            if (!seriesName) {
+              return '';
+            }
+            const str = `${seriesName.toString()} (${val.toFixed(1)}%)`;
             return str;
           },
         },

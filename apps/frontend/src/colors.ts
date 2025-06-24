@@ -1,4 +1,4 @@
-export const COLORS: string[] = [
+export const COLORS = [
   '#03dac6',
   '#fce938',
   '#ec4e20',
@@ -15,6 +15,6 @@ export const COLORS: string[] = [
   '#6b97b9',
   '#a96452',
   '#424c55',
-];
+] as const;
 
 export const MAX_COLORS: number = COLORS.length;
