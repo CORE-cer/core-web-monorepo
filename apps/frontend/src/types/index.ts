@@ -67,13 +67,13 @@ export type FormattedComplexEvent = {
 };
 
 export type FormattedMarkedComplexEvent = {
-  start: number;
-  end: number;
+  start: Date;
+  end: Date;
   complexEvents: Record<string, FormattedComplexEvent[]>;
 };
 
 export type FormattedHit = {
-  end: number;
+  end: Date;
   complexEvents: FormattedMarkedComplexEvent[];
 };
 

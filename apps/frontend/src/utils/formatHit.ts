@@ -12,7 +12,7 @@ export function formatHit(hit: z.infer<typeof HitSchema>): FormattedHit {
   });
 
   return {
-    end: end.end,
+    end: new Date(end.end / 1000000),
     complexEvents: complexEvents,
   };
 }
@@ -30,8 +30,8 @@ function formatComplexEvent(complexEvent: z.infer<typeof ComplexEventSchema>): F
     }
   }
   return {
-    start: complexEvent.start,
-    end: complexEvent.end,
+    start: new Date(complexEvent.start / 1000000),
+    end: new Date(complexEvent.end / 1000000),
     complexEvents: eventsByMarkedVariables,
   };
 }

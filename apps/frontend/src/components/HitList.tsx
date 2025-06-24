@@ -1,9 +1,12 @@
-import { MAX_COLORS } from '@/colors';
-import type { DataItem } from '@/types';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Box, Divider, Fab, Fade, Paper, Slider, Tooltip, Typography } from '@mui/material';
+import type { DataItem, FormattedHit, FormattedMarkedComplexEvent } from '@/types';
+import ExpandMoreIcon from '@mui/icons-material/KeyboardArrowDown';
+import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
+import { Box, Button, ButtonGroup, Divider, Fab, Fade, FormControlLabel, Slider, Switch, Tooltip, Typography } from '@mui/material';
 import { useRef, useState } from 'react';
 import { Virtuoso, type VirtuosoHandle } from 'react-virtuoso';
+import HitDetails from './HitDetails';
+import HitItem from './HitItem';
 
 type ScrollToLatestProps = {
   trigger: boolean;
@@ -21,26 +24,7 @@ type HitListProps = {
   setEventInterval: (value: number) => void;
 };
 
-const renderItem = (_index: number, data: DataItem) => {
-  return (
-    <Box sx={{ px: 1, py: 0.5 }}>
-      <Paper
-        className={`color-${(Number(data.qid) % MAX_COLORS).toString()}`}
-        sx={{
-          p: 0.5,
-          fontFamily: 'Consolas, "Courier New", monospace',
-          fontSize: 12,
-          wordBreak: 'break-all',
-        }}
-      >
-        {JSON.stringify(data.data)}
-      </Paper>
-    </Box>
-  );
-};
-
 const ScrollToLatest: React.FC<ScrollToLatestProps> = ({ trigger, scrollToBottom }) => {
-  // https://mui.com/material-ui/react-app-bar/
   return (
     <Fade in={trigger}>
       <Tooltip title="Go to bottom" arrow>
@@ -59,7 +43,7 @@ const ScrollToLatest: React.FC<ScrollToLatestProps> = ({ trigger, scrollToBottom
             },
           }}
         >
-          <KeyboardArrowDownIcon />
+          <ExpandMoreIcon />
         </Fab>
       </Tooltip>
     </Fade>
@@ -118,7 +102,11 @@ const EventIntervalSelector: React.FC<EventIntervalSelectorProps> = ({ value, se
 
 const HitList: React.FC<HitListProps> = ({ data, eventInterval, setEventInterval }) => {
   const [atBottom, setAtBottom] = useState<boolean>(false);
-
+  const [selectedHit, setSelectedHit] = useState<FormattedHit | null>(null);
+  const [selectedComplexEvent, setSelectedComplexEvent] = useState<FormattedMarkedComplexEvent | null>(null);
+  const [defaultExpanded, setDefaultExpanded] = useState<boolean>(false);
+  const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set());
+  
   const virtuoso = useRef<VirtuosoHandle>(null);
 
   const handleScrollToBottom = () => {
@@ -130,24 +118,118 @@ const HitList: React.FC<HitListProps> = ({ data, eventInterval, setEventInterval
     });
   };
 
+  const handleHitClick = (hit: FormattedHit) => {
+    setSelectedHit(hit);
+    setSelectedComplexEvent(null);
+  };
+
+  const handleComplexEventClick = (hit: FormattedHit, complexEvent: FormattedMarkedComplexEvent) => {
+    setSelectedHit(hit);
+    setSelectedComplexEvent(complexEvent);
+  };
+
+  const handleExpandItem = (index: number, expanded: boolean) => {
+    setExpandedItems(prev => {
+      const next = new Set(prev);
+      if (expanded) {
+        next.add(index);
+      } else {
+        next.delete(index);
+      }
+      return next;
+    });
+  };
+
+  const handleExpandAll = () => {
+    setExpandedItems(new Set(data.map((_, i) => i)));
+  };
+
+  const handleCollapseAll = () => {
+    setExpandedItems(new Set());
+  };
+
+  const renderHitItem = (index: number, item: DataItem) => {
+    const isExpanded = expandedItems.has(index);
+    const hasBeenExpanded = isExpanded !== defaultExpanded;
+    
+    return (
+      <HitItem
+        qid={item.qid}
+        data={item.data}
+        onHitClick={handleHitClick}
+        onComplexEventClick={handleComplexEventClick}
+        selected={selectedHit === item.data}
+        selectedComplexEventIndex={
+          selectedHit === item.data && selectedComplexEvent
+            ? item.data.complexEvents.indexOf(selectedComplexEvent)
+            : undefined
+        }
+        expanded={hasBeenExpanded ? isExpanded : defaultExpanded}
+        onExpandedChange={(expanded: boolean) => handleExpandItem(index, expanded)}
+      />
+    );
+  };
+
   return (
     <Box sx={{ overflow: 'hidden', flex: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <ScrollToLatest trigger={!atBottom} scrollToBottom={handleScrollToBottom} />
-      <EventIntervalSelector value={eventInterval} setValue={setEventInterval} />
+      <Box sx={{ px: 2, py: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={defaultExpanded}
+              onChange={(e) => setDefaultExpanded(e.target.checked)}
+            />
+          }
+          label="Default Expanded"
+        />
+        <ButtonGroup size="small">
+          <Button
+            startIcon={<UnfoldMoreIcon />}
+            onClick={handleExpandAll}
+          >
+            Expand All
+          </Button>
+          <Button
+            startIcon={<UnfoldLessIcon />}
+            onClick={handleCollapseAll}
+          >
+            Collapse All
+          </Button>
+        </ButtonGroup>
+        <Box sx={{ flex: 1 }}>
+          <EventIntervalSelector value={eventInterval} setValue={setEventInterval} />
+        </Box>
+      </Box>
       <Divider />
-      <Virtuoso
-        style={{ height: '100%', minHeight: '400px' }} // Add minHeight
-        overscan={50}
-        ref={virtuoso}
-        alignToBottom
-        atBottomStateChange={(isAtBottom: boolean) => {
-          setAtBottom(isAtBottom);
-        }}
-        followOutput="auto" // Auto-scroll if the window is at the bottom
-        atBottomThreshold={300}
-        data={data}
-        itemContent={renderItem}
-      />
+      <Box sx={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+        <Box sx={{ flex: 1, overflow: 'hidden', borderRight: 1, borderColor: 'divider' }}>
+          <ScrollToLatest trigger={!atBottom} scrollToBottom={handleScrollToBottom} />
+          <Virtuoso
+            style={{ height: '100%' }}
+            overscan={50}
+            ref={virtuoso}
+            alignToBottom
+            atBottomStateChange={(isAtBottom: boolean) => {
+              setAtBottom(isAtBottom);
+            }}
+            followOutput="auto"
+            atBottomThreshold={300}
+            data={data}
+            itemContent={renderHitItem}
+          />
+        </Box>
+        <Box sx={{ flex: 1, overflow: 'hidden' }}>
+          {selectedHit ? (
+            <HitDetails hit={selectedHit} selectedComplexEvent={selectedComplexEvent || undefined} />
+          ) : (
+            <Box sx={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+              <Typography variant="body1" color="text.secondary">
+                Select a hit to view details
+              </Typography>
+            </Box>
+          )}
+        </Box>
+      </Box>
     </Box>
   );
 };

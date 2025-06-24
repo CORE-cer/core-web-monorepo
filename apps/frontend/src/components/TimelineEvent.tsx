@@ -67,7 +67,7 @@ function TimelineEventComponent({ event, timeHorizonSeconds, queryIndex, onAnima
     <div
       ref={elementRef}
       className={`timeline-event timeline-event-query-${(queryIndex + 1).toString()}`}
-      title={`Query ${event.queryId.toString()} - Event at ${new Date(event.data.end / 1000000).toLocaleTimeString()}`}
+      title={`Query ${event.queryId.toString()} - Event at ${event.data.end.toLocaleTimeString()}`}
       style={elementStyle}
     />
   );
