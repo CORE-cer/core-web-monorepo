@@ -33,6 +33,7 @@ function RouteComponent() {
     timelineConfig,
     updateTimeHorizon,
     getAllActiveQueryEvents,
+    clearData,
   } = useWatchPage();
 
   const [chartLayoutMode, setChartLayoutMode] = useState<'list' | 'freeform'>('list');
@@ -100,7 +101,12 @@ function RouteComponent() {
           <Divider />
           <Box sx={{ flex: 1, overflow: 'auto', height: '100%' }}>
             {viewMode === 'list' ? (
-              <HitList data={data} eventInterval={eventInterval} setEventInterval={setEventInterval} />
+              <HitList 
+                data={data} 
+                eventInterval={eventInterval} 
+                setEventInterval={setEventInterval}
+                onClearData={clearData}
+              />
             ) : viewMode === 'stats' ? (
               <Stats queryIdToQueryStatMap={queryIdToQueryStat} queryIdToQueryInfoMap={queries} />
             ) : viewMode === 'timeline' ? (

@@ -13,6 +13,30 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>) => {
   const currentQid2HitRef = useRef<Map<QueryId, HitCount>>(new Map());
   const dataBuffer = useRef<DataItem[]>([]);
 
+  const clearData = () => {
+    setData([]);
+    dataBuffer.current = [];
+    // Reset stats
+    setQueryIdToQueryStat(prev => {
+      const next = new Map(prev);
+      for (const [qid, stat] of next) {
+        next.set(qid, {
+          perSec: [],
+          hitStats: { max: 0, total: 0 },
+          complexEventStats: { max: 0, total: 0 }
+        });
+      }
+      return next;
+    });
+    // Reset hit counts
+    for (const [qid] of currentQid2HitRef.current) {
+      currentQid2HitRef.current.set(qid, {
+        numHits: 0,
+        numComplexEvents: 0
+      });
+    }
+  };
+
   // Handle opening/closing ws connections
   useEffect(() => {
     setQueryIdToQueryWebSocket((prev) => {
@@ -233,5 +257,6 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>) => {
     queryIdToQueryStat,
     eventInterval,
     setEventInterval,
+    clearData
   };
 };

@@ -1,17 +1,14 @@
 import type { DataItem, FormattedHit, FormattedMarkedComplexEvent } from '@/types';
-import ExpandMoreIcon from '@mui/icons-material/KeyboardArrowDown';
+import ClearAllIcon from '@mui/icons-material/ClearAll';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import { Box, Button, ButtonGroup, Divider, Fab, Fade, FormControlLabel, Slider, Switch, Tooltip, Typography } from '@mui/material';
 import { useRef, useState } from 'react';
 import { Virtuoso, type VirtuosoHandle } from 'react-virtuoso';
+
 import HitDetails from './HitDetails';
 import HitItem from './HitItem';
-
-type ScrollToLatestProps = {
-  trigger: boolean;
-  scrollToBottom: () => void;
-};
 
 type EventIntervalSelectorProps = {
   value: number;
@@ -22,32 +19,7 @@ type HitListProps = {
   data: DataItem[];
   eventInterval: number;
   setEventInterval: (value: number) => void;
-};
-
-const ScrollToLatest: React.FC<ScrollToLatestProps> = ({ trigger, scrollToBottom }) => {
-  return (
-    <Fade in={trigger}>
-      <Tooltip title="Go to bottom" arrow>
-        <Fab
-          size="small"
-          onClick={scrollToBottom}
-          variant="circular"
-          color="default"
-          sx={{
-            opacity: '0.5 !important',
-            position: 'fixed',
-            bottom: 32,
-            right: 32,
-            '&:hover': {
-              opacity: '1 !important',
-            },
-          }}
-        >
-          <ExpandMoreIcon />
-        </Fab>
-      </Tooltip>
-    </Fade>
-  );
+  onClearData: () => void;
 };
 
 const EventIntervalSelector: React.FC<EventIntervalSelectorProps> = ({ value, setValue }) => {
@@ -100,19 +72,20 @@ const EventIntervalSelector: React.FC<EventIntervalSelectorProps> = ({ value, se
   );
 };
 
-const HitList: React.FC<HitListProps> = ({ data, eventInterval, setEventInterval }) => {
+const HitList: React.FC<HitListProps> = ({ data, eventInterval, setEventInterval, onClearData }) => {
   const [atBottom, setAtBottom] = useState<boolean>(false);
   const [selectedHit, setSelectedHit] = useState<FormattedHit | null>(null);
   const [selectedComplexEvent, setSelectedComplexEvent] = useState<FormattedMarkedComplexEvent | null>(null);
   const [defaultExpanded, setDefaultExpanded] = useState<boolean>(false);
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set());
-  
+  const existingItems = useRef<Set<number>>(new Set());
+
   const virtuoso = useRef<VirtuosoHandle>(null);
 
   const handleScrollToBottom = () => {
     if (!virtuoso.current) return;
     virtuoso.current.scrollToIndex({
-      index: data.length - 1,
+      index: 'LAST',
       align: 'end',
       behavior: 'auto',
     });
@@ -129,7 +102,7 @@ const HitList: React.FC<HitListProps> = ({ data, eventInterval, setEventInterval
   };
 
   const handleExpandItem = (index: number, expanded: boolean) => {
-    setExpandedItems(prev => {
+    setExpandedItems((prev) => {
       const next = new Set(prev);
       if (expanded) {
         next.add(index);
@@ -148,10 +121,19 @@ const HitList: React.FC<HitListProps> = ({ data, eventInterval, setEventInterval
     setExpandedItems(new Set());
   };
 
+  const handleClear = () => {
+    setSelectedHit(null);
+    setSelectedComplexEvent(null);
+    setExpandedItems(new Set());
+    onClearData();
+  };
+
   const renderHitItem = (index: number, item: DataItem) => {
-    const isExpanded = expandedItems.has(index);
-    const hasBeenExpanded = isExpanded !== defaultExpanded;
-    
+    const expanded = (!existingItems.current.has(index) && defaultExpanded) || expandedItems.has(index);
+    if (expanded) {
+      expandedItems.add(index);
+    }
+    existingItems.current.add(index);
     return (
       <HitItem
         qid={item.qid}
@@ -159,12 +141,8 @@ const HitList: React.FC<HitListProps> = ({ data, eventInterval, setEventInterval
         onHitClick={handleHitClick}
         onComplexEventClick={handleComplexEventClick}
         selected={selectedHit === item.data}
-        selectedComplexEventIndex={
-          selectedHit === item.data && selectedComplexEvent
-            ? item.data.complexEvents.indexOf(selectedComplexEvent)
-            : undefined
-        }
-        expanded={hasBeenExpanded ? isExpanded : defaultExpanded}
+        selectedComplexEventIndex={selectedHit === item.data && selectedComplexEvent ? item.data.complexEvents.indexOf(selectedComplexEvent) : undefined}
+        expanded={expanded}
         onExpandedChange={(expanded: boolean) => handleExpandItem(index, expanded)}
       />
     );
@@ -177,23 +155,22 @@ const HitList: React.FC<HitListProps> = ({ data, eventInterval, setEventInterval
           control={
             <Switch
               checked={defaultExpanded}
-              onChange={(e) => setDefaultExpanded(e.target.checked)}
+              onChange={(e) => {
+                setDefaultExpanded(e.target.checked);
+              }}
             />
           }
           label="Default Expanded"
         />
         <ButtonGroup size="small">
-          <Button
-            startIcon={<UnfoldMoreIcon />}
-            onClick={handleExpandAll}
-          >
+          <Button startIcon={<UnfoldMoreIcon />} onClick={handleExpandAll}>
             Expand All
           </Button>
-          <Button
-            startIcon={<UnfoldLessIcon />}
-            onClick={handleCollapseAll}
-          >
+          <Button startIcon={<UnfoldLessIcon />} onClick={handleCollapseAll}>
             Collapse All
+          </Button>
+          <Button startIcon={<ClearAllIcon />} onClick={handleClear} color="error">
+            Clear All
           </Button>
         </ButtonGroup>
         <Box sx={{ flex: 1 }}>
@@ -203,7 +180,6 @@ const HitList: React.FC<HitListProps> = ({ data, eventInterval, setEventInterval
       <Divider />
       <Box sx={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
         <Box sx={{ flex: 1, overflow: 'hidden', borderRight: 1, borderColor: 'divider' }}>
-          <ScrollToLatest trigger={!atBottom} scrollToBottom={handleScrollToBottom} />
           <Virtuoso
             style={{ height: '100%' }}
             overscan={50}
@@ -230,6 +206,32 @@ const HitList: React.FC<HitListProps> = ({ data, eventInterval, setEventInterval
           )}
         </Box>
       </Box>
+      {
+        <Fade in={!atBottom}>
+          <Tooltip title="Go to bottom" arrow>
+            <Fab
+              size="small"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleScrollToBottom();
+              }}
+              variant="circular"
+              color="default"
+              sx={{
+                opacity: '0.5 !important',
+                position: 'absolute',
+                bottom: 16,
+                right: 16,
+                '&:hover': {
+                  opacity: '1 !important',
+                },
+              }}
+            >
+              <KeyboardArrowDownIcon />
+            </Fab>
+          </Tooltip>
+        </Fade>
+      }
     </Box>
   );
 };

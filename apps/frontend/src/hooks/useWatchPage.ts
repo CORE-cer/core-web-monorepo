@@ -13,7 +13,7 @@ export function useWatchPage() {
   const { queries, streamsInfo, handleInactivateQuery } = useQueryManager();
 
   // Use the WebSocket manager hook for data and stats
-  const { data, queryIdToQueryStat, eventInterval, setEventInterval } = useWebSocketManager(selectedQueryIds);
+  const { data, queryIdToQueryStat, eventInterval, setEventInterval, clearData } = useWebSocketManager(selectedQueryIds);
 
   // Use the timeline manager hook for timeline-specific functionality
   const { timelineConfig, updateTimeHorizon, getAllActiveQueryEvents } = useTimelineManager(data, selectedQueryIds);
@@ -51,5 +51,6 @@ export function useWatchPage() {
     timelineConfig,
     updateTimeHorizon,
     getAllActiveQueryEvents,
+    clearData,
   };
 }
