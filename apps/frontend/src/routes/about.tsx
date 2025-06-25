@@ -6,5 +6,5 @@ export const Route = createFileRoute('/about')({
 });
 
 function RouteComponent() {
-  return <MarkdownPage url="https://raw.githubusercontent.com/CORE-cer/CORE/refs/heads/main/README.md" />;
+  return <MarkdownPage url="https://raw.githubusercontent.com/CORE-cer/CORE-docs/refs/heads/main/about-us.md" />;
 }
