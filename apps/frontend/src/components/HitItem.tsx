@@ -1,4 +1,4 @@
-import { MAX_COLORS } from '@/colors';
+import { MAX_COLORS, COLORS } from '@/colors';
 import type { FormattedHit, FormattedMarkedComplexEvent, QueryId } from '@/types';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Box, Card, CardContent, Chip, Collapse, IconButton, Paper, Stack, Typography, styled } from '@mui/material';
@@ -28,8 +28,8 @@ const ExpandMore = styled((props: any) => {
 
 const HitItem = memo(
   function HitItem({ qid, data, onHitClick, onComplexEventClick, selected, selectedComplexEventIndex, expanded, onExpandedChange }: HitItemProps) {
-    console.log('Rendering HitItem for qid:', qid, 'expanded:', expanded);
-    const colorClass = `color-${(Number(qid) % MAX_COLORS).toString()}`;
+    const colorIndex = Number(qid) % MAX_COLORS;
+    const color = COLORS[colorIndex];
 
     const handleExpandClick = (e: React.MouseEvent) => {
       e.stopPropagation();
@@ -50,6 +50,7 @@ const HitItem = memo(
     if (!firstEvent) {
       return null;
     }
+    console.log('Color class for qid', qid, 'is', color);
 
     return (
       <Card
@@ -63,10 +64,10 @@ const HitItem = memo(
         onClick={() => onHitClick(data)}
       >
         <Box
-          className={colorClass}
           sx={{
             height: 4,
             width: '100%',
+            backgroundColor: color,
           }}
         />
         <CardContent>
