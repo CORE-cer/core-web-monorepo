@@ -11,7 +11,8 @@ import { Box, Divider, IconButton, ToggleButton, ToggleButtonGroup, Tooltip } fr
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 
-const SIDE_PANEL_WIDTH = 200;
+const SIDE_PANEL_WIDTH_COLLAPSED = 250;
+const SIDE_PANEL_WIDTH_EXPANDED = 400;
 
 export const Route = createFileRoute('/watch')({
   component: RouteComponent,
@@ -37,10 +38,17 @@ function RouteComponent() {
   } = useWatchPage();
 
   const [chartLayoutMode, setChartLayoutMode] = useState<'list' | 'freeform'>('list');
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
 
   const handleChartLayoutChange = () => {
     setChartLayoutMode((prev) => (prev === 'list' ? 'freeform' : 'list'));
   };
+
+  const handleToggleSidebar = () => {
+    setSidebarExpanded((prev) => !prev);
+  };
+
+  const sidebarWidth = sidebarExpanded ? SIDE_PANEL_WIDTH_EXPANDED : SIDE_PANEL_WIDTH_COLLAPSED;
 
   return (
     <>
@@ -50,7 +58,8 @@ function RouteComponent() {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            width: SIDE_PANEL_WIDTH,
+            width: sidebarWidth,
+            transition: 'width 0.2s ease-in-out',
             borderRight: 1,
             borderColor: 'divider',
           }}
@@ -60,6 +69,8 @@ function RouteComponent() {
             selectedQueryIds={selectedQueryIds}
             setSelectedQueryIds={setSelectedQueryIds}
             onInactivateQuery={handleInactivateQuery}
+            isExpanded={sidebarExpanded}
+            onToggleExpanded={handleToggleSidebar}
           />
         </Box>
 
