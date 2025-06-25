@@ -28,12 +28,13 @@ export type QueryIdToQueryWebSocketMap = Map<QueryId, WebSocket>;
 
 export type ExampleData = {
   title: string;
+  short_title: string;
   query: string;
   streamType?: StreamType; // Add stream type to examples
 };
 
 // Stream Types
-export type StreamType = 'coinbase' | 'binance' | 'kraken'; // Add more stream types as needed
+export type StreamType = 'coinbase';
 
 export type StreamTypeExamples = Record<StreamType, ExampleData[]>;
 

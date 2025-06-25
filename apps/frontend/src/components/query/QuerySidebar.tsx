@@ -64,22 +64,6 @@ export function QuerySidebar({ setExample }: QuerySidebarProps) {
           >
             Coinbase
           </Button>
-          <Button
-            variant={selectedStream === 'binance' ? 'contained' : 'outlined'}
-            onClick={() => {
-              setSelectedStream('binance');
-            }}
-          >
-            Binance
-          </Button>
-          <Button
-            variant={selectedStream === 'kraken' ? 'contained' : 'outlined'}
-            onClick={() => {
-              setSelectedStream('kraken');
-            }}
-          >
-            Kraken
-          </Button>
         </ButtonGroup>
       </Box>
 

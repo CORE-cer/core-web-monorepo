@@ -1,4 +1,4 @@
-import type { BinanceTickerData, CoinbaseTickerData, KrakenTickerData, SchemaData, StreamTypeSchemas } from '@/types';
+import type { CoinbaseTickerData, SchemaData, StreamTypeSchemas } from '@/types';
 
 const COINBASE_SCHEMA: SchemaData = {
   TICKER: {
@@ -33,48 +33,8 @@ const COINBASE_SCHEMA: SchemaData = {
   },
 };
 
-const BINANCE_SCHEMA: SchemaData = {
-  TICKER: {
-    Buy: {
-      symbol: 'BTCUSDT',
-      price: 45000.0,
-      quantity: 0.5,
-      timestamp: new Date('2022-10-19T23:28:22.061769Z'),
-      side: 'BUY',
-    } as BinanceTickerData,
-    Sell: {
-      symbol: 'BTCUSDT',
-      price: 45000.0,
-      quantity: 0.5,
-      timestamp: new Date('2022-10-19T23:28:22.061769Z'),
-      side: 'SELL',
-    } as BinanceTickerData,
-  },
-};
-
-const KRAKEN_SCHEMA: SchemaData = {
-  TICKER: {
-    Buy: {
-      pair: 'XBT/USD',
-      price: 45000.0,
-      volume: 0.5,
-      time: new Date('2022-10-19T23:28:22.061769Z'),
-      type: 'buy',
-    } as KrakenTickerData,
-    Sell: {
-      pair: 'XBT/USD',
-      price: 45000.0,
-      volume: 0.5,
-      time: new Date('2022-10-19T23:28:22.061769Z'),
-      type: 'sell',
-    } as KrakenTickerData,
-  },
-};
-
 export const SCHEMAS: StreamTypeSchemas = {
   coinbase: COINBASE_SCHEMA,
-  binance: BINANCE_SCHEMA,
-  kraken: KRAKEN_SCHEMA,
 };
 
 // Keep backward compatibility

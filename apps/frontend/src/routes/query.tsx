@@ -3,15 +3,25 @@ import AddQueryDialog from '@/components/query/AddQueryDialog';
 import QuerySidebar from '@/components/query/QuerySidebar';
 import { useQueryPage } from '@/hooks/useQueryPage';
 import { setupMonaco } from '@/monaco/setup.js';
+import type { ExampleData } from '@/types';
 import Editor from '@monaco-editor/react';
 import AddIcon from '@mui/icons-material/Add';
 import { Box, Fab, useTheme } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
+import { useCallback } from 'react';
 
 const QueryPage: React.FC = () => {
   const { queryEditorRef, modalOpen, queryName, loading, setQueryName, handleSetExample, handleModalClose, handleAddQuery, submitQuery } = useQueryPage();
   const theme = useTheme();
   const monacoTheme = theme.palette.mode === 'dark' ? 'ceql-dark' : 'ceql-light';
+
+  const setExampleAndQueryname = useCallback(
+    (example: ExampleData) => {
+      setQueryName(example.short_title);
+      handleSetExample(example);
+    },
+    [setQueryName, handleSetExample]
+  );
 
   return (
     <>
@@ -61,7 +71,7 @@ const QueryPage: React.FC = () => {
             }}
           />
         </Box>
-        <QuerySidebar setExample={handleSetExample} />
+        <QuerySidebar setExample={setExampleAndQueryname} />
       </Box>
     </>
   );
