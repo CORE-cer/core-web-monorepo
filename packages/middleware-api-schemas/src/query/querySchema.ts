@@ -6,6 +6,8 @@ export const GetQueryInfoSchema = z.object({
   query_string: z.string(),
   query_name: z.string(),
   active: z.boolean(),
+  attribute_projection_stream_event: z.array(z.array(z.array(z.string()))),
+  attribute_projection_variable: z.record(z.array(z.string())),
 });
 
 export const CreateQuerySchema = z.object({
