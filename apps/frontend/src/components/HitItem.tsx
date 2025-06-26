@@ -51,7 +51,6 @@ const HitItem = memo(
     if (!firstEvent) {
       return null;
     }
-    console.log('Color class for qid', qid, 'is', color);
 
     return (
       <Card
