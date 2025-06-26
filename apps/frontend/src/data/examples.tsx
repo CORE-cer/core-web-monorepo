@@ -21,7 +21,7 @@ FILTER X[product_id='ETH-USD']
     {
       title: 'Show all Sell events with the price of Bitcoin',
       short_title: 'Bitcoin Sell Prices',
-      query: `X[price]
+      query: `SELECT X[price]
 FROM TICKER
 WHERE Sell AS X
 FILTER X[product_id='BTC-USD']
