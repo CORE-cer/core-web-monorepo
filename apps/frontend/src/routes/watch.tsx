@@ -112,12 +112,7 @@ function RouteComponent() {
           <Divider />
           <Box sx={{ flex: 1, overflow: 'auto', height: '100%' }}>
             {viewMode === 'list' ? (
-              <HitList 
-                data={data} 
-                eventInterval={eventInterval} 
-                setEventInterval={setEventInterval}
-                onClearData={clearData}
-              />
+              <HitList data={data} queryIdToQueryInfoMap={queries} eventInterval={eventInterval} setEventInterval={setEventInterval} onClearData={clearData} />
             ) : viewMode === 'stats' ? (
               <Stats queryIdToQueryStatMap={queryIdToQueryStat} queryIdToQueryInfoMap={queries} />
             ) : viewMode === 'timeline' ? (

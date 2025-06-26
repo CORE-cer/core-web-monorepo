@@ -1,4 +1,4 @@
-import type { DataItem, FormattedHit, FormattedMarkedComplexEvent } from '@/types';
+import type { DataItem, FormattedHit, FormattedMarkedComplexEvent, QueryIdToQueryInfoMap } from '@/types';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
@@ -17,6 +17,7 @@ type EventIntervalSelectorProps = {
 
 type HitListProps = {
   data: DataItem[];
+  queryIdToQueryInfoMap: QueryIdToQueryInfoMap;
   eventInterval: number;
   setEventInterval: (value: number) => void;
   onClearData: () => void;
@@ -72,7 +73,7 @@ const EventIntervalSelector: React.FC<EventIntervalSelectorProps> = ({ value, se
   );
 };
 
-const HitList: React.FC<HitListProps> = ({ data, eventInterval, setEventInterval, onClearData }) => {
+const HitList: React.FC<HitListProps> = ({ data, queryIdToQueryInfoMap, eventInterval, setEventInterval, onClearData }) => {
   const [atBottom, setAtBottom] = useState<boolean>(false);
   const [selectedHit, setSelectedHit] = useState<FormattedHit | null>(null);
   const [selectedComplexEvent, setSelectedComplexEvent] = useState<FormattedMarkedComplexEvent | null>(null);
@@ -137,6 +138,7 @@ const HitList: React.FC<HitListProps> = ({ data, eventInterval, setEventInterval
     return (
       <HitItem
         qid={item.qid}
+        queryName={queryIdToQueryInfoMap.get(item.qid)?.query_name ?? 'Unknown Query'}
         data={item.data}
         onHitClick={handleHitClick}
         onComplexEventClick={handleComplexEventClick}

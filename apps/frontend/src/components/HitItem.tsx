@@ -1,4 +1,4 @@
-import { MAX_COLORS, COLORS } from '@/colors';
+import { COLORS, MAX_COLORS } from '@/colors';
 import type { FormattedHit, FormattedMarkedComplexEvent, QueryId } from '@/types';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Box, Card, CardContent, Chip, Collapse, IconButton, Paper, Stack, Typography, styled } from '@mui/material';
@@ -6,6 +6,7 @@ import { memo } from 'react';
 
 type HitItemProps = {
   qid: QueryId;
+  queryName: string;
   data: FormattedHit;
   onHitClick: (hit: FormattedHit) => void;
   onComplexEventClick: (hit: FormattedHit, complexEvent: FormattedMarkedComplexEvent) => void;
@@ -27,7 +28,7 @@ const ExpandMore = styled((props: any) => {
 }));
 
 const HitItem = memo(
-  function HitItem({ qid, data, onHitClick, onComplexEventClick, selected, selectedComplexEventIndex, expanded, onExpandedChange }: HitItemProps) {
+  function HitItem({ qid, queryName, data, onHitClick, onComplexEventClick, selected, selectedComplexEventIndex, expanded, onExpandedChange }: HitItemProps) {
     const colorIndex = Number(qid) % MAX_COLORS;
     const color = COLORS[colorIndex];
 
@@ -74,7 +75,7 @@ const HitItem = memo(
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Box>
               <Typography variant="body2" color="text.secondary">
-                Hit Time: {formatTime(data.end)}
+                Hit Time: {formatTime(data.end)} - Query: {queryName}
               </Typography>
               <Typography variant="caption" color="text.secondary">
                 {data.complexEvents.length} complex events
