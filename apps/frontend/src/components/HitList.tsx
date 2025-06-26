@@ -145,7 +145,7 @@ const HitList: React.FC<HitListProps> = ({ data, queryIdToQueryInfoMap, eventInt
         selected={selectedHit === item.data}
         selectedComplexEventIndex={selectedHit === item.data && selectedComplexEvent ? item.data.complexEvents.indexOf(selectedComplexEvent) : undefined}
         expanded={expanded}
-        onExpandedChange={(expanded: boolean) => handleExpandItem(index, expanded)}
+        onExpandedChange={(expanded: boolean) => { handleExpandItem(index, expanded); }}
       />
     );
   };

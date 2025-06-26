@@ -61,7 +61,7 @@ const HitItem = memo(
           borderColor: 'primary.main',
           position: 'relative',
         }}
-        onClick={() => onHitClick(data)}
+        onClick={() => { onHitClick(data); }}
       >
         <Box
           sx={{
