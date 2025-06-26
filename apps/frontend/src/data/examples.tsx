@@ -77,6 +77,16 @@ PARTITION BY [product_id]
 WITHIN 30 MINUTES
 `,
     },
+    {
+      title: 'Find two buys of Ethereum and the list of all sells of Ethereum in between',
+      short_title: 'ETH Buys with Sells In-Between',
+      query: `SELECT X[price]
+FROM TICKER
+WHERE Buy AS X: (((Buy OR Sell) AS Y):+ : Sell AS X):((Buy OR Sell) AS Y):+ :  Buy AS X
+FILTER X[product_id='ETH-USD'] AND Y[product_id!='ETH-USD']
+WITHIN 10 seconds
+`,
+    },
   ],
 };
 
