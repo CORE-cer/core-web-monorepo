@@ -4,14 +4,14 @@ const examples: StreamTypeExamples = {
   coinbase: [
     {
       title: 'Show all Buy and Sell events',
-      short_title: 'all buy and sell',
+      short_title: 'All Buy & Sell Events',
       query: `SELECT *
 FROM TICKER
 WHERE Buy OR Sell`,
     },
     {
       title: 'Show all Buy events with its price of Ethereum',
-      short_title: 'all buy and sell from BTC-USD',
+      short_title: 'Ethereum Buy Prices',
       query: `SELECT X[price]
 FROM TICKER
 WHERE Buy AS X
@@ -20,7 +20,7 @@ FILTER X[product_id='ETH-USD']
     },
     {
       title: 'Show all Sell events with its price of Bitcoin',
-      short_title: 'all buy and sell pair for eth-usd in 5s',
+      short_title: 'Bitcoin Sell Prices',
       query: `X[price]
 FROM TICKER
 WHERE Sell AS X
@@ -29,7 +29,7 @@ FILTER X[product_id='BTC-USD']
     },
     {
       title: 'Show all Buy events with its price of Litcoin',
-      short_title: '3 buy events in btc-usd with size >= 0.01 in 10s',
+      short_title: 'Litecoin Sell Prices',
       query: `SELECT X[price]
 FROM TICKER
 WHERE Sell AS X
@@ -38,7 +38,7 @@ FILTER X[product_id='LTC-USD']
     },
     {
       title: 'Find two ethereums buy with some sell of bitcoins in between',
-      short_title: 'buy at low and high of the day',
+      short_title: 'ETH Buy, BTC Sell, ETH Buy Pattern',
       query: `SELECT X[price]
 FROM TICKER
 WHERE Buy AS X; Sell AS Y; Buy AS X
@@ -48,7 +48,7 @@ WITHIN 3 seconds
     },
     {
       title: 'Find two consecutive ethereums with some sell of bitcoins in the past',
-      short_title: 'buy at low and high of the day',
+      short_title: 'LTC Sell then 2 ETH Buys',
       query: `SELECT X[price,product_id], Y[price,product_id]
 FROM TICKER
 WHERE Sell AS Y; Buy AS X: Buy AS X
@@ -58,7 +58,7 @@ WITHIN 10 seconds
     },
     {
       title: 'Find three buys where the price is bigger than the best bid',
-      short_title: 'buy at low and high of the day',
+      short_title: '3 ETH Buys Above Best Bid',
       query: `SELECT X[price, best_bid]
 FROM TICKER
 WHERE (Buy; Buy; Buy) AS X
@@ -68,7 +68,7 @@ WITHIN 10 seconds
     },
     {
       title: 'Show all Sell and Buy lists when Buy reaches the lowest of the day and then the highest of the day',
-      short_title: 'buy at low and high of the day',
+      short_title: 'Events Between Daily Low & High Buys',
       query: `SELECT list
 FROM TICKER
 WHERE Buy as b1 : (Sell OR Buy):+ AS list : Buy as b2
