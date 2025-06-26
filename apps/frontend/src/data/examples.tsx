@@ -10,7 +10,7 @@ FROM TICKER
 WHERE Buy OR Sell`,
     },
     {
-      title: 'Show all Buy events with its price of Ethereum',
+      title: 'Show all Buy events with the price of Ethereum',
       short_title: 'Ethereum Buy Prices',
       query: `SELECT X[price]
 FROM TICKER
@@ -19,7 +19,7 @@ FILTER X[product_id='ETH-USD']
 `,
     },
     {
-      title: 'Show all Sell events with its price of Bitcoin',
+      title: 'Show all Sell events with the price of Bitcoin',
       short_title: 'Bitcoin Sell Prices',
       query: `X[price]
 FROM TICKER
@@ -28,7 +28,7 @@ FILTER X[product_id='BTC-USD']
 `,
     },
     {
-      title: 'Show all Buy events with its price of Litcoin',
+      title: 'Show all Sell events with the price of Litecoin',
       short_title: 'Litecoin Sell Prices',
       query: `SELECT X[price]
 FROM TICKER
@@ -37,7 +37,7 @@ FILTER X[product_id='LTC-USD']
 `,
     },
     {
-      title: 'Find two ethereums buy with some sell of bitcoins in between',
+      title: 'Find two Ethereum buys with a Bitcoin sell in between',
       short_title: 'ETH Buy, BTC Sell, ETH Buy Pattern',
       query: `SELECT X[price]
 FROM TICKER
@@ -47,7 +47,7 @@ WITHIN 3 seconds
 `,
     },
     {
-      title: 'Find two consecutive ethereums with some sell of bitcoins in the past',
+      title: 'Find a Litecoin sell followed by two consecutive Ethereum buys',
       short_title: 'LTC Sell then 2 ETH Buys',
       query: `SELECT X[price,product_id], Y[price,product_id]
 FROM TICKER
@@ -57,7 +57,7 @@ WITHIN 10 seconds
 `,
     },
     {
-      title: 'Find three buys where the price is bigger than the best bid',
+      title: 'Find three consecutive Ethereum buys where the price is greater than or equal to the best bid',
       short_title: '3 ETH Buys Above Best Bid',
       query: `SELECT X[price, best_bid]
 FROM TICKER
@@ -67,7 +67,7 @@ WITHIN 10 seconds
 `,
     },
     {
-      title: 'Show all Sell and Buy lists when Buy reaches the lowest of the day and then the highest of the day',
+      title: 'Capture all events between a buy at the 24h-low and a subsequent buy at the 24h-high',
       short_title: 'Events Between Daily Low & High Buys',
       query: `SELECT list
 FROM TICKER
