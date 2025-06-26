@@ -7,6 +7,10 @@ import TimelineEventComponent from './TimelineEvent';
 
 // Maximum number of events to store per query (customizable constant)
 const MAX_EVENTS_PER_QUERY = 10000;
+// Maximum number of visible events per query to prevent lag
+const MAX_VISIBLE_EVENTS_PER_QUERY = 50;
+// Minimum time between updates in milliseconds - reduced frequency for performance
+const MIN_UPDATE_INTERVAL = 100; // ~10fps for better performance with many queries
 
 type TimelineProps = {
   queryIdToQueryInfoMap: QueryIdToQueryInfoMap;
@@ -22,6 +26,7 @@ export default function Timeline({ queryIdToQueryInfoMap, selectedQueryIds, getA
   const lastUpdateRef = useRef<number>(0);
   const processedEventIdsRef = useRef<Set<string>>(new Set());
   const animationFrameRef = useRef<number | null>(null);
+  const pendingEventsRef = useRef<Map<QueryId, TimelineEvent[]>>(new Map());
 
   // Assign stable color indices to queries
   const getQueryColorIndex = useCallback((queryId: QueryId): number => {
@@ -36,62 +41,78 @@ export default function Timeline({ queryIdToQueryInfoMap, selectedQueryIds, getA
     return queryColorIndex;
   }, []);
 
-  // Throttled update function using requestAnimationFrame
+  // Optimized update function with performance improvements
   const updateEvents = useCallback(() => {
     const now = Date.now();
+    const timeSinceLastUpdate = now - lastUpdateRef.current;
 
-    // Only update at most every 100ms to prevent lag
-    if (now - lastUpdateRef.current < 100) return;
+    // Ensure we're not updating too frequently
+    if (timeSinceLastUpdate < MIN_UPDATE_INTERVAL) {
+      animationFrameRef.current = requestAnimationFrame(updateEvents);
+      return;
+    }
+
     lastUpdateRef.current = now;
-
     const newActiveEvents = getAllActiveQueryEvents();
 
-    setRenderedEvents((prevRendered) => {
-      const newRendered = new Map(prevRendered);
-      let hasChanges = false;
-
-      for (const [queryId, events] of newActiveEvents) {
-        // Only process events for queries that are actually selected
-        if (!selectedQueryIds.has(queryId)) continue;
-
-        const currentRendered = newRendered.get(queryId) ?? [];
-        const currentEventIds = new Set(currentRendered.map((e) => e.id));
-
-        // Find new events that haven't been rendered yet
-        const newEvents = events.filter((event) => {
-          const timeSinceReceived = (now - event.receivedAt.getTime()) / 1000;
-          return !currentEventIds.has(event.id) && !processedEventIdsRef.current.has(event.id) && timeSinceReceived < timeHorizonSeconds;
-        });
-
-        // Add new events to rendered list
-        if (newEvents.length > 0) {
-          newRendered.set(queryId, [...currentRendered, ...newEvents]);
-          newEvents.forEach((event) => processedEventIdsRef.current.add(event.id));
-          hasChanges = true;
-        }
+    // Accumulate pending events with limits
+    for (const [queryId, events] of newActiveEvents) {
+      if (!selectedQueryIds.has(queryId)) continue;
+      
+      const currentPending = pendingEventsRef.current.get(queryId) ?? [];
+      const newEvents = events.filter(event => 
+        !processedEventIdsRef.current.has(event.id)
+      );
+      
+      if (newEvents.length > 0) {
+        // Limit new events to prevent overwhelming the UI
+        const limitedNewEvents = newEvents.slice(0, Math.max(1, MAX_VISIBLE_EVENTS_PER_QUERY - currentPending.length));
+        pendingEventsRef.current.set(queryId, [...currentPending, ...limitedNewEvents]);
       }
+    }
 
-      return hasChanges ? newRendered : prevRendered;
-    });
+    // Apply accumulated events if we have any
+    if (pendingEventsRef.current.size > 0) {
+      setRenderedEvents(prevRendered => {
+        const newRendered = new Map(prevRendered);
+        
+        for (const [queryId, pendingEvents] of pendingEventsRef.current) {
+          const currentRendered = newRendered.get(queryId) ?? [];
+          const combinedEvents = [...currentRendered, ...pendingEvents];
+          
+          // Limit total visible events per query for performance
+          const limitedEvents = combinedEvents.slice(0, MAX_VISIBLE_EVENTS_PER_QUERY);
+          newRendered.set(queryId, limitedEvents);
+          
+          // Mark events as processed
+          pendingEvents.forEach(event => processedEventIdsRef.current.add(event.id));
+        }
+        
+        return newRendered;
+      });
+      
+      // Clear pending events after applying
+      pendingEventsRef.current.clear();
+    }
+
+    // Clean up old processed event IDs to prevent memory leaks
+    if (processedEventIdsRef.current.size > 10000) {
+      // Keep only recent 5000 IDs
+      const recentIds = Array.from(processedEventIdsRef.current).slice(-5000);
+      processedEventIdsRef.current = new Set(recentIds);
+    }
+
+    // Schedule next update with lower frequency when many queries are active
+    const updateDelay = selectedQueryIds.size > 10 ? 200 : MIN_UPDATE_INTERVAL;
+    setTimeout(() => {
+      animationFrameRef.current = requestAnimationFrame(updateEvents);
+    }, updateDelay);
   }, [getAllActiveQueryEvents, timeHorizonSeconds, selectedQueryIds]);
 
-  // Use requestAnimationFrame for smooth updates
+  // Initialize and cleanup animation frame
   useEffect(() => {
-    const scheduleUpdate = () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-      animationFrameRef.current = requestAnimationFrame(() => {
-        updateEvents();
-        // Schedule next update
-        setTimeout(() => {
-          scheduleUpdate();
-        }, 100);
-      });
-    };
-
-    scheduleUpdate();
-
+    animationFrameRef.current = requestAnimationFrame(updateEvents);
+    
     return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
@@ -103,15 +124,16 @@ export default function Timeline({ queryIdToQueryInfoMap, selectedQueryIds, getA
   useEffect(() => {
     setRenderedEvents(new Map());
     processedEventIdsRef.current.clear();
+    pendingEventsRef.current.clear();
   }, [timeHorizonSeconds]);
 
   // Optimized event animation completion handler
   const handleEventAnimationComplete = useCallback((eventId: string, queryId: QueryId) => {
-    setRenderedEvents((prev) => {
+    setRenderedEvents(prev => {
       const queryEvents = prev.get(queryId);
       if (!queryEvents) return prev;
 
-      const filteredEvents = queryEvents.filter((event) => event.id !== eventId);
+      const filteredEvents = queryEvents.filter(event => event.id !== eventId);
       const newRendered = new Map(prev);
 
       if (filteredEvents.length > 0) {
@@ -123,10 +145,7 @@ export default function Timeline({ queryIdToQueryInfoMap, selectedQueryIds, getA
       return newRendered;
     });
 
-    // Clean up in next tick to avoid sync state updates
-    setTimeout(() => {
-      processedEventIdsRef.current.delete(eventId);
-    }, 0);
+    processedEventIdsRef.current.delete(eventId);
   }, []);
 
   return (
@@ -154,7 +173,9 @@ export default function Timeline({ queryIdToQueryInfoMap, selectedQueryIds, getA
           />
         </Box>
         <Typography variant="caption" color="text.secondary">
-          Maximum events per query: {MAX_EVENTS_PER_QUERY.toLocaleString()}
+          Maximum events per query: {MAX_EVENTS_PER_QUERY.toLocaleString()} | 
+          Visible limit: {MAX_VISIBLE_EVENTS_PER_QUERY} per query | 
+          Active queries: {selectedQueryIds.size}
         </Typography>
       </Box>
 
@@ -197,7 +218,7 @@ export default function Timeline({ queryIdToQueryInfoMap, selectedQueryIds, getA
         </Box>
 
         {/* Query rows */}
-        <Box sx={{ mt: 4, height: 'calc(100% - 30px)' }}>
+        <Box sx={{ mt: 4, height: 'calc(100% - 30px)', overflow: 'auto' }}>
           {selectedQueryIds.size === 0 ? (
             <Box
               sx={{
@@ -213,6 +234,7 @@ export default function Timeline({ queryIdToQueryInfoMap, selectedQueryIds, getA
           ) : (
             Array.from(selectedQueryIds).map((queryId: QueryId, index: number) => {
               const queryInfo = queryIdToQueryInfoMap.get(queryId);
+              const queryEvents = renderedEvents.get(queryId) ?? [];
 
               return (
                 <Box
@@ -245,6 +267,11 @@ export default function Timeline({ queryIdToQueryInfoMap, selectedQueryIds, getA
                     }}
                   >
                     Query {queryId} {queryInfo?.query_name && `(${queryInfo.query_name})`}
+                    {queryEvents.length > 0 && (
+                      <Typography component="span" variant="caption" sx={{ ml: 1, opacity: 0.7 }}>
+                        ({queryEvents.length})
+                      </Typography>
+                    )}
                   </Typography>
 
                   {/* Timeline line */}
@@ -273,7 +300,7 @@ export default function Timeline({ queryIdToQueryInfoMap, selectedQueryIds, getA
                     }}
                   >
                     {/* Render timeline events as React components */}
-                    {(renderedEvents.get(queryId) ?? []).map((event) => (
+                    {queryEvents.map((event) => (
                       <TimelineEventComponent
                         key={event.id}
                         event={event}

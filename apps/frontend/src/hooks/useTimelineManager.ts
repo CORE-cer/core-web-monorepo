@@ -13,44 +13,54 @@ export function useTimelineManager(data: DataItem[], selectedQueryIds: Set<Query
   // Store all timeline events, keyed by query ID
   const timelineEventsRef = useRef<Map<QueryId, TimelineEvent[]>>(new Map());
   const eventIdCounterRef = useRef(0);
+  const processedDataLengthRef = useRef(0);
 
   // Process new data and create timeline events
   useEffect(() => {
-    if (data.length === 0) return;
-
-    const latestDataItem = data[data.length - 1];
-    if (!latestDataItem) {
+    if (data.length === 0) {
+      processedDataLengthRef.current = 0;
       return;
     }
-    if (!selectedQueryIds.has(latestDataItem.qid)) return;
 
-    const queryId = latestDataItem.qid;
-    const receivedAt = new Date();
+    // Process only new data items that haven't been processed yet
+    const newDataItems = data.slice(processedDataLengthRef.current);
+    if (newDataItems.length === 0) return;
 
-    // Get or create the events array for this query
-    let queryEvents = timelineEventsRef.current.get(queryId);
-    if (!queryEvents) {
-      queryEvents = [];
+    // Update the processed length
+    processedDataLengthRef.current = data.length;
+
+    // Process each new data item
+    for (const dataItem of newDataItems) {
+      if (!selectedQueryIds.has(dataItem.qid)) continue;
+
+      const queryId = dataItem.qid;
+      const receivedAt = new Date();
+
+      // Get or create the events array for this query
+      let queryEvents = timelineEventsRef.current.get(queryId);
+      if (!queryEvents) {
+        queryEvents = [];
+        timelineEventsRef.current.set(queryId, queryEvents);
+      }
+
+      // Create timeline events for each hit in the current data item
+      const newEvents: TimelineEvent[] = dataItem.data.complexEvents.map((complexEvent) => ({
+        id: `event-${(eventIdCounterRef.current++).toString()}`,
+        queryId,
+        receivedAt,
+        data: complexEvent,
+      }));
+
+      // Add new events to the beginning (most recent first)
+      queryEvents.unshift(...newEvents);
+
+      // Limit the number of events per query to the customizable constant
+      if (queryEvents.length > timelineConfig.maxEventsPerQuery) {
+        queryEvents.splice(timelineConfig.maxEventsPerQuery);
+      }
+
       timelineEventsRef.current.set(queryId, queryEvents);
     }
-
-    // Create timeline events for each hit in the latest data
-    const newEvents: TimelineEvent[] = latestDataItem.data.complexEvents.map((complexEvent) => ({
-      id: `event-${(eventIdCounterRef.current++).toString()}`,
-      queryId,
-      receivedAt,
-      data: complexEvent,
-    }));
-
-    // Add new events to the beginning (most recent first)
-    queryEvents.unshift(...newEvents);
-
-    // Limit the number of events per query to the customizable constant
-    if (queryEvents.length > timelineConfig.maxEventsPerQuery) {
-      queryEvents.splice(timelineConfig.maxEventsPerQuery);
-    }
-
-    timelineEventsRef.current.set(queryId, queryEvents);
   }, [data, selectedQueryIds, timelineConfig.maxEventsPerQuery]);
 
   // Clean up events for unselected queries
@@ -62,6 +72,13 @@ export function useTimelineManager(data: DataItem[], selectedQueryIds: Set<Query
       }
     }
   }, [selectedQueryIds]);
+
+  // Reset processed length when data is cleared
+  useEffect(() => {
+    if (data.length === 0) {
+      processedDataLengthRef.current = 0;
+    }
+  }, [data.length]);
 
   const updateTimeHorizon = (seconds: number) => {
     setTimelineConfig((prev) => ({ ...prev, timeHorizonSeconds: seconds }));

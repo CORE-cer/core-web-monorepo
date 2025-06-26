@@ -12,7 +12,7 @@ function TimelineEventComponent({ event, timeHorizonSeconds, queryIndex, onAnima
   const elementRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<number | null>(null);
 
-  // Calculate timing values only once
+  // Calculate timing values only once and optimize for performance
   const timingData = useMemo(() => {
     const now = Date.now();
     const timeSinceReceived = (now - event.receivedAt.getTime()) / 1000;
@@ -26,13 +26,18 @@ function TimelineEventComponent({ event, timeHorizonSeconds, queryIndex, onAnima
     };
   }, [event.receivedAt, timeHorizonSeconds]);
 
-  // Memoize styles to prevent recreation
+  // Memoize styles to prevent recreation - simplified for performance
   const elementStyle = useMemo(
-    () =>
-      ({
-        '--animation-duration': `${timeHorizonSeconds.toString()}s`,
-        '--start-delay': `${timingData.timeSinceReceived.toString()}s`,
-      }) as React.CSSProperties,
+    () => {
+      // Use simpler calculation for better performance
+      const duration = Math.max(1, timeHorizonSeconds);
+      const delay = Math.max(0, timingData.timeSinceReceived);
+      
+      return {
+        '--animation-duration': `${duration.toString()}s`,
+        '--start-delay': `${delay.toString()}s`,
+      } as React.CSSProperties;
+    },
     [timeHorizonSeconds, timingData.timeSinceReceived]
   );
 
@@ -47,10 +52,11 @@ function TimelineEventComponent({ event, timeHorizonSeconds, queryIndex, onAnima
       clearTimeout(timeoutRef.current);
     }
 
-    // Set up cleanup timer
+    // Set up cleanup timer with some buffer to ensure smooth cleanup
+    const cleanupDelay = Math.max(100, timingData.remainingTime * 1000);
     timeoutRef.current = setTimeout(() => {
       onAnimationComplete();
-    }, timingData.remainingTime * 1000);
+    }, cleanupDelay);
 
     return () => {
       if (timeoutRef.current) {
@@ -66,16 +72,20 @@ function TimelineEventComponent({ event, timeHorizonSeconds, queryIndex, onAnima
   return (
     <div
       ref={elementRef}
-      className={`timeline-event timeline-event-query-${(queryIndex + 1).toString()}`}
+      className={`timeline-event timeline-event-query-${Math.min(15, queryIndex + 1).toString()}`}
       title={`Query ${event.queryId.toString()} - Event at ${event.data.end.toLocaleTimeString()}`}
       style={elementStyle}
     />
   );
 }
 
-// Memoize the component to prevent unnecessary re-renders
+// Enhanced memoization to prevent unnecessary re-renders
 export default memo(TimelineEventComponent, (prevProps, nextProps) => {
+  // Only re-render if essential props changed
   return (
-    prevProps.event.id === nextProps.event.id && prevProps.timeHorizonSeconds === nextProps.timeHorizonSeconds && prevProps.queryIndex === nextProps.queryIndex
+    prevProps.event.id === nextProps.event.id && 
+    prevProps.timeHorizonSeconds === nextProps.timeHorizonSeconds && 
+    prevProps.queryIndex === nextProps.queryIndex &&
+    prevProps.event.receivedAt.getTime() === nextProps.event.receivedAt.getTime()
   );
 });

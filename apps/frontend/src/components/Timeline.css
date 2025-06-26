@@ -11,7 +11,7 @@
   z-index: 1;
   cursor: pointer;
   
-  /* GPU acceleration for smooth animations */
+  /* Optimized GPU acceleration for better performance */
   will-change: transform;
   backface-visibility: hidden;
   transform: translateY(-50%) translateZ(0);
@@ -20,8 +20,8 @@
   animation: moveLeft var(--animation-duration, 10s) linear forwards;
   animation-delay: calc(-1 * var(--start-delay, 0s));
   
-  /* Smooth transitions for hover effects */
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  /* Reduced transition for better performance */
+  transition: transform 0.1s ease-out;
 }
 
 @keyframes moveLeft {
@@ -31,18 +31,25 @@
   }
   to {
     transform: translateY(-50%) translateX(-100vw) translateZ(0);
-    opacity: 1;
+    opacity: 0.8;
   }
 }
 
 .timeline-event:hover {
-  transform: translateY(-50%) scale(1.2) translateZ(0);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-50%) scale(1.1) translateZ(0);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
   z-index: 2;
-  cursor: pointer;
-  /* Add a subtle glow effect to indicate pause state */
-  filter: brightness(1.1);
-  /* Animation will be paused via JavaScript, no need to override here */
+  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+}
+
+/* Performance optimization: reduce visual complexity when many events */
+.timeline-events-container:has(.timeline-event:nth-child(20)) .timeline-event {
+  box-shadow: none;
+  border-width: 1px;
+}
+
+.timeline-events-container:has(.timeline-event:nth-child(20)) .timeline-event:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Different colors for different queries - using specific classes now */
@@ -86,10 +93,24 @@
   position: relative;
   contain: layout style paint;
   transform: translateZ(0);
+  /* Performance optimization for many events */
+  overflow: hidden;
 }
 
 .timeline-axis {
   position: relative;
+}
+
+/* Performance mode for many queries */
+@media (max-width: 1200px), (min-resolution: 144dpi) {
+  .timeline-event {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: transform 0.05s ease-out;
+  }
+  
+  .timeline-event:hover {
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+  }
 }
 
 /* Responsive design for smaller screens */
@@ -97,6 +118,13 @@
   .timeline-event {
     width: 10px;
     height: 10px;
+    box-shadow: none;
+    border-width: 1px;
+  }
+  
+  .timeline-event:hover {
+    transform: translateY(-50%) scale(1.05) translateZ(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
 }
 
@@ -113,6 +141,7 @@
   .timeline-event {
     animation-duration: 0.01s !important;
     will-change: auto;
+    transition: none;
   }
   
   .timeline-event:hover {
