@@ -17,13 +17,13 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>) => {
     setData([]);
     dataBuffer.current = [];
     // Reset stats
-    setQueryIdToQueryStat(prev => {
+    setQueryIdToQueryStat((prev) => {
       const next = new Map(prev);
-      for (const [qid, stat] of next) {
+      for (const [qid] of next) {
         next.set(qid, {
           perSec: [],
           hitStats: { max: 0, total: 0 },
-          complexEventStats: { max: 0, total: 0 }
+          complexEventStats: { max: 0, total: 0 },
         });
       }
       return next;
@@ -32,7 +32,7 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>) => {
     for (const [qid] of currentQid2HitRef.current) {
       currentQid2HitRef.current.set(qid, {
         numHits: 0,
-        numComplexEvents: 0
+        numComplexEvents: 0,
       });
     }
   };
@@ -257,6 +257,6 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>) => {
     queryIdToQueryStat,
     eventInterval,
     setEventInterval,
-    clearData
+    clearData,
   };
 };

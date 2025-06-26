@@ -10,36 +10,65 @@ FROM TICKER
 WHERE Buy OR Sell`,
     },
     {
-      title: 'Show all Buy and Sell events of a symbol',
+      title: 'Show all Buy events with its price of Ethereum',
       short_title: 'all buy and sell from BTC-USD',
-      query: `SELECT *
+      query: `SELECT X[price]
 FROM TICKER
-WHERE (Buy OR Sell) AS X
-FILTER X[product_id='BTC-USD']`,
-    },
-    {
-      title: 'Show all Buy/Sell pairs in the same symbol (ETH-USD) in less than 5 seconds',
-      short_title: 'all buy and sell pair for eth-usd in 5s',
-      query: `SELECT *
-FROM TICKER
-WHERE Buy:Sell
-FILTER Buy[product_id='ETH-USD'] AND Sell[product_id='ETH-USD']
-WITHIN 5 SECONDS
+WHERE Buy AS X
+FILTER X[product_id='ETH-USD']
 `,
     },
     {
-      title: 'Three Buy events in BTC-USD where the transaction size was at least 0.01BTC in less than 10 seconds',
-      short_title: 'all buy and sell',
-      query: `SELECT b3 FROM TICKER
-WHERE Buy; Buy; (Buy AS b3)
-FILTER Buy[product_id = 'BTC-USD' AND last_size >= 0.01]
-WITHIN 5 SECONDS
-LIMIT 1
+      title: 'Show all Sell events with its price of Bitcoin',
+      short_title: 'all buy and sell pair for eth-usd in 5s',
+      query: `X[price]
+FROM TICKER
+WHERE Sell AS X
+FILTER X[product_id='BTC-USD']
+`,
+    },
+    {
+      title: 'Show all Buy events with its price of Litcoin',
+      short_title: '3 buy events in btc-usd with size >= 0.01 in 10s',
+      query: `SELECT X[price]
+FROM TICKER
+WHERE Sell AS X
+FILTER X[product_id='LTC-USD']
+`,
+    },
+    {
+      title: 'Find two ethereums buy with some sell of bitcoins in between',
+      short_title: 'buy at low and high of the day',
+      query: `SELECT X[price]
+FROM TICKER
+WHERE Buy AS X; Sell AS Y; Buy AS X
+FILTER X[product_id='ETH-USD'] AND Y[product_id='BTC-USD']
+WITHIN 3 seconds
+`,
+    },
+    {
+      title: 'Find two consecutive ethereums with some sell of bitcoins in the past',
+      short_title: 'buy at low and high of the day',
+      query: `SELECT X[price,product_id], Y[price,product_id]
+FROM TICKER
+WHERE Sell AS Y; Buy AS X: Buy AS X
+FILTER X[product_id='ETH-USD'] AND Y[product_id='LTC-USD']
+WITHIN 10 seconds
+`,
+    },
+    {
+      title: 'Find three buys where the price is bigger than the best bid',
+      short_title: 'buy at low and high of the day',
+      query: `SELECT X[price, best_bid]
+FROM TICKER
+WHERE (Buy; Buy; Buy) AS X
+FILTER X[product_id='ETH-USD'] AND X[price >= best_bid]
+WITHIN 10 seconds
 `,
     },
     {
       title: 'Show all Sell and Buy lists when Buy reaches the lowest of the day and then the highest of the day',
-      short_title: 'all buy and sell',
+      short_title: 'buy at low and high of the day',
       query: `SELECT list
 FROM TICKER
 WHERE Buy as b1 : (Sell OR Buy):+ AS list : Buy as b2

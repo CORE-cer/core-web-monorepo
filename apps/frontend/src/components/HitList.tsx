@@ -188,7 +188,7 @@ const HitList: React.FC<HitListProps> = ({ data, eventInterval, setEventInterval
               setAtBottom(isAtBottom);
             }}
             followOutput="auto"
-            atBottomThreshold={50}
+            atBottomThreshold={100}
             data={data}
             itemContent={renderHitItem}
           />
