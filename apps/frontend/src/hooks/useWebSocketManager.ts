@@ -1,9 +1,18 @@
-import { ComplexEventSchema, type DataItem, type HitCount, type QueryId, type QueryIdToQueryStatMap, type QueryIdToQueryWebSocketMap } from '@/types';
+import {
+  ComplexEventSchema,
+  type DataItem,
+  type HitCount,
+  type QueryId,
+  type QueryIdToQueryInfoMap,
+  type QueryIdToQueryStatMap,
+  type QueryIdToQueryWebSocketMap,
+  type StreamInfo,
+} from '@/types';
 import { getCoreCPPBaseUrl } from '@/utils/api';
 import { formatHit } from '@/utils/formatHit';
 import { useEffect, useRef, useState } from 'react';
 
-export const useWebSocketManager = (selectedQueryIds: Set<QueryId>) => {
+export const useWebSocketManager = (selectedQueryIds: Set<QueryId>, queryIdToQueryInfoMap: QueryIdToQueryInfoMap, streamsInfo: StreamInfo[]) => {
   const [queryIdToQueryWebSocket, setQueryIdToQueryWebSocket] = useState<QueryIdToQueryWebSocketMap>(new Map());
   const queryIdToQueryWebSocketRef = useRef<QueryIdToQueryWebSocketMap>(queryIdToQueryWebSocket);
   const [data, setData] = useState<DataItem[]>([]);
@@ -110,13 +119,24 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>) => {
       // Buffered updates
       for (const [qid, ws] of queryIdToQueryWebSocket.entries()) {
         ws.onmessage = (event) => {
+          const queryInfo = queryIdToQueryInfoMap.get(qid);
+          if (!queryInfo) {
+            console.error(`No query info found for qid ${qid.toString()}`);
+            return;
+          }
+          const streamInfo = streamsInfo[0];
+          if (!streamInfo) {
+            console.error('No stream info found');
+            return;
+          }
+
           const eventJsonParse = ComplexEventSchema.array().safeParse(JSON.parse(event.data));
           if (!eventJsonParse.success) {
             console.error('Failed to parse complex event:', eventJsonParse.error);
             return;
           }
           const eventJson = eventJsonParse.data;
-          const transformedHits = formatHit(eventJson);
+          const transformedHits = formatHit(eventJson, queryInfo, streamInfo);
 
           const currentQid2Hit = currentQid2HitRef.current.get(qid);
           if (!currentQid2Hit) {
@@ -139,6 +159,16 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>) => {
 
       for (const [qid, ws] of queryIdToQueryWebSocket.entries()) {
         ws.onmessage = (event) => {
+          const queryInfo = queryIdToQueryInfoMap.get(qid);
+          if (!queryInfo) {
+            console.error(`No query info found for qid ${qid.toString()}`);
+            return;
+          }
+          const streamInfo = streamsInfo[0];
+          if (!streamInfo) {
+            console.error('No stream info found');
+            return;
+          }
           setData((prevData) => {
             const eventJsonParse = ComplexEventSchema.array().safeParse(JSON.parse(event.data));
             if (!eventJsonParse.success) {
@@ -146,7 +176,7 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>) => {
               return prevData;
             }
             const eventJson = eventJsonParse.data;
-            const transformedHits = formatHit(eventJson);
+            const transformedHits = formatHit(eventJson, queryInfo, streamInfo);
 
             const currentQid2Hit = currentQid2HitRef.current.get(qid);
             if (!currentQid2Hit) {
@@ -162,7 +192,7 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>) => {
         };
       }
     }
-  }, [eventInterval, queryIdToQueryWebSocket, setData]);
+  }, [eventInterval, queryIdToQueryWebSocket, setData, queryIdToQueryInfoMap, streamsInfo]);
 
   // Cleanup WebSockets on unmount
   useEffect(() => {

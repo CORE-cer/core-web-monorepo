@@ -21,6 +21,7 @@ export const Route = createFileRoute('/watch')({
 function RouteComponent() {
   const {
     queries,
+    streamsInfo,
     selectedQueryIds,
     setSelectedQueryIds,
     data,
@@ -36,6 +37,8 @@ function RouteComponent() {
     getAllActiveQueryEvents,
     clearData,
   } = useWatchPage();
+  console.log('queries', queries);
+  console.log('streamsInfo', streamsInfo);
 
   const [chartLayoutMode, setChartLayoutMode] = useState<'list' | 'freeform'>('list');
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
