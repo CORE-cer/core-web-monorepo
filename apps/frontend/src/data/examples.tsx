@@ -88,6 +88,15 @@ WITHIN 10 seconds
 `,
     },
   ],
+  bluesky: [
+    {
+      title: 'Show all Create Posts',
+      short_title: 'All CreatePost',
+      query: `SELECT *
+FROM Bluesky
+WHERE CreatePost`,
+    },
+  ],
 };
 
 export default examples;

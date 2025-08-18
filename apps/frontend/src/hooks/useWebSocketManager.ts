@@ -130,6 +130,10 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>, queryIdToQue
             return;
           }
 
+          if (typeof event.data !== 'string') {
+            return;
+          }
+
           const eventJsonParse = ComplexEventSchema.array().safeParse(JSON.parse(event.data));
           if (!eventJsonParse.success) {
             console.error('Failed to parse complex event:', eventJsonParse.error);
@@ -170,6 +174,9 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>, queryIdToQue
             return;
           }
           setData((prevData) => {
+            if (typeof event.data !== 'string') {
+              return prevData;
+            }
             const eventJsonParse = ComplexEventSchema.array().safeParse(JSON.parse(event.data));
             if (!eventJsonParse.success) {
               console.error('Failed to parse complex event:', eventJsonParse.error);

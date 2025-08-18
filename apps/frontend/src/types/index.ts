@@ -34,11 +34,11 @@ export type ExampleData = {
 };
 
 // Stream Types
-export type StreamType = 'coinbase';
+export type StreamType = 'coinbase' | 'bluesky';
 
 export type StreamTypeExamples = Record<StreamType, ExampleData[]>;
 
-export type StreamTypeSchemas = Record<StreamType, SchemaData>;
+export type StreamTypeSchemas = Record<StreamType, object>;
 
 // Stream and Event Types
 export type EventInfo = {
@@ -102,47 +102,6 @@ export type QueryStats = {
   perSec: PerSecStat[];
   hitStats: HitStats;
   complexEventStats: HitStats;
-};
-
-// Schema Types
-export type CoinbaseTickerData = {
-  product_id: string;
-  open_24h: number;
-  low_24h: number;
-  volume_30d: number;
-  best_bid_size: number;
-  best_ask_size: number;
-  price: number;
-  volume_24h: number;
-  high_24h: number;
-  best_bid: number;
-  best_ask: number;
-  time: Date;
-};
-
-export type BinanceTickerData = {
-  symbol: string;
-  price: number;
-  quantity: number;
-  timestamp: Date;
-  side: string;
-};
-
-export type KrakenTickerData = {
-  pair: string;
-  price: number;
-  volume: number;
-  time: Date;
-  type: string;
-};
-
-export type TickerData = CoinbaseTickerData | BinanceTickerData | KrakenTickerData;
-
-export type SchemaData = {
-  TICKER: {
-    Buy: TickerData;
-    Sell: TickerData;
-  };
 };
 
 // View Mode Types

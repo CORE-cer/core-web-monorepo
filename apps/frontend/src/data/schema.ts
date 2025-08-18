@@ -1,6 +1,6 @@
-import type { CoinbaseTickerData, SchemaData, StreamTypeSchemas } from '@/types';
+import type { StreamTypeSchemas } from '@/types';
 
-const COINBASE_SCHEMA: SchemaData = {
+const COINBASE_SCHEMA = {
   TICKER: {
     Buy: {
       product_id: 'ETH-USD',
@@ -15,7 +15,7 @@ const COINBASE_SCHEMA: SchemaData = {
       best_bid: 1285.04,
       best_ask: 1285.27,
       time: new Date('2022-10-19T23:28:22.061769Z'),
-    } as CoinbaseTickerData,
+    },
     Sell: {
       product_id: 'ETH-USD',
       open_24h: 1310.79,
@@ -29,13 +29,55 @@ const COINBASE_SCHEMA: SchemaData = {
       best_bid: 1285.04,
       best_ask: 1285.27,
       time: new Date('2022-10-19T23:28:22.061769Z'),
-    } as CoinbaseTickerData,
+    },
+  },
+};
+
+const BLUESKY_SCHEMA = {
+  Bluesky: {
+    CreatePost: {
+      did: 'did:plc:ovwabcu6febdpxar2diytg2s',
+      kind: 'commit',
+      time: new Date('2022-10-19T23:28:22.061769Z'),
+      cid: 'bafyreib2aakiovz3lkrtt2ftqhyws4uaxre2ee3huv2phk4sbyidrlridy',
+      operation: 'create',
+      record_type: 'app.bsky.feed.post',
+      langs: 'en, ja',
+      text: 'My first post',
+    },
+    CreateFollow: {
+      did: 'did:plc:ovwabcu6febdpxar2diytg2s',
+      kind: 'commit',
+      time: new Date('2022-10-19T23:28:22.061769Z'),
+      cid: 'bafyreib2aakiovz3lkrtt2ftqhyws4uaxre2ee3huv2phk4sbyidrlridy',
+      operation: 'create',
+      record_type: 'app.bsky.graph.follow',
+      subject: 'did:plc:2pw4kg45i3tyedg3kpnzr3zi',
+    },
+    CreateLike: {
+      did: 'did:plc:ovwabcu6febdpxar2diytg2s',
+      kind: 'commit',
+      time: new Date('2022-10-19T23:28:22.061769Z'),
+      cid: 'bafyreib2aakiovz3lkrtt2ftqhyws4uaxre2ee3huv2phk4sbyidrlridy',
+      operation: 'create',
+      record_type: 'app.bsky.feed.like',
+      subject_cid: 'bafyreifvpyzaq5i5wtfe2okbqfc67huiysqpahrzqu5qhe443f4crpvaw4',
+      subject_uri: 'at://did:plc:dekcamj33b4raprbyvflrzkd/app.bsky.feed.post/3lwmd7o3wes2m',
+    },
+    CreateRepost: {
+      did: 'did:plc:ovwabcu6febdpxar2diytg2s',
+      kind: 'commit',
+      time: new Date('2022-10-19T23:28:22.061769Z'),
+      cid: 'bafyreib2aakiovz3lkrtt2ftqhyws4uaxre2ee3huv2phk4sbyidrlridy',
+      operation: 'create',
+      record_type: 'app.bsky.feed.repost',
+      subject_cid: 'bafyreifvpyzaq5i5wtfe2okbqfc67huiysqpahrzqu5qhe443f4crpvaw4',
+      subject_uri: 'at://did:plc:dekcamj33b4raprbyvflrzkd/app.bsky.feed.post/3lwmd7o3wes2m',
+    },
   },
 };
 
 export const SCHEMAS: StreamTypeSchemas = {
   coinbase: COINBASE_SCHEMA,
+  bluesky: BLUESKY_SCHEMA,
 };
-
-// Keep backward compatibility
-export const SCHEMA = COINBASE_SCHEMA;

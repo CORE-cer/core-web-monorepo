@@ -13,6 +13,11 @@ type QuerySidebarProps = {
   setExample: (example: ExampleData) => void;
 };
 
+function capitalizeFirstLetter(str: string): string {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 export function QuerySidebar({ setExample }: QuerySidebarProps) {
   const [mode, setMode] = useState<SidebarMode>('examples');
   const [selectedStream, setSelectedStream] = useState<StreamType>('coinbase');
@@ -56,14 +61,20 @@ export function QuerySidebar({ setExample }: QuerySidebarProps) {
       {/* Stream Type Toggle */}
       <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
         <ButtonGroup fullWidth variant="outlined" size="small">
-          <Button
-            variant={selectedStream === 'coinbase' ? 'contained' : 'outlined'}
-            onClick={() => {
-              setSelectedStream('coinbase');
-            }}
-          >
-            Coinbase
-          </Button>
+          {Object.keys(SCHEMAS).map((streamType) => {
+            const typedStreamType = streamType as StreamType;
+            return (
+              <Button
+                variant={selectedStream === typedStreamType ? 'contained' : 'outlined'}
+                onClick={() => {
+                  setSelectedStream(typedStreamType);
+                }}
+                key={typedStreamType}
+              >
+                {capitalizeFirstLetter(typedStreamType)}
+              </Button>
+            );
+          })}
         </ButtonGroup>
       </Box>
 
