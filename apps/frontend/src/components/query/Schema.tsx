@@ -1,4 +1,3 @@
-import type { SchemaData } from '@/types';
 import { useTheme } from '@emotion/react';
 import { Box } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
@@ -8,7 +7,7 @@ import { lightTheme } from '@uiw/react-json-view/light';
 import React from 'react';
 
 type CustomJsonViewProps = {
-  schema: SchemaData;
+  schema: object;
 };
 
 export function CustomJsonView({ schema }: CustomJsonViewProps) {
@@ -42,7 +41,7 @@ export function CustomJsonView({ schema }: CustomJsonViewProps) {
 }
 
 type SchemaProps = {
-  schema: SchemaData;
+  schema: object;
 } & React.ComponentProps<typeof Box>;
 
 const Schema: React.FC<SchemaProps> = ({ schema, ...props }) => {
