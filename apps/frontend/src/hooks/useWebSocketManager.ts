@@ -124,11 +124,6 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>, queryIdToQue
             console.error(`No query info found for qid ${qid.toString()}`);
             return;
           }
-          const streamInfo = streamsInfo[0];
-          if (!streamInfo) {
-            console.error('No stream info found');
-            return;
-          }
 
           if (typeof event.data !== 'string') {
             return;
@@ -140,7 +135,7 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>, queryIdToQue
             return;
           }
           const eventJson = eventJsonParse.data;
-          const transformedHits = formatHit(eventJson, queryInfo, streamInfo);
+          const transformedHits = formatHit(eventJson, queryInfo, streamsInfo);
 
           const currentQid2Hit = currentQid2HitRef.current.get(qid);
           if (!currentQid2Hit) {
@@ -168,11 +163,6 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>, queryIdToQue
             console.error(`No query info found for qid ${qid.toString()}`);
             return;
           }
-          const streamInfo = streamsInfo[0];
-          if (!streamInfo) {
-            console.error('No stream info found');
-            return;
-          }
           setData((prevData) => {
             if (typeof event.data !== 'string') {
               return prevData;
@@ -183,7 +173,7 @@ export const useWebSocketManager = (selectedQueryIds: Set<QueryId>, queryIdToQue
               return prevData;
             }
             const eventJson = eventJsonParse.data;
-            const transformedHits = formatHit(eventJson, queryInfo, streamInfo);
+            const transformedHits = formatHit(eventJson, queryInfo, streamsInfo);
 
             const currentQid2Hit = currentQid2HitRef.current.get(qid);
             if (!currentQid2Hit) {

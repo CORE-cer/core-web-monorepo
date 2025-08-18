@@ -10,14 +10,14 @@ import {
 } from '@/types';
 import { z } from 'zod';
 
-export function formatHit(hit: z.infer<typeof HitSchema>, queryInfo: QueryInfo, streamInfo: StreamInfo): FormattedHit {
+export function formatHit(hit: z.infer<typeof HitSchema>, queryInfo: QueryInfo, streamsInfo: StreamInfo[]): FormattedHit {
   if (!hit[0]) {
     throw new Error('Invalid hit format');
   }
   const end = hit[0];
 
   const complexEvents: FormattedMarkedComplexEvent[] = hit.map((complexEvent) => {
-    return formatComplexEvent(complexEvent, queryInfo, streamInfo);
+    return formatComplexEvent(complexEvent, queryInfo, streamsInfo);
   });
 
   return {
@@ -26,14 +26,17 @@ export function formatHit(hit: z.infer<typeof HitSchema>, queryInfo: QueryInfo, 
   };
 }
 
-function formatComplexEvent(complexEvent: z.infer<typeof ComplexEventSchema>, queryInfo: QueryInfo, streamInfo: StreamInfo): FormattedMarkedComplexEvent {
+function formatComplexEvent(complexEvent: z.infer<typeof ComplexEventSchema>, queryInfo: QueryInfo, streamsInfo: StreamInfo[]): FormattedMarkedComplexEvent {
   const eventsByMarkedVariables: Record<string, FormattedComplexEvent[]> = {};
 
   for (const markedEvent of complexEvent.events) {
     for (const [markedVariable, event] of Object.entries(markedEvent)) {
-      if (!eventsByMarkedVariables[markedVariable]) {
-        eventsByMarkedVariables[markedVariable] = [];
+      const streamInfo = streamsInfo.find((stream) => stream.id === event.stream_type_id);
+      if (!streamInfo) {
+        throw new Error(`Stream info not found for stream type ID ${event.stream_type_id.toString()}`);
       }
+
+      eventsByMarkedVariables[markedVariable] ??= [];
 
       eventsByMarkedVariables[markedVariable].push(formatEvent(event, markedVariable, queryInfo, streamInfo));
     }
@@ -77,6 +80,7 @@ function formatEvent(event: z.infer<typeof EventDataSchema>, markedVariable: str
   // If no projection, use the streams default attributes
   if (attribute_names.length === 0) {
     for (const eventInfo of streamInfo.events_info) {
+      console.log(eventInfo.name, eventType);
       if (eventInfo.name === eventType) {
         attribute_names.push(...eventInfo.attributes_info.map((attr) => attr.name));
         break;

@@ -51,6 +51,7 @@ export type EventInfo = {
 
 export const EventDataSchema = z.object({
   event_type_id: z.number(),
+  stream_type_id: z.number(),
   attributes: z.array(z.union([z.string(), z.number()])),
 });
 
