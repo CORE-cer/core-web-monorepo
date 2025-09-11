@@ -36,8 +36,7 @@ export class QueryCreator {
     });
 
     if (!response.ok) {
-      console.log(await response.text());
-      throw new Error(`Error adding query : ${response.statusText}`);
+      throw new Error(`Error adding query : ${await response.text()}`);
     }
 
     const untypedData = (await response.json()) as unknown;
