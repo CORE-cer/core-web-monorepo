@@ -2,9 +2,14 @@
 // noinspection ES6UnusedImports,JSUnusedGlobalSymbols,JSUnusedLocalSymbols
 // @ts-nocheck
 
+export declare class DecisionState extends ATNState {
+    decision: number;
+    nonGreedy: boolean;
+}
+
 import {
 	ATN,
-	ATNDeserializer, DecisionState, DFA, FailedPredicateException,
+	ATNDeserializer, DFA, FailedPredicateException,
 	RecognitionException, NoViableAltException, BailErrorStrategy,
 	Parser, ParserATNSimulator,
 	RuleContext, ParserRuleContext, PredictionMode, PredictionContextCache,
