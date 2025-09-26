@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ATN, ATNDeserializer, CharStream, DFA, Lexer, LexerATNSimulator, PredictionContextCache, RuleContext, Token } from 'antlr4';
 
 // Generated from ceql/CEQLQueryLexer.g4 by ANTLR 4.13.1

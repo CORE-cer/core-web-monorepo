@@ -1,6 +1,6 @@
 import { TransactionHost, Transactional } from '@nestjs-cls/transactional';
 import { TransactionalAdapterKysely } from '@nestjs-cls/transactional-adapter-kysely';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DBType } from 'middleware-api-db/kysely.js';
 import { z } from 'zod';
 
@@ -36,7 +36,7 @@ export class QueryCreator {
     });
 
     if (!response.ok) {
-      throw new Error(`Error adding query : ${await response.text()}`);
+      throw new HttpException(`Error adding query : ${await response.text()}`, HttpStatus.BAD_REQUEST);
     }
 
     const untypedData = (await response.json()) as unknown;
