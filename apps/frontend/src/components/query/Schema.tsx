@@ -1,10 +1,13 @@
 import { useTheme } from '@emotion/react';
-import { Box } from '@mui/material';
+import { Box, IconButton, Tooltip, Typography } from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import type { Theme } from '@mui/material/styles';
 import JsonView from '@uiw/react-json-view';
 import { darkTheme } from '@uiw/react-json-view/dark';
 import { lightTheme } from '@uiw/react-json-view/light';
-import React from 'react';
+import React, { useState } from 'react';
+import type { StreamType } from '@/types';
+import SchemaInfoDialog from '@/components/SchemaInfoDialog';
 
 type CustomJsonViewProps = {
   schema: object;
@@ -42,12 +45,48 @@ export function CustomJsonView({ schema }: CustomJsonViewProps) {
 
 type SchemaProps = {
   schema: object;
+  streamType?: StreamType;
 } & React.ComponentProps<typeof Box>;
 
-const Schema: React.FC<SchemaProps> = ({ schema, ...props }) => {
+const Schema: React.FC<SchemaProps> = ({ schema, streamType, ...props }) => {
+  const [infoDialogOpen, setInfoDialogOpen] = useState(false);
+
   return (
     <Box {...props}>
+      {streamType && (
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          mb: 2,
+          pb: 1,
+          borderBottom: 1,
+          borderColor: 'divider'
+        }}>
+          <Typography variant="h6" sx={{ fontWeight: 500 }}>
+            Schema
+          </Typography>
+          <Tooltip title="Schema Information & FAQ">
+            <IconButton 
+              size="small"
+              onClick={() => setInfoDialogOpen(true)}
+              sx={{ color: 'text.secondary' }}
+            >
+              <InfoOutlinedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      )}
+      
       <CustomJsonView schema={schema} />
+      
+      {streamType && (
+        <SchemaInfoDialog
+          open={infoDialogOpen}
+          onClose={() => setInfoDialogOpen(false)}
+          streamType={streamType}
+        />
+      )}
     </Box>
   );
 };

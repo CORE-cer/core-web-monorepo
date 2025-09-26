@@ -2,6 +2,7 @@ import { useDarkModeContext } from '@/hooks/useDarkModeContext';
 import { DRAWER_WIDTH } from '@/utils/constants.js';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import DataObjectIcon from '@mui/icons-material/DataObject';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import MenuIcon from '@mui/icons-material/Menu';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
@@ -140,6 +141,15 @@ export default function Navbar({ children, renderMain = true }: NavbarProps) {
           </IconButton>
           <Logo />
           <Box sx={{ flexGrow: 1, display: 'flex' }} />
+          <Tooltip title="Help & FAQ">
+            <IconButton 
+              component={RouterLink}
+              to="/faq"
+              sx={{ mr: 1 }}
+            >
+              <HelpOutlineIcon />
+            </IconButton>
+          </Tooltip>
           <Tooltip title="Toggle Dark Mode" sx={{ flexGrow: 0 }}>
             <IconButton edge="end" onClick={darkModeContext.toggleDarkMode}>
               {theme.palette.mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
@@ -171,6 +181,7 @@ export default function Navbar({ children, renderMain = true }: NavbarProps) {
         <List dense>
           <DrawerListItem text="Query" href="/" icon={<DataObjectIcon />} />
           <DrawerListItem text="Watch" href="/watch" icon={<VisibilityIcon />} />
+          <DrawerListItem text="Help & FAQ" href="/faq" icon={<HelpOutlineIcon />} />
           <DrawerListItem text="About us" href="/about" icon={<PeopleAltIcon />} />
         </List>
       </Drawer>

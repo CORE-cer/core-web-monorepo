@@ -83,7 +83,11 @@ export function QuerySidebar({ setExample }: QuerySidebarProps) {
         {mode === 'examples' ? (
           <Examples examples={currentExamples} setExample={setExample} />
         ) : (
-          <Schema schema={currentSchema} sx={{ flex: 1, overflow: 'auto', p: 2 }} />
+          <Schema 
+            schema={currentSchema} 
+            streamType={selectedStream}
+            sx={{ flex: 1, overflow: 'auto', p: 2 }} 
+          />
         )}
       </Box>
     </Box>
