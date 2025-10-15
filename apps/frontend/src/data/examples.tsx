@@ -96,6 +96,16 @@ WITHIN 10 seconds
 FROM Bluesky
 WHERE CreatePost`,
     },
+    {
+      title: 'Detect Bot Accounts (3 posts in 10 seconds)',
+      short_title: 'Detect Bots',
+      query: `SELECT *
+FROM Bluesky
+WHERE CreatePost ; CreatePost ; CreatePost
+PARTITION BY [did]
+WITHIN 10 SECONDS
+`,
+    },
   ],
 };
 
