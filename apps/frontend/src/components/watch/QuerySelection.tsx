@@ -3,7 +3,9 @@ import type { QueryId, QueryIdToQueryInfoMap, QueryInfo } from '@/types';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import CodeIcon from '@mui/icons-material/Code';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { enqueueSnackbar } from 'notistack';
 import { Box, Checkbox, Divider, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
 import { useState } from 'react';
 
@@ -84,13 +86,30 @@ export function QuerySelectionItem({ query, checked, handleChange, handleInactiv
             ml: 'auto'
           }}>
             <Tooltip title="View query" arrow placement="top">
-              <IconButton 
-                size="small" 
-                onMouseEnter={handlePreviewMouseEnter} 
+              <IconButton
+                size="small"
+                onMouseEnter={handlePreviewMouseEnter}
                 onMouseLeave={handlePreviewMouseLeave}
                 sx={{ p: 0.5 }}
               >
                 <CodeIcon sx={{ fontSize: 18 }} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Copy query" arrow placement="top">
+              <IconButton
+                size="small"
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  try {
+                    await navigator.clipboard.writeText(query.query_string);
+                    enqueueSnackbar('Query copied to clipboard', { variant: 'success' });
+                  } catch {
+                    enqueueSnackbar('Failed to copy query', { variant: 'error' });
+                  }
+                }}
+                sx={{ p: 0.5 }}
+              >
+                <ContentCopyIcon sx={{ fontSize: 18 }} />
               </IconButton>
             </Tooltip>
             <Tooltip title="Remove query" arrow placement="right">

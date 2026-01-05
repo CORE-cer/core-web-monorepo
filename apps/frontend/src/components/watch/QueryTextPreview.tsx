@@ -1,7 +1,9 @@
 import { setupMonaco } from '@/monaco/setup';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import Editor from '@monaco-editor/react';
-import { Box, Paper, Popper, Typography } from '@mui/material';
+import { Box, IconButton, Paper, Popper, Tooltip, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { enqueueSnackbar } from 'notistack';
 import { useMemo } from 'react';
 
 type QueryTextPreviewProps = {
@@ -27,8 +29,8 @@ export function QueryTextPreview({ queryText, queryName, anchorEl, open, placeme
     // Calculate width based on maximum line length
     // Approximate character width: 10px per character for fontSize 22
     const characterWidth = 10;
-    const minWidth = 300;
-    const maxWidth = 800;
+    const minWidth = 900;
+    const maxWidth = 2400;
     const calculatedWidth = Math.max(minWidth, Math.min(maxWidth, maxLineLength * characterWidth + 40)); // +40 for padding
 
     // Calculate height based on line count
@@ -78,11 +80,30 @@ export function QueryTextPreview({ queryText, queryName, anchorEl, open, placeme
             borderBottom: 1,
             borderColor: 'divider',
             backgroundColor: 'background.default',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
           }}
         >
           <Typography variant="subtitle2" noWrap>
             {queryName}
           </Typography>
+          <Tooltip title="Copy query" arrow>
+            <IconButton
+              size="small"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(queryText);
+                  enqueueSnackbar('Query copied to clipboard', { variant: 'success' });
+                } catch {
+                  enqueueSnackbar('Failed to copy query', { variant: 'error' });
+                }
+              }}
+              sx={{ ml: 1 }}
+            >
+              <ContentCopyIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
         </Box>
         <Box
           sx={{
