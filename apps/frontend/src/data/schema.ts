@@ -78,6 +78,6 @@ const BLUESKY_SCHEMA = {
 };
 
 export const SCHEMAS: StreamTypeSchemas = {
-  coinbase: COINBASE_SCHEMA,
   bluesky: BLUESKY_SCHEMA,
+  coinbase: COINBASE_SCHEMA,
 };

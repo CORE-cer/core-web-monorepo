@@ -40,20 +40,20 @@ export function QuerySidebar({ setExample }: QuerySidebarProps) {
       <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
         <ButtonGroup fullWidth variant="contained" size="small">
           <Button
-            variant={mode === 'examples' ? 'contained' : 'outlined'}
-            onClick={() => {
-              setMode('examples');
-            }}
-          >
-            Examples
-          </Button>
-          <Button
             variant={mode === 'schema' ? 'contained' : 'outlined'}
             onClick={() => {
               setMode('schema');
             }}
           >
             Schema
+          </Button>
+          <Button
+            variant={mode === 'examples' ? 'contained' : 'outlined'}
+            onClick={() => {
+              setMode('examples');
+            }}
+          >
+            Examples
           </Button>
         </ButtonGroup>
       </Box>
