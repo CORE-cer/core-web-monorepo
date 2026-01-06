@@ -36,6 +36,26 @@ export function QuerySidebar({ setExample }: QuerySidebarProps) {
         flexDirection: 'column',
       }}
     >
+      {/* Stream Type Toggle */}
+      <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
+        <ButtonGroup fullWidth variant="outlined" size="small">
+          {Object.keys(SCHEMAS).map((streamType) => {
+            const typedStreamType = streamType as StreamType;
+            return (
+              <Button
+                variant={selectedStream === typedStreamType ? 'contained' : 'outlined'}
+                onClick={() => {
+                  setSelectedStream(typedStreamType);
+                }}
+                key={typedStreamType}
+              >
+                {capitalizeFirstLetter(typedStreamType)}
+              </Button>
+            );
+          })}
+        </ButtonGroup>
+      </Box>
+
       {/* Mode Toggle (Examples/Schema) */}
       <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
         <ButtonGroup fullWidth variant="contained" size="small">
@@ -55,26 +75,6 @@ export function QuerySidebar({ setExample }: QuerySidebarProps) {
           >
             Examples
           </Button>
-        </ButtonGroup>
-      </Box>
-
-      {/* Stream Type Toggle */}
-      <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
-        <ButtonGroup fullWidth variant="outlined" size="small">
-          {Object.keys(SCHEMAS).map((streamType) => {
-            const typedStreamType = streamType as StreamType;
-            return (
-              <Button
-                variant={selectedStream === typedStreamType ? 'contained' : 'outlined'}
-                onClick={() => {
-                  setSelectedStream(typedStreamType);
-                }}
-                key={typedStreamType}
-              >
-                {capitalizeFirstLetter(typedStreamType)}
-              </Button>
-            );
-          })}
         </ButtonGroup>
       </Box>
 
