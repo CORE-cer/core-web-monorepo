@@ -20,7 +20,7 @@ function capitalizeFirstLetter(str: string): string {
 
 export function QuerySidebar({ setExample }: QuerySidebarProps) {
   const [mode, setMode] = useState<SidebarMode>('examples');
-  const [selectedStream, setSelectedStream] = useState<StreamType>('coinbase');
+  const [selectedStream, setSelectedStream] = useState<StreamType>('bluesky');
 
   const currentExamples = examples[selectedStream];
   const currentSchema = SCHEMAS[selectedStream];
