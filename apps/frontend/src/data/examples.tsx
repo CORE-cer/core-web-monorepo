@@ -90,11 +90,61 @@ WITHIN 10 seconds
   ],
   bluesky: [
     {
-      title: 'Show all Create Posts',
-      short_title: 'All CreatePost',
+      title: 'Detect all CreatePost',
+      short_title: 'All Posts',
       query: `SELECT *
 FROM Bluesky
 WHERE CreatePost`,
+    },
+    {
+      title: 'Detect all CreateLike',
+      short_title: 'All Likes',
+      query: `SELECT *
+FROM Bluesky
+WHERE CreateLike`,
+    },
+    {
+      title: 'All CreatePost and CreateLike',
+      short_title: 'All Posts/Likes',
+      query: `SELECT *
+FROM Bluesky
+WHERE CreatePost OR CreateLike`,
+    },
+    {
+      title: "Posts referring to 'Trump'",
+      short_title: 'Trump',
+      query: `SELECT *
+FROM Bluesky
+WHERE CreatePost
+FILTER CreatePost[text LIKE '[Tt]rump']`,
+    },
+    {
+      title: "Posts referring to 'Trump' in Spanish",
+      short_title: 'Trump ES',
+      query: `SELECT *
+FROM Bluesky
+WHERE CreatePost
+FILTER CreatePost[text LIKE '[Tt]rump' AND langs = 'es']`,
+    },
+    {
+      title: 'Two likes for a Trump Post',
+      short_title: '2 Likes Trump',
+      query: `SELECT *
+FROM Bluesky
+WHERE CreatePost ; CreateLike ; CreateLike
+FILTER CreatePost[text LIKE '[Tt]rump']
+PARTITION BY [subject_cid,cid]
+WITHIN 40 SECONDS`,
+    },
+    {
+      title: 'Two likes for a Trump Post Only Text',
+      short_title: '2 Likes Only Text',
+      query: `SELECT X[text]
+FROM Bluesky
+WHERE CreatePost AS X ; CreateLike ; CreateLike
+FILTER CreatePost[text LIKE '[Tt]rump']
+PARTITION BY [subject_cid,cid]
+WITHIN 40 SECONDS`,
     },
     {
       title: 'Detect Bot Accounts (3 posts in 10 seconds)',
@@ -103,8 +153,7 @@ WHERE CreatePost`,
 FROM Bluesky
 WHERE CreatePost ; CreatePost ; CreatePost
 PARTITION BY [did]
-WITHIN 10 SECONDS
-`,
+WITHIN 10 SECONDS`,
     },
   ],
 };
